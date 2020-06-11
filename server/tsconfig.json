@@ -24,8 +24,8 @@
     "experimentalDecorators": true,
     "skipLibCheck": true,
     "baseUrl": ".",
-    "rootDir": "graphql"
+    "rootDir": "src"
   },
   "exclude": ["node_modules"],
-  "include": ["./graphql/**/*.tsx", "./graphql/**/*.ts"]
+  "include": ["./src/**/*.tsx", "./src/**/*.ts"]
 }
