@@ -8,5 +8,5 @@
   "database": "typegraphql-example",
   "logging": true,
   "synchronize": true,
-  "entities": ["graphql/entity/*.*"]
+  "entities": ["src/entity/*.*"]
 }
