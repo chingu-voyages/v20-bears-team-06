@@ -1,0 +1,37 @@
+@import '../components/shared';
+
+
+
+.profile.info{
+    display: flex;
+    @include for-size(phone-only){
+        background-color: white;
+        width: 100vw;
+        position: fixed;
+        padding-top: 100px;
+        flex-direction: column;
+        height: 230px;
+        padding: 0% 10% 0% 10%;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        .profile.image{
+            height: 106px;
+            width: 106px;
+            border-radius: 50%;
+            border: $color1 solid .5px;
+        }
+
+        .profile.info-text{
+            display: flex;
+            flex-direction: column;
+            justify-content: space-evenly;
+            height: 90px;
+            button{
+                margin: 0% 15% 0% 15%;
+            }
+        }
+
+    }
+
+}

@@ -6,7 +6,7 @@ const NavBar = () => {
   return (
     <nav id="navbar">
       <div id="image-holder">
-          <Link to='/{userId}'>
+          <Link to='profile/{userId}'>
         <img id="nav-profile-pic" />
         </Link>
       </div>
