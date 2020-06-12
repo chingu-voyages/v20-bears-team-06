@@ -1,0 +1,120 @@
+@import './shared';
+
+
+*{
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+#navbar{
+    width: 100vw;
+    background-color: $color1;
+}
+
+#navbar div{
+    float: left;
+}
+
+#menu-holder{
+    display: flex;
+    flex-direction: column;
+    max-height: 100%;
+    align-content: center;
+    justify-content: space-evenly;
+}
+
+#nav-profile-pic{
+    border-radius: 50%;
+    border: 1px white solid;
+}
+
+.nav-links{
+    list-style: none;
+    height: fit-content;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+}
+
+.searchbar{
+    height: fit-content;
+    &:focus{
+        outline: none;
+    }
+    align-self: center;
+}
+
+@include for-size(phone-only){
+    #navbar{
+        height: 100px;
+    }
+
+    #image-holder{
+        width: 20vw;
+        height: 20vw;
+        margin-left: 4.16vw;
+    }
+
+    #nav-profile-pic{
+        height: 100%;
+        width: 100%;
+        
+        margin-top: 3.6vw;
+        
+    }
+
+    #menu-holder{
+        width: 73.24vw;
+        height: 100%;
+        
+    }
+
+    .nav-links a{
+        font-size: .6em;
+    }
+
+    .searchbar {
+        width: 190px;
+    }
+
+    
+
+
+}
+
+
+
+
+@include for-size(tablet-portrait-up){
+    #navbar{
+        height: 120px;
+    }
+
+    #image-holder{
+        width: 20vw;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    #nav-profile-pic{
+        height: 80px;
+        width: 80px;
+        
+
+    }
+
+    #menu-holder{
+        width: 80vw;
+        height: 100%;
+    }
+}
+
+
+@include for-size(desktop-up){
+    #navbar{
+        height: 50px;
+    }
+}
