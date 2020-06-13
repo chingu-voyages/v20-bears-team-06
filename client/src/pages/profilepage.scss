@@ -5,7 +5,7 @@
 .profile.info{
     display: flex;
     @include for-size(phone-only){
-        background-color: white;
+        background-color: $color6;
         width: 100vw;
         position: fixed;
         padding-top: 100px;
@@ -34,4 +34,96 @@
 
     }
 
+    @include for-size(tablet-portrait-up){
+        background-color: $color6;
+        width: 100vw;
+        padding: 0% 15%;
+        position: fixed;
+        flex-direction: column;
+        height: 320px;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        .profile.image{
+            width: 20vw;
+            height: 20vw;
+            border-radius: 50%;
+
+        }
+
+        .profile.info-text{
+            display: flex;
+            flex-direction: column;
+            justify-content: space-evenly;
+            height: 150px;
+            button{
+                margin: 0% 15% 0% 15%;
+            }
+
+        }
+
+
+    }
+
+    @include for-size(tablet-landscape-up){
+        background-color: $color6;
+        width: 25vw;
+        float: left;
+        padding: 0 0 0 3.5%;
+
+        .profile.image{
+            width: 80%;
+        }
+
+        .profile.info-text{
+            width: 100%;
+            
+        }
+    }
+
+    
+
+}
+
+
+.post-feed{
+    @include for-size(phone-only){
+        padding-top: 230px;
+        font-size: .82em;
+    
+    .post{
+        padding: 2% 10%;
+        border-bottom: 1px solid grey;
+        span {
+            display: flex;
+            align-items: center;
+            justify-content: space-evenly;
+            font-size: 1.2em;
+            height:  30px;
+
+        }
+    }
+}
+
+    @include for-size(tablet-portrait-up){
+        padding-top: 320px;
+        width: fit-content;
+
+        .post{
+            margin: 0 15%;
+            span{
+            display: flex;
+            align-items: center;
+            justify-content: space-evenly;
+            font-size: 1.2em;
+            height:  30px;
+            }
+        }
+    }
+
+    @include for-size(tablet-landscape-up){
+
+    }
+
+    
 }

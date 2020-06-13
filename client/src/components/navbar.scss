@@ -36,6 +36,11 @@
     display: flex;
     flex-direction: row;
     justify-content: space-evenly;
+    
+}
+
+.nav-links a{
+    color: white;
 }
 
 .searchbar{
@@ -44,6 +49,13 @@
         outline: none;
     }
     align-self: center;
+    border-radius: 10px;
+    border-style: none;
+    text-indent: 2.5%;
+}
+
+.username-span{
+    display: none;
 }
 
 @include for-size(phone-only){
@@ -53,13 +65,15 @@
 
     #image-holder{
         width: 20vw;
-        height: 20vw;
+        height: 75%;
         margin-left: 4.16vw;
     }
 
     #nav-profile-pic{
-        height: 100%;
-        width: 100%;
+        height: 75px;
+        width: 75px;
+        
+        
         
         margin-top: 3.6vw;
         
@@ -72,11 +86,13 @@
     }
 
     .nav-links a{
-        font-size: .6em;
+        font-size: 1.2em;
     }
 
     .searchbar {
         width: 190px;
+        flex-direction: row;
+        align-items: center;
     }
 
     
@@ -92,8 +108,17 @@
         height: 120px;
     }
 
+    .nav-links a{
+        font-size: 1.5em;
+    }
+
+    .searchbar{
+
+        font-size: 1.2em;
+    }
+
     #image-holder{
-        width: 20vw;
+        width: 25%;
         height: 100%;
         display: flex;
         align-items: center;
@@ -108,14 +133,46 @@
     }
 
     #menu-holder{
-        width: 80vw;
+        width: 75%;
         height: 100%;
     }
 }
 
 
-@include for-size(desktop-up){
+@include for-size(tablet-landscape-up){
     #navbar{
         height: 50px;
+        padding: 0 10%;
+    }
+    #image-holder{
+        height: 100%;
+        width: 50%;
+        justify-content: flex-start;
+    }
+
+    #nav-profile-pic{
+        height: 40px;
+        width: 40px;
+    }
+    #menu-holder{
+        width: 50%;
+        flex-direction: row;
+        align-items: center;
+        
+    }
+
+    .nav-links{
+        width: 50%;
+    }
+
+    .searchbar{
+        width: 40%;
+        justify-self: baseline;
+    }
+
+    .username-span{
+        display: inline-block;
+        padding-left: 10px;
+        color: white;
     }
 }

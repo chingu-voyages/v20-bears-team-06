@@ -17,11 +17,29 @@
     }
   }
 
+  @mixin aspect-ratio($width, $height) {
+    position: relative;
+    &:before {
+      display: block;
+      content: "";
+      width: 100%;
+      padding-top: ($height / $width) * 100%;
+    }
+    > .content {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+    }
+  }
+
 $color1: #8895b3ff;
 $color2: #8e94f2ff;
 $color3: #9fa0ffff;
 $color4: #bbadffff;
 $color5: #dab6fcff;
+$color6: white; 
 
 
  
