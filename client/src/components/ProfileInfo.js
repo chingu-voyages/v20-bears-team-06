@@ -1,4 +1,5 @@
 import React from 'react';
+import CoverPhoto from './CoverPhoto';
 
 function ProfileInfo(){
 
@@ -11,6 +12,7 @@ function ProfileInfo(){
             <button className='profile button' id='follow'>follow</button>
 
         </div>
+        <CoverPhoto imageUrl={null} />
         </div>
     )
 }

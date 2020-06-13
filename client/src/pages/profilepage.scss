@@ -2,6 +2,14 @@
 
 
 
+.cover-photo{
+    display: none;
+
+    
+}
+
+
+
 .profile.info{
     display: flex;
     @include for-size(phone-only){
@@ -66,19 +74,43 @@
     }
 
     @include for-size(tablet-landscape-up){
+        width: 100%;
+        padding: 0 4.5%;
+        display: grid;
+        grid-template-columns: 6.25% 6.25% 6.25% 6.25% 75%;
+        grid-template-rows: 137px repeat(3,auto);
         background-color: $color6;
-        width: 25vw;
-        float: left;
-        padding: 0 0 0 3.5%;
+        align-items: end;
+        height: 220px;
+
+        .cover-photo{
+            display: block;
+            grid-column: 4/6;
+            grid-row: 1/5;
+            height: 100%;
+            width: 100%;
+        }
 
         .profile.image{
-            width: 80%;
+            grid-column: 1/5;
+            grid-row: 1/2;
+            justify-self: center;
+            height: 90px;
+            width: 90px;
         }
 
         .profile.info-text{
-            width: 100%;
-            
+            grid-column: 1/5;
+            grid-row: 2/5;
+            button{
+                margin: 0 35%;
+            }
+            h4, h6{
+                margin: 0 20%;
+                text-overflow: wrap;
+            }
         }
+
     }
 
     
@@ -122,6 +154,21 @@
     }
 
     @include for-size(tablet-landscape-up){
+        display: grid;
+        padding-left: 4.5%;
+        padding-right: 4.5%;
+        grid-template-columns: 25% 75%;
+        grid-template-rows: repeat(auto-fill,1fr);
+        grid-row-gap: 40px;
+
+        .post{
+            grid-column: 2/3;
+            font-size: .85em;
+            border-bottom: .25px black solid;
+            span{
+                padding: 5% 5%;
+            }
+        }
 
     }
 
