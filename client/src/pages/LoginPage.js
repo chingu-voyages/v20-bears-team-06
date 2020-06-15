@@ -3,7 +3,7 @@ import { gql } from "apollo-boost";
 import { useMutation } from "@apollo/react-hooks";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
-import { TextInputField } from "./fields/TextInputField";
+import { TextInputField } from "../components/fields/TextInputField";
 import { useHistory } from "react-router-dom";
 
 const LOGIN_MUTATION = gql`
@@ -14,7 +14,7 @@ const LOGIN_MUTATION = gql`
   }
 `;
 
-export const Login = () => {
+const LoginPage = () => {
   const [login] = useMutation(LOGIN_MUTATION);
   let history = useHistory();
 
@@ -70,3 +70,5 @@ export const Login = () => {
     </Formik>
   );
 };
+
+export default LoginPage;

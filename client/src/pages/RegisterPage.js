@@ -1,6 +1,6 @@
 import React from "react";
 import { Formik, Form } from "formik";
-import { TextInputField } from "./fields/TextInputField";
+import { TextInputField } from "../components/fields/TextInputField";
 import * as Yup from "yup";
 import { useMutation } from "@apollo/react-hooks";
 import { gql } from "apollo-boost";
@@ -29,7 +29,7 @@ const REGISTER_MUTATION = gql`
   }
 `;
 
-export const Register = () => {
+const RegisterPage = () => {
   const [register, { data }] = useMutation(REGISTER_MUTATION);
   let history = useHistory();
 
@@ -92,3 +92,5 @@ export const Register = () => {
     </Formik>
   );
 };
+
+export default RegisterPage;
