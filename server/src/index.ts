@@ -7,10 +7,6 @@ import connectRedis from "connect-redis";
 import cors from "cors";
 import { redis } from "./redis";
 import { createSchema } from "./utils/createSchema";
-import queryComplexity, {
-  fieldConfigEstimator,
-  simpleEstimator,
-} from "graphql-query-complexity";
 
 const main = async () => {
   await createConnection();
@@ -20,21 +16,6 @@ const main = async () => {
   const apolloServer = new ApolloServer({
     schema,
     context: ({ req, res }: any) => ({ req, res }),
-    validationRules: [
-      queryComplexity({
-        maximumComplexity: 20,
-        variables: {},
-        onComplete: (complexity: number) => {
-          console.log("Query Complexity:", complexity);
-        },
-        estimators: [
-          fieldConfigEstimator(),
-          simpleEstimator({
-            defaultComplexity: 1,
-          }),
-        ],
-      }) as any,
-    ],
   });
 
   const app = Express();
@@ -65,7 +46,7 @@ const main = async () => {
     })
   );
 
-  apolloServer.applyMiddleware({ app });
+  apolloServer.applyMiddleware({ app, cors: false });
 
   app.listen(4000, () => {
     console.log("server started on http://localhost:4000/graphql");
