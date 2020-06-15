@@ -1,0 +1,177 @@
+@import '../components/shared';
+
+
+
+.cover-photo{
+    display: none;
+
+    
+}
+
+
+
+.profile.info{
+    display: flex;
+    @include for-size(phone-only){
+        background-color: $color6;
+        width: 100vw;
+        position: fixed;
+        padding-top: 100px;
+        flex-direction: column;
+        height: 230px;
+        padding: 0% 10% 0% 10%;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        .profile.image{
+            height: 106px;
+            width: 106px;
+            border-radius: 50%;
+            border: $color1 solid .5px;
+        }
+
+        .profile.info-text{
+            display: flex;
+            flex-direction: column;
+            justify-content: space-evenly;
+            height: 90px;
+            button{
+                margin: 0% 15% 0% 15%;
+            }
+        }
+
+    }
+
+    @include for-size(tablet-portrait-up){
+        background-color: $color6;
+        width: 100vw;
+        padding: 0% 15%;
+        position: fixed;
+        flex-direction: column;
+        height: 320px;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        .profile.image{
+            width: 20vw;
+            height: 20vw;
+            border-radius: 50%;
+
+        }
+
+        .profile.info-text{
+            display: flex;
+            flex-direction: column;
+            justify-content: space-evenly;
+            height: 150px;
+            button{
+                margin: 0% 15% 0% 15%;
+            }
+
+        }
+
+
+    }
+
+    @include for-size(tablet-landscape-up){
+        width: 100%;
+        padding: 0 4.5%;
+        display: grid;
+        grid-template-columns: 6.25% 6.25% 6.25% 6.25% 75%;
+        grid-template-rows: 137px repeat(3,auto);
+        background-color: $color6;
+        align-items: end;
+        height: 220px;
+
+        .cover-photo{
+            display: block;
+            grid-column: 4/6;
+            grid-row: 1/5;
+            height: 100%;
+            width: 100%;
+        }
+
+        .profile.image{
+            grid-column: 1/5;
+            grid-row: 1/2;
+            justify-self: center;
+            height: 90px;
+            width: 90px;
+        }
+
+        .profile.info-text{
+            grid-column: 1/5;
+            grid-row: 2/5;
+            button{
+                margin: 0 35%;
+            }
+            h4, h6{
+                margin: 0 20%;
+                text-overflow: wrap;
+            }
+        }
+
+    }
+
+    
+
+}
+
+
+.post-feed{
+    @include for-size(phone-only){
+        padding-top: 230px;
+        font-size: .82em;
+    
+    .post{
+        padding: 2% 10%;
+        border-bottom: 1px solid grey;
+        span {
+            display: flex;
+            align-items: center;
+            justify-content: space-evenly;
+            font-size: 1.2em;
+            height:  30px;
+
+        }
+    }
+}
+
+    @include for-size(tablet-portrait-up){
+        padding-top: 320px;
+        width: fit-content;
+
+        .post{
+            margin: 0 15%;
+            span{
+            display: flex;
+            align-items: center;
+            justify-content: space-evenly;
+            font-size: 1.2em;
+            height:  30px;
+            }
+        }
+    }
+
+    @include for-size(tablet-landscape-up){
+        display: grid;
+        padding-left: 4.5%;
+        padding-right: 4.5%;
+        grid-template-columns: 25% 75%;
+        grid-template-rows: repeat(auto-fill,1fr);
+        grid-row-gap: 40px;
+
+        .post{
+            grid-column: 2/3;
+            font-size: .85em;
+            border-bottom: .25px black solid;
+            span{
+                padding: 5% 5%;
+            }
+        }
+
+    }
+
+    
+}
+
