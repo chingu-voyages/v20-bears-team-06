@@ -41,6 +41,10 @@ export const Register = () => {
         email: "",
         password: "",
       }}
+      validationSchema={Yup.object({
+        email: Yup.string().email("Invalid email address").required(),
+        password: Yup.string().required("Please Enter your password"),
+      })}
       onSubmit={(values, { setSubmitting }) => {
         setTimeout(async () => {
           console.log(values);
