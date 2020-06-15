@@ -28,6 +28,7 @@ export class RegisterResolver {
       lastName,
       email,
       password: hashedPassword,
+      confirmed: true,
     }).save();
 
     await sendEmail(email, await createConfirmationUrl(user.id));
