@@ -7,7 +7,6 @@ import ProfilePage from "./pages/ProfilePage";
 import EditPage from "./pages/EditPage";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
-
 import "./App.scss";
 
 const client = new ApolloClient({
@@ -38,6 +37,7 @@ export default function App() {
             <Route path="/profile/:userid" component={ProfilePage} />
             <Route path="/register" component={RegisterPage} />
             <Route path="/login" component={LoginPage} />
+            <Route path="/" component={Home} />
           </Switch>
         </div>
       </Router>
