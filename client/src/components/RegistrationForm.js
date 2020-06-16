@@ -2,12 +2,15 @@ import React from "react";
 import { useMutation } from "@apollo/react-hooks";
 import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
+import { Link as RouterLink } from "react-router-dom";
+
 import {
   Avatar,
   Button,
   Container,
   CssBaseline,
   Grid,
+  Link,
   makeStyles,
   Typography,
 } from "@material-ui/core";
@@ -29,6 +32,9 @@ const validationSchema = Yup.object({
     .email("Invalid email address")
     .required("Please enter your email address"),
   password: Yup.string().required("Please enter a valid password"),
+  confirmPassword: Yup.string()
+    .oneOf([Yup.ref("password"), null], "Passwords must match")
+    .required("Please enter a valid password"),
 });
 
 const REGISTER_MUTATION = gql`
@@ -95,18 +101,28 @@ export const RegistrationForm = () => {
             password: "",
           }}
           validationSchema={validationSchema}
-          onSubmit={(values, { setSubmitting }) => {
+          onSubmit={(values, { setSubmitting, setFieldError }) => {
             setTimeout(async () => {
-              console.log(values);
-              const response = await register({
-                variables: {
-                  firstName: values.firstName,
-                  lastName: values.lastName,
-                  email: values.email,
-                  password: values.password,
-                },
-              });
-              console.log(response);
+              try {
+                const response = await register({
+                  variables: {
+                    firstName: values.firstName,
+                    lastName: values.lastName,
+                    email: values.email,
+                    password: values.password,
+                  },
+                });
+                console.log(response);
+              } catch (e) {
+                if ()
+                const errorMessage = e.graphQLErrors.extensions.exception
+                  .constraints.IsEmailAlreadyExistConstraint
+                  ? e.graphQLErrors.extensions.exception.constraints
+                      .IsEmailAlreadyExistConstraint
+                  : "Unable to Register User";
+                
+                console.log("error with registration", JSON.stringify(e));
+              }
               setSubmitting(false);
             }, 400);
           }}
@@ -120,6 +136,9 @@ export const RegistrationForm = () => {
                     name="firstName"
                     type="text"
                     placeholder="john"
+                    variant="outlined"
+                    required
+                    fullWidth
                     as={TextInputField}
                   />
                 </Grid>
@@ -129,6 +148,9 @@ export const RegistrationForm = () => {
                     name="lastName"
                     type="text"
                     placeholder="doe"
+                    variant="outlined"
+                    required
+                    fullWidth
                     as={TextInputField}
                   />
                 </Grid>
@@ -138,6 +160,9 @@ export const RegistrationForm = () => {
                     name="email"
                     type="email"
                     placeholder="email@email.com"
+                    variant="outlined"
+                    required
+                    fullWidth
                     as={TextInputField}
                   />
                 </Grid>
@@ -147,6 +172,21 @@ export const RegistrationForm = () => {
                     name="password"
                     type="password"
                     placeholder="password"
+                    variant="outlined"
+                    required
+                    fullWidth
+                    as={TextInputField}
+                  />
+                </Grid>
+                <Grid item xs={12}>
+                  <Field
+                    label="Confirm Password"
+                    name="confirmPassword"
+                    type="password"
+                    placeholder="confirm password"
+                    variant="outlined"
+                    required
+                    fullWidth
                     as={TextInputField}
                   />
                 </Grid>
@@ -161,6 +201,13 @@ export const RegistrationForm = () => {
               >
                 Submit
               </Button>
+              <Grid container justify="flex-end">
+                <Grid item>
+                  <Link component={RouterLink} to="/login" variant="body2">
+                    Already have an account? Sign in
+                  </Link>
+                </Grid>
+              </Grid>
             </Form>
           )}
         </Formik>

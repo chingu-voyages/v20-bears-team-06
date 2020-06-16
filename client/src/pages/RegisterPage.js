@@ -6,7 +6,7 @@ import "./registerpage.scss";
 const RegisterPage = () => {
   return (
     <div className="register-page">
-      <RegistrationForm></RegistrationForm>
+      <RegistrationForm />
     </div>
   );
 };

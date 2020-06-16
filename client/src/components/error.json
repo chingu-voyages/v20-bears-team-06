@@ -1,0 +1,42 @@
+{
+  "graphQLErrors": [
+    {
+      "message": "Argument Validation Error",
+      "locations": [
+        {
+          "line": 2,
+          "column": 3
+        }
+      ],
+      "path": ["register"],
+      "extensions": {
+        "code": "INTERNAL_SERVER_ERROR",
+        "exception": {
+          "validationErrors": [
+            {
+              "target": {
+                "firstName": "sdfs",
+                "lastName": "asdf",
+                "email": "b@b.com",
+                "password": "123"
+              },
+              "value": "b@b.com",
+              "property": "email",
+              "children": [],
+              "constraints": {
+                "IsEmailAlreadyExistConstraint": "email already in use"
+              }
+            }
+          ],
+          "stacktrace": [
+            "Error: Argument Validation Error",
+            "    at Object.validateArg (/Users/jlundy/Projects/chingu/v20-bears-team-06/server/node_modules/type-graphql/dist/resolvers/validate-arg.js:24:15)",
+            "    at processTicksAndRejections (internal/process/task_queues.js:97:5)"
+          ]
+        }
+      }
+    }
+  ],
+  "networkError": null,
+  "message": "GraphQL error: Argument Validation Error"
+}
