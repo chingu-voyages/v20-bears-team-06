@@ -1,6 +1,6 @@
 import { Field, ObjectType, ID } from 'type-graphql';
-import { Entity, BaseEntity, Column, PrimaryGeneratedColumn, RelationId, ManyToOne, CreateDateColumn } from 'typeorm';
-import { User } from '../entity/User';
+import { Entity, BaseEntity, Column, PrimaryGeneratedColumn, CreateDateColumn } from 'typeorm';
+
 
 @ObjectType()
 @Entity()
@@ -8,15 +8,14 @@ export class Post extends BaseEntity {
 
     @PrimaryGeneratedColumn("uuid")
     @Field(()=>ID)
-    id: string;
+    postId: string;
+
+    @Field(()=>ID)
+    userId: number;
 
     @CreateDateColumn()
     @Field()
     postDate: Date;
-
-    
-
-    
 
     @Column({default: 0})
     @Field({defaultValue: 0})

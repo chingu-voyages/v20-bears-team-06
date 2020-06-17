@@ -31,14 +31,15 @@ export class User extends BaseEntity {
   @Column("bool", { default: false })
   confirmed: boolean;
 
-  @Field(()=>[ID],{defaultValue:[]})
-  following: [string];
+  @Field(()=>[User], {nullable: "itemsAndList"})
+  followers : [User];
 
-  @Field(() => [ID], {defaultValue : []})
-  followers : [string];
-
-  @Field(()=>[Post], {defaultValue:[]})
+  @Field(()=>[User], {nullable: "itemsAndList"})
+  following : [User];
+  
+  @Field(()=>[Post],{nullable: "itemsAndList"})
   posts: [Post];
+
 
   @Field({nullable:true, defaultValue:""})
   school: string;
