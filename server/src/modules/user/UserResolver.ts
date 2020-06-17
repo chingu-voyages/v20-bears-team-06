@@ -1,14 +1,22 @@
-import { Resolver, Query, Arg } from 'type-graphql';
+import { Resolver, Query, ArgsType, ID, Field, Args } from 'type-graphql';
 import { User } from '../../entity/User';
+
+
+@ArgsType()
+class GetUserArgs{
+    @Field(()=>ID)
+    userId: number;
+};
+
 
 @Resolver()
 export class UserResolver {
     @Query(() => User, {nullable: true})
     async user(
-        @Arg("userId") userId: string
+        @Args() {userId} : GetUserArgs
     ):Promise<User | undefined>{
 
-        return User.findOne({id: userId}) || undefined;
+        return User.findOne(userId) || undefined;
 
     }
         

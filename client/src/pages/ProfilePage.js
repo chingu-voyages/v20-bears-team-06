@@ -17,7 +17,7 @@ const ProfilePage = () => {
   console.log(userId);
 
   const GET_USER = gql`
-    query getUser($userId: String!) {
+    query getUser($userId: ID!) {
       user(userId: $userId) {
         name
         school

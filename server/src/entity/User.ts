@@ -1,6 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column, BaseEntity } from "typeorm";
 import { ObjectType, Field, ID, Root } from "type-graphql";
-import { Post } from '../types/Post';
+import { Post } from './Post';
 
 @ObjectType()
 @Entity()
