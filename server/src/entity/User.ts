@@ -40,6 +40,15 @@ export class User extends BaseEntity {
   @Field(()=>[Post], {defaultValue:[]})
   posts: [Post];
 
+  @Field({nullable:true, defaultValue:""})
+  school: string;
+
+  @Field({nullable:true,defaultValue:""})
+  department: string;
+
+  @Field({nullable:true,defaultValue:""})
+  position: string;
+
 
   
 }
