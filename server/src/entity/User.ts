@@ -1,5 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column, BaseEntity } from "typeorm";
 import { ObjectType, Field, ID, Root } from "type-graphql";
+import { Post } from '../types/Post';
 
 @ObjectType()
 @Entity()
@@ -29,4 +30,16 @@ export class User extends BaseEntity {
 
   @Column("bool", { default: false })
   confirmed: boolean;
+
+  @Field(()=>[ID],{defaultValue:[]})
+  following: [string];
+
+  @Field(() => [ID], {defaultValue : []})
+  followers : [string];
+
+  @Field(()=>[Post], {defaultValue:[]})
+  posts: [Post];
+
+
+  
 }
