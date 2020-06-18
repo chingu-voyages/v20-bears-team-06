@@ -1,8 +1,8 @@
 import React from "react";
-import { useMutation } from "@apollo/react-hooks";
+import { useMutation, useQuery } from "@apollo/react-hooks";
 import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
-import { Link as RouterLink, Redirect } from "react-router-dom";
+import { Link as RouterLink, Redirect, useHistory } from "react-router-dom";
 //Redirect conditional for usage with submitForm
 import {
   Avatar,
@@ -16,7 +16,8 @@ import {
 } from "@material-ui/core";
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import { gql } from "apollo-boost";
-
+import { REGISTER_MUTATION } from "../graphql/Mutations";
+import { GET_ME } from "../graphql/Queries";
 import { TextInputField } from "./fields/TextInputField";
 
 const validationSchema = Yup.object({
@@ -36,29 +37,6 @@ const validationSchema = Yup.object({
     .oneOf([Yup.ref("password"), null], "Passwords must match")
     .required("Please enter a valid password"),
 });
-
-const REGISTER_MUTATION = gql`
-  mutation Register(
-    $firstName: String!
-    $lastName: String!
-    $email: String!
-    $password: String!
-  ) {
-    register(
-      data: {
-        firstName: $firstName
-        lastName: $lastName
-        email: $email
-        password: $password
-      }
-    ) {
-      id
-      firstName
-      lastName
-      email
-    }
-  }
-`;
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -82,145 +60,158 @@ const useStyles = makeStyles((theme) => ({
 
 export const RegistrationForm = () => {
   //For Router, add reference for *confirmed = useState
-  const [register, { data }] = useMutation(REGISTER_MUTATION);
+  const [register] = useMutation(REGISTER_MUTATION);
   const classes = useStyles();
-  return (
-    <Container component="main" maxWidth="xs">
-      <CssBaseline />
-      <div className={classes.paper}>
-        <Avatar className={classes.avatar}>
-          <LockOutlinedIcon />
-        </Avatar>
-        <Typography component="h1" variant="h5">
-          Sign up
-        </Typography>
-        <Formik
-          initialValues={{
-            firstName: "",
-            lastName: "",
-            email: "",
-            password: "",
-            confirmPassword: "",
-          }}
-          validationSchema={validationSchema}
-          onSubmit={(values, { setSubmitting, setFieldError }) => {
-            setTimeout(async () => {
-              try {
-                const response = await register({
-                  variables: {
-                    firstName: values.firstName,
-                    lastName: values.lastName,
-                    email: values.email,
-                    password: values.password,
-                  },
-                });
-                console.log(response);
-                // Insert Redirect component through here by setting state from hook : isConfirmed then
-              } catch (e) {
-                if (
-                  e.graphQLErrors[0].extensions.exception.validationErrors[0]
-                    .constraints.IsEmailAlreadyExistConstraint
-                ) {
-                  setFieldError(
-                    "email",
+  let history = useHistory();
+  const { data } = useQuery(GET_ME);
+  const isLoggedIn = data && data.me;
+
+  function returnHome() {
+    history.push("/");
+  }
+  if (isLoggedIn) {
+    console.log("redirecting");
+    return <Redirect to={{ pathname: "/" }} />;
+  } else {
+    return (
+      <Container component="main" maxWidth="xs">
+        <CssBaseline />
+        <div className={classes.paper}>
+          <Avatar className={classes.avatar}>
+            <LockOutlinedIcon />
+          </Avatar>
+          <Typography component="h1" variant="h5">
+            Sign up
+          </Typography>
+          <Formik
+            initialValues={{
+              firstName: "",
+              lastName: "",
+              email: "",
+              password: "",
+              confirmPassword: "",
+            }}
+            validationSchema={validationSchema}
+            onSubmit={(values, { setSubmitting, setFieldError }) => {
+              setTimeout(async () => {
+                try {
+                  const response = await register({
+                    variables: {
+                      firstName: values.firstName,
+                      lastName: values.lastName,
+                      email: values.email,
+                      password: values.password,
+                    },
+                  });
+                  returnHome();
+                  // Insert Redirect component through here by setting state from hook : isConfirmed then
+                } catch (e) {
+                  if (
                     e.graphQLErrors[0].extensions.exception.validationErrors[0]
                       .constraints.IsEmailAlreadyExistConstraint
-                  );
-                } else {
-                  setFieldError("confirmPassword", "Unable to Register User");
-                }
+                  ) {
+                    setFieldError(
+                      "email",
+                      e.graphQLErrors[0].extensions.exception
+                        .validationErrors[0].constraints
+                        .IsEmailAlreadyExistConstraint
+                    );
+                  } else {
+                    setFieldError("confirmPassword", "Unable to Register User");
+                  }
 
-                console.log("error with registration", JSON.stringify(e));
-              }
-              setSubmitting(false);
-            }, 400);
-          }}
-        >
-          {({ values, isSubmitting }) => (
-            <Form className={classes.form}>
-              <Grid container spacing={2}>
-                <Grid item xs={12} sm={6}>
-                  <Field
-                    label="First Name"
-                    name="firstName"
-                    type="text"
-                    placeholder="john"
-                    variant="outlined"
-                    required
-                    fullWidth
-                    as={TextInputField}
-                  />
+                  console.log("error with registration", JSON.stringify(e));
+                }
+                setSubmitting(false);
+              }, 400);
+            }}
+          >
+            {({ values, isSubmitting }) => (
+              <Form className={classes.form}>
+                <Grid container spacing={2}>
+                  <Grid item xs={12} sm={6}>
+                    <Field
+                      label="First Name"
+                      name="firstName"
+                      type="text"
+                      placeholder="john"
+                      variant="outlined"
+                      required
+                      fullWidth
+                      as={TextInputField}
+                    />
+                  </Grid>
+                  <Grid item xs={12} sm={6}>
+                    <Field
+                      label="Last Name"
+                      name="lastName"
+                      type="text"
+                      placeholder="doe"
+                      variant="outlined"
+                      required
+                      fullWidth
+                      as={TextInputField}
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Field
+                      label="Email Address"
+                      name="email"
+                      type="email"
+                      placeholder="email@email.com"
+                      variant="outlined"
+                      required
+                      fullWidth
+                      as={TextInputField}
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Field
+                      label="Password"
+                      name="password"
+                      type="password"
+                      placeholder="password"
+                      variant="outlined"
+                      required
+                      fullWidth
+                      as={TextInputField}
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <Field
+                      label="Confirm Password"
+                      name="confirmPassword"
+                      type="password"
+                      placeholder="confirm password"
+                      variant="outlined"
+                      required
+                      fullWidth
+                      as={TextInputField}
+                    />
+                  </Grid>
                 </Grid>
-                <Grid item xs={12} sm={6}>
-                  <Field
-                    label="Last Name"
-                    name="lastName"
-                    type="text"
-                    placeholder="doe"
-                    variant="outlined"
-                    required
-                    fullWidth
-                    as={TextInputField}
-                  />
+                <Button
+                  className={classes.submit}
+                  disabled={isSubmitting}
+                  variant="contained"
+                  fullWidth
+                  color="primary"
+                  type="submit"
+                >
+                  Submit
+                </Button>
+                <Grid container justify="flex-end">
+                  <Grid item>
+                    <Link component={RouterLink} to="/login" variant="body2">
+                      Already have an account? Sign in
+                    </Link>
+                  </Grid>
                 </Grid>
-                <Grid item xs={12}>
-                  <Field
-                    label="Email Address"
-                    name="email"
-                    type="email"
-                    placeholder="email@email.com"
-                    variant="outlined"
-                    required
-                    fullWidth
-                    as={TextInputField}
-                  />
-                </Grid>
-                <Grid item xs={12}>
-                  <Field
-                    label="Password"
-                    name="password"
-                    type="password"
-                    placeholder="password"
-                    variant="outlined"
-                    required
-                    fullWidth
-                    as={TextInputField}
-                  />
-                </Grid>
-                <Grid item xs={12}>
-                  <Field
-                    label="Confirm Password"
-                    name="confirmPassword"
-                    type="password"
-                    placeholder="confirm password"
-                    variant="outlined"
-                    required
-                    fullWidth
-                    as={TextInputField}
-                  />
-                </Grid>
-              </Grid>
-              <Button
-                className={classes.submit}
-                disabled={isSubmitting}
-                variant="contained"
-                fullWidth
-                color="primary"
-                type="submit"
-              >
-                Submit
-              </Button>
-              <Grid container justify="flex-end">
-                <Grid item>
-                  <Link component={RouterLink} to="/login" variant="body2">
-                    Already have an account? Sign in
-                  </Link>
-                </Grid>
-              </Grid>
-            </Form>
-          )}
-        </Formik>
-      </div>
-    </Container>
-  );
+              </Form>
+            )}
+          </Formik>
+        </div>
+      </Container>
+    );
+  }
 };

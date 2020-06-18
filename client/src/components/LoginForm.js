@@ -3,7 +3,8 @@ import { useMutation, useQuery } from "@apollo/react-hooks";
 import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
 import { Link as RouterLink, Redirect, useHistory } from "react-router-dom";
-
+import { GET_ME } from "../graphql/Queries";
+import { LOGIN_MUTATION } from "../graphql/Mutations";
 import {
   Avatar,
   Button,
@@ -19,21 +20,6 @@ import { gql } from "apollo-boost";
 
 import { TextInputField } from "./fields/TextInputField";
 
-const LOGIN_MUTATION = gql`
-  mutation LoginMutation($email: String!, $password: String!) {
-    login(email: $email, password: $password) {
-      name
-    }
-  }
-`;
-const GET_ME = gql`
-  {
-    me {
-      id
-      name
-    }
-  }
-`;
 const useStyles = makeStyles((theme) => ({
   paper: {
     marginTop: theme.spacing(8),
@@ -56,14 +42,15 @@ const useStyles = makeStyles((theme) => ({
 
 export const LoginForm = () => {
   const [login] = useMutation(LOGIN_MUTATION);
-  const { data } = useQuery(GET_ME);
   const classes = useStyles();
   let history = useHistory();
+  const { data } = useQuery(GET_ME);
+  const isLoggedIn = data && data.me;
 
   function returnHome() {
     history.push("/");
   }
-  if (data && data.me) {
+  if (isLoggedIn) {
     console.log("redirecting");
     return <Redirect to={{ pathname: "/" }} />;
   } else {
