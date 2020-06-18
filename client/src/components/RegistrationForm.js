@@ -2,8 +2,8 @@ import React from "react";
 import { useMutation } from "@apollo/react-hooks";
 import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
-import { Link as RouterLink } from "react-router-dom";
-
+import { Link as RouterLink, Redirect } from "react-router-dom";
+//Redirect conditional for usage with submitForm
 import {
   Avatar,
   Button,
@@ -81,6 +81,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export const RegistrationForm = () => {
+  //For Router, add reference for *confirmed = useState
   const [register, { data }] = useMutation(REGISTER_MUTATION);
   const classes = useStyles();
   return (
@@ -99,6 +100,7 @@ export const RegistrationForm = () => {
             lastName: "",
             email: "",
             password: "",
+            confirmPassword: "",
           }}
           validationSchema={validationSchema}
           onSubmit={(values, { setSubmitting, setFieldError }) => {
@@ -113,14 +115,21 @@ export const RegistrationForm = () => {
                   },
                 });
                 console.log(response);
+                // Insert Redirect component through here by setting state from hook : isConfirmed then
               } catch (e) {
-                if ()
-                const errorMessage = e.graphQLErrors.extensions.exception
-                  .constraints.IsEmailAlreadyExistConstraint
-                  ? e.graphQLErrors.extensions.exception.constraints
-                      .IsEmailAlreadyExistConstraint
-                  : "Unable to Register User";
-                
+                if (
+                  e.graphQLErrors[0].extensions.exception.validationErrors[0]
+                    .constraints.IsEmailAlreadyExistConstraint
+                ) {
+                  setFieldError(
+                    "email",
+                    e.graphQLErrors[0].extensions.exception.validationErrors[0]
+                      .constraints.IsEmailAlreadyExistConstraint
+                  );
+                } else {
+                  setFieldError("confirmPassword", "Unable to Register User");
+                }
+
                 console.log("error with registration", JSON.stringify(e));
               }
               setSubmitting(false);
