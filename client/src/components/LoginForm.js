@@ -16,7 +16,6 @@ import {
   Typography,
 } from "@material-ui/core";
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
-import { gql } from "apollo-boost";
 
 import { TextInputField } from "./fields/TextInputField";
 

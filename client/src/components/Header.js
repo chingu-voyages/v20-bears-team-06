@@ -9,7 +9,6 @@ import {
   Button,
   IconButton,
   InputBase,
-  Link,
   Toolbar,
   Typography,
 } from "@material-ui/core";

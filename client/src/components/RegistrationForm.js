@@ -15,7 +15,6 @@ import {
   Typography,
 } from "@material-ui/core";
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
-import { gql } from "apollo-boost";
 import { REGISTER_MUTATION } from "../graphql/Mutations";
 import { GET_ME } from "../graphql/Queries";
 import { TextInputField } from "./fields/TextInputField";
@@ -103,6 +102,7 @@ export const RegistrationForm = () => {
                       password: values.password,
                     },
                   });
+                  console.log(response);
                   returnHome();
                   // Insert Redirect component through here by setting state from hook : isConfirmed then
                 } catch (e) {
