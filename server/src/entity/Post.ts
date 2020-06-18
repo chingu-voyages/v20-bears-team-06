@@ -1,39 +1,35 @@
 import { Field, ObjectType, ID } from 'type-graphql';
-import { Entity, BaseEntity, Column, PrimaryGeneratedColumn, CreateDateColumn } from 'typeorm';
+import { Entity, BaseEntity, Column, CreateDateColumn, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
+import { User } from './User';
+import { Lazy } from '../utils/Lazy';
 
 
 @ObjectType()
 @Entity()
 export class Post extends BaseEntity {
+    @Field(() => ID)
+    @PrimaryGeneratedColumn()
+    readonly id: string;
 
-    @PrimaryGeneratedColumn("uuid")
-    @Field(()=>ID)
-    postId: string;
-
-    @Field(()=>ID)
-    userId: number;
-
+    @Field(() => Date)
     @CreateDateColumn()
-    @Field()
-    postDate: Date;
+    date : Date;
 
-    @Column({default: 0})
-    @Field({defaultValue: 0})
-    likes: number;
-
-    @Column({default: 0})
-    @Field({defaultValue: 0})
-    shares: number;
-
-    @Field()
+    @Field(() => String, {nullable:true})
+    @Column({nullable:true})
     text: string;
 
-    @Field(() => [String], {nullable:true, defaultValue: []})
-    images: [string];
+    @Field(() => User)
+    @ManyToOne(() => User, {lazy:true})
+    author : Lazy<User>;
+   
 
-    @Field(() => [String],{nullable:true, defaultValue: []})
-    files : [string];
+   
 
+
+
+
+   
 
 
 

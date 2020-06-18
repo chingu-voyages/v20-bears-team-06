@@ -1,44 +1,37 @@
-import { Resolver, Query, ArgsType, Arg, ID, Field, Args, Mutation } from 'type-graphql';
-import { PostInput } from './PostInput';
+import { Resolver, Arg, Mutation, Query, Int } from 'type-graphql';
+import { Repository } from 'typeorm';
+import { InjectRepository } from 'typeorm-typedi-extensions';
+
+import { User } from '../../entity/User';
 import { Post } from '../../entity/Post';
+import { CreatePostInput } from './CreatePostInput';
 
-@ArgsType()
-class GetPostArgs{
-    @Field(()=>ID)
-    postId: string;
-};
+@Resolver(Post)
+export class PostResolver {
+  constructor(
+    @InjectRepository(Post) private readonly postRepository: Repository<Post>
+  ) {}
 
+  @Query(() => Post, { nullable: true })
+  post(@Arg('postId', () => Int) postId: number) {
+    return this.postRepository.findOne(postId);
+  }
 
+  @Mutation(() => Post)
+  async addPost(
+    @Arg('post') { userId, text }: CreatePostInput
+  ): Promise<Post | undefined> {
+    try {
+      const user = await User.findOne(userId);
+      const post = await this.postRepository.create({
+        text: text,
+        author : user
+      }).save();
 
-
-@Resolver()
-export class PostResolver{
-    @Query(() => Post, {nullable:true})
-    async getPost(
-        @Args() {postId} : GetPostArgs
-    ):Promise<Post | undefined>{
-        return Post.findOne(postId) || undefined;
+      return post;
+    } catch (err) {
+      console.log(err);
+      return undefined;
     }
-
-    @Mutation(() => Post)
-    
-    async newPost(@Arg("content")
-    { text , userId } : PostInput ):Promise<Post>{
-
-        const post = await Post.create({
-            text,
-            userId
-        }).save();
-
-        if (!post){
-            throw new Error('new post failed')
-        }
-
-        return post;
-
-
-        
-    }
-    
-
+  }
 }

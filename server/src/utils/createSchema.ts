@@ -10,13 +10,14 @@ import { buildSchema } from "type-graphql";
 import { ProfilePictureResolve } from "../modules/user/ProfilePicture";
 import { UserResolver } from "../modules/user/UserResolver";
 import { PostResolver } from "../modules/post/PostResolver";
-import { CreatePostResolver } from "../modules/post/createPost";
+import { Container } from "typedi";
 
 export const createSchema = () =>
   buildSchema({
     resolvers: [
       ChangePasswordResolver,
       ConfirmUserResolver,
+      PostResolver,
       ForgotPasswordResolver,
       LoginResolver,
       LogoutResolver,
@@ -24,11 +25,10 @@ export const createSchema = () =>
       RegisterResolver,
       CreateUserResolver,
       ProfilePictureResolve,
-      UserResolver,
-      PostResolver,
-      CreatePostResolver
+      UserResolver
     ],
     authChecker: ({ context: { req } }) => {
       return !!req.session.userId;
     },
+    container : Container
   });

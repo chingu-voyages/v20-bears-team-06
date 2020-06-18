@@ -1,6 +1,7 @@
-import { Entity, PrimaryGeneratedColumn, Column, BaseEntity } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, BaseEntity, OneToMany } from "typeorm";
 import { ObjectType, Field, ID, Root } from "type-graphql";
 import { Post } from './Post';
+import { Lazy } from '../utils/Lazy';
 
 @ObjectType()
 @Entity()
@@ -31,14 +32,13 @@ export class User extends BaseEntity {
   @Column("bool", { default: false })
   confirmed: boolean;
 
-  @Field(()=>[User], {nullable: "itemsAndList"})
-  followers : [User];
-
-  @Field(()=>[User], {nullable: "itemsAndList"})
-  following : [User];
+  @OneToMany(() => Post, post => post.author, {lazy:true})
+  @Field(() => [Post])
+  posts: Lazy<Post[]>;
   
-  @Field(()=>[Post],{nullable: "itemsAndList"})
-  posts: [Post];
+  
+
+ 
 
 
   @Field({nullable:true, defaultValue:""})

@@ -11,6 +11,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@types/shortid": "^0.0.29",
     "apollo-server-express": "^2.14.3",
     "bcryptjs": "^2.4.3",
     "class-validator": "^0.12.2",
@@ -25,10 +26,13 @@
     "nodemon": "^2.0.4",
     "pg": "^8.2.1",
     "reflect-metadata": "^0.1.13",
+    "shortid": "^2.2.15",
     "ts-node": "^8.10.2",
     "ts-node-dev": "^1.0.0-pre.44",
     "type-graphql": "^1.0.0-rc.2",
+    "typedi": "^0.8.0",
     "typeorm": "^0.2.25",
+    "typeorm-typedi-extensions": "^0.2.3",
     "uuid": "^8.1.0"
   },
   "devDependencies": {
