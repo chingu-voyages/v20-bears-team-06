@@ -5,7 +5,7 @@ import { createConnection } from "typeorm";
 import session from "express-session";
 import connectRedis from "connect-redis";
 import cors from "cors";
-import { redisClient } from "./redis";
+import { redis } from "./redis";
 import { createSchema } from "./utils/createSchema";
 
 const main = async () => {
@@ -32,7 +32,7 @@ const main = async () => {
   app.use(
     session({
       store: new RedisStore({
-        client: redisClient as any,
+        client: redis as any,
       }),
       name: "qid",
       secret: "aslkdfjoiq12312",
