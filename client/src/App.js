@@ -2,12 +2,11 @@ import React from "react";
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 import ApolloClient from "apollo-boost";
 import { ApolloProvider } from "@apollo/react-hooks";
-import NavBar from "./components/NavBar";
+import Header from "./components/Header";
 import ProfilePage from "./pages/ProfilePage";
 import EditPage from "./pages/EditPage";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
-
 import "./App.scss";
 
 const client = new ApolloClient({
@@ -32,12 +31,13 @@ export default function App() {
     <ApolloProvider client={client}>
       <Router>
         <div id="App">
-          <NavBar />
+          <Header />
           <Switch>
             <Route exact path="/profile/:userid/edit" component={EditPage} />
             <Route path="/profile/:userid" component={ProfilePage} />
             <Route path="/register" component={RegisterPage} />
             <Route path="/login" component={LoginPage} />
+            <Route path="/" component={Home} />
           </Switch>
         </div>
       </Router>
