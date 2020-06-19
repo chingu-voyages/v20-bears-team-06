@@ -49,8 +49,9 @@ const main = async () => {
 
   apolloServer.applyMiddleware({ app, cors: false });
 
-  app.listen({ port: process.env.PORT || 4000 }, () => {
-    console.log(`app listening on port ${{ port: process.env.PORT || 4000 }}`);
+  const port = process.env.PORT || 4000;
+  app.listen(port, () => {
+    console.log(`app listening on port ${port}`);
   });
 };
 
