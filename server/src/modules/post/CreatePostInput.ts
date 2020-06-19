@@ -9,7 +9,7 @@ export class CreatePostInput implements Partial<Post> {
   text: string;
 
   @Field(() => ID)
-  userId: number;
+  userId: string;
 
   
 }

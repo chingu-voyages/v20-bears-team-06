@@ -22,6 +22,21 @@ export class Post extends BaseEntity {
     @Field(() => User)
     @ManyToOne(() => User, {lazy:true})
     author : Lazy<User>;
+
+   
+    @Field(() => ID)
+    @Column({nullable: true})
+    userId: string;
+
+    @Column({default:0})
+    @Field()
+    likes: number;
+
+    @Column({default:0})
+    @Field()
+    shares: number;
+
+
    
 
    

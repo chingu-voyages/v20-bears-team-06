@@ -23,6 +23,7 @@ const ProfilePage = () => {
         school
         department
         position
+        posts
       }
     }
   `;

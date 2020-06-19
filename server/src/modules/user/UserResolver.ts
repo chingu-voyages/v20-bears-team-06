@@ -19,30 +19,36 @@ class GetUserArgs {
 
 @Resolver()
 export class UserResolver {
-  @Query(() => User, { nullable: true })
+  @Query(() => User)
   async user(@Args() { userId }: GetUserArgs): Promise<User | undefined> {
     return User.findOne(userId) || undefined;
   }
 
-  @Mutation(() => User, { nullable: true })
+  @Mutation(() => User)
   async editUser(
     @Arg('edit') { school, department, position, userId }: EditUserInput
   ): Promise<User | undefined> {
     try {
       let user = await User.findOne(userId);
+      if (!user) return undefined;
 
-      if (!user) {
-        return undefined;
-      }
+      user.department = department || user.department;
+      user.school = school || user.school;
+      user.position = position || user.position;
 
-      (user.school = school || user.school),
-        (user.department = department || user.department),
-        (user.position = position || user.position);
+      await user.save();
 
-      return user;
+      let result = await User.findOne(userId);
+
+      return result;
     } catch (err) {
       console.log(err);
       return undefined;
     }
   }
-}
+
+  
+
+  
+  }
+

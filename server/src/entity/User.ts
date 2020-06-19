@@ -1,5 +1,14 @@
-import { Entity, PrimaryGeneratedColumn, Column, BaseEntity, OneToMany } from "typeorm";
-import { ObjectType, Field, ID, Root } from "type-graphql";
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  BaseEntity,
+  OneToMany,
+  ManyToMany,
+  JoinTable,
+  RelationCount,
+} from 'typeorm';
+import { ObjectType, Field, ID, Root } from 'type-graphql';
 import { Post } from './Post';
 import { Lazy } from '../utils/Lazy';
 
@@ -19,7 +28,7 @@ export class User extends BaseEntity {
   lastName: string;
 
   @Field()
-  @Column("text", { unique: true })
+  @Column('text', { unique: true })
   email: string;
 
   @Field({ complexity: 3 })
@@ -29,27 +38,53 @@ export class User extends BaseEntity {
   @Column()
   password: string;
 
-  @Column("bool", { default: false })
+  @Column('bool', { default: false })
   confirmed: boolean;
-
-  @OneToMany(() => Post, post => post.author, {lazy:true})
-  @Field(() => [Post])
-  posts: Lazy<Post[]>;
-  
-  
 
  
 
-
-  @Field({nullable:true, defaultValue:""})
+  @Column({ default: '' })
+  @Field(() => String!)
   school: string;
 
-  @Field({nullable:true,defaultValue:""})
+  @Column({ default: '' })
+  @Field(() => String!)
   department: string;
 
-  @Field({nullable:true,defaultValue:""})
+  @Column({ default: '' })
+  @Field(() => String!)
   position: string;
+
+  
+
+  @OneToMany(() => Post, (post) => post.author, { lazy: true })
+  @Field(() => [Post])
+  posts: Lazy<Post[]>;
+
+
+  @ManyToMany(() => User, user => user.following, {lazy:true})
+  @JoinTable()
+  @Field(() => [User])
+  followers: Lazy<User[]>;
+
+  @ManyToMany(() => User, user => user.followers, {lazy:true})
+  following: Lazy<User[]>;
+
+  @RelationCount((user:User) => user.followers)
+  @Field()
+  follower_count: number;
+
+  @RelationCount((user:User) => user.following)
+  @Field()
+  following_count: number;
+
 
 
   
-}
+  
+
+
+
+  }
+  
+
