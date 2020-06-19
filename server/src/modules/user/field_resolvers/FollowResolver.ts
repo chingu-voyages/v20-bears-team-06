@@ -16,16 +16,26 @@ export class FollowResolver{
             (await userOne.followers).push(user);
             (await user.following).push(userOne);
 
-            let result = await Promise.all(
+            let save = await Promise.all(
                 [userOne.save(),
-                user.save()]
-            );
+                user.save()]);
 
-            if(!result){
+            if(!save){
                 return undefined;
             }
 
-            return result;
+            let updatedOne = await User.findOne(to_follow);
+            let updatedTwo = await User.findOne(user.id);
+
+            if (!updatedOne || !updatedTwo){
+                return undefined;
+            }
+
+            return [updatedOne,updatedTwo];
+
+
+            
+              
             
         }
 
