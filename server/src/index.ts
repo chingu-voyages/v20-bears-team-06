@@ -16,6 +16,7 @@ const main = async () => {
   const apolloServer = new ApolloServer({
     schema,
     context: ({ req, res }: any) => ({ req, res }),
+    playground: true,
   });
 
   const app = Express();
@@ -48,8 +49,8 @@ const main = async () => {
 
   apolloServer.applyMiddleware({ app, cors: false });
 
-  app.listen(4000, () => {
-    console.log("server started on http://localhost:4000/graphql");
+  app.listen({ port: process.env.PORT || 4000 }, () => {
+    console.log(`app listening on port ${{ port: process.env.PORT || 4000 }}`);
   });
 };
 
