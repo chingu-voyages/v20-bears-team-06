@@ -4,11 +4,11 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "ts-node src/index.ts",
+    "start": "node build/index.js",
+    "build": "tsc",
+    "postinstall": "npm run build",
     "dev": "ts-node-dev --respawn src/index.ts",
-    "db:setup": "ts-node ./src/test-utils/setup.ts",
-    "test": "npm run db:setup && jest",
-    "postinstall": "npm run start"
+    "test": "npm run db:setup && jest"
   },
   "author": "",
   "license": "ISC",
