@@ -45,7 +45,8 @@ export const LoginForm = () => {
   let history = useHistory();
   const { data } = useQuery(GET_ME);
   const isLoggedIn = data && data.me;
-
+ 
+  
   function returnHome() {
     history.push("/");
   }

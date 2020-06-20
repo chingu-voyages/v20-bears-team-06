@@ -7,6 +7,7 @@ import {
 } from 'react-router-dom';
 import { useQuery, useMutation } from '@apollo/react-hooks';
 import { gql } from 'apollo-boost';
+import { GET_PROFILE } from '../graphql/Queries';
 import ProfileInfo from '../components/ProfileInfo';
 import PostFeed from '../components/PostFeed';
 import dummyData from './dummyData'; // just for testing
@@ -14,42 +15,28 @@ import './profilepage.scss';
 
 const ProfilePage = () => {
   const userId = useLocation().pathname.split('/')[2];
-  console.log(userId);
 
-  const GET_USER = gql`
-    query getUser($userId: ID!) {
-      user(userId: $userId) {
-        name
-        school
-        department
-        position
-        posts
-      }
+  let profile, timeline;
+
+  try {
+    const response = useQuery(GET_PROFILE, {
+      variables: { userId },
+    });
+
+    const user = response.data.user || null;
+    profile = user;
+
+    if (profile){
+      timeline = profile.getTimeline || null;
     }
-  `;
-
-
-  let profile;
-
-  
-
-  try{
-
-  const response = useQuery(GET_USER, {
-      variables: {userId}
-  });
-
-  const user = response.data.user || null;
-  console.log(user);
-  profile = user;
-} catch (err){
+  } catch (err) {
     console.log(err);
-}
+  }
 
   return (
     <div className="main-content" id="profile-page">
       <ProfileInfo profile={profile} />
-      <PostFeed posts={dummyData} />
+      <PostFeed timeline={timeline} />
     </div>
   );
 };

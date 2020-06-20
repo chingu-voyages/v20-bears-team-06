@@ -55,6 +55,12 @@ export class User extends BaseEntity {
   @Field(() => String!)
   position: string;
 
+  @Field({complexity:3})
+  employment(@Root() parent:User) : string{
+    return `${parent.department} ${parent.position}`;
+  }
+
+
   
 
   @OneToMany(() => Post, (post) => post.author, { lazy: true })
