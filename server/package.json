@@ -6,9 +6,10 @@
   "scripts": {
     "start": "node dist/index.js",
     "build": "rimraf dist && tsc",
-    "postinstall": "npm run build",
     "dev": "ts-node-dev --respawn src/index.ts",
-    "test": "npm run db:setup && jest"
+    "test": "npm run db:setup && jest",
+    "prestart:prod": "rimraf dist && npm run build",
+    "postinstall": "npm run prestart:prod"
   },
   "author": "",
   "license": "ISC",
