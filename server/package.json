@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node dist/index.js",
-    "build": "tsc",
+    "build": "rimraf dist && tsc",
     "postinstall": "npm run build",
     "dev": "ts-node-dev --respawn src/index.ts",
     "test": "npm run db:setup && jest"
@@ -49,6 +49,7 @@
     "@types/uuid": "^8.0.0",
     "faker": "^4.1.0",
     "jest": "^26.0.1",
+    "rimraf": "^3.0.2",
     "ts-jest": "^26.1.0",
     "typescript": "^3.9.5"
   },
