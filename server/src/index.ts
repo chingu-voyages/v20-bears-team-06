@@ -16,6 +16,7 @@ const main = async () => {
   const apolloServer = new ApolloServer({
     schema,
     context: ({ req, res }: any) => ({ req, res }),
+    introspection: true,
     playground: true,
   });
 
