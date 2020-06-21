@@ -8,7 +8,7 @@
     "build": "rimraf dist && tsc",
     "dev": "ts-node-dev --respawn src/index.ts",
     "test": "npm run db:setup && jest",
-    "postinstall": "npm run start"
+    "postinstall": "npm start"
   },
   "author": "",
   "license": "ISC",
