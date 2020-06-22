@@ -30,3 +30,7 @@ query getUser($userId: ID!) {
   }
 }
 `;
+
+const GET_SPECIALTIES = gql`
+query 
+`
