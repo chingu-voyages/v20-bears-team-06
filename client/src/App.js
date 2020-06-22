@@ -11,7 +11,7 @@ import RegisterPage from "./pages/RegisterPage";
 import "./App.scss";
 
 const client = new ApolloClient({
-  uri: "http://localhost:4000/graphql",
+  uri: "https://chingu-bears-06.herokuapp.com/graphql",
   credentials: "include",
   onError: ({ graphQLErrors, networkError }) => {
     if (graphQLErrors)

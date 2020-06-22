@@ -29,11 +29,11 @@ const main = async () => {
   const app = Express();
 
   const RedisStore = connectRedis(session);
-
+  app.set("trust proxy", 1);
   app.use(
     cors({
       credentials: true,
-      origin: "http://localhost:3000",
+      origin: "https://brave-einstein-04bd68.netlify.app",
     })
   );
 
@@ -57,7 +57,6 @@ const main = async () => {
   apolloServer.applyMiddleware({ app, cors: false });
 
   const PORT = process.env.PORT || 4000;
-  console.log("server started on http://localhost:4000/graphql");
   app.listen(PORT, () => {
     console.log(`Our app is running on port ${PORT}`);
   });
