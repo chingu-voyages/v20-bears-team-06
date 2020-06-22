@@ -24,13 +24,13 @@ const main = async () => {
 
   const RedisStore = connectRedis(session);
 
-  app.use(
-    cors({
-      credentials: true,
-      origin: true,
-    })
-  );
-
+  // app.use(
+  //   cors({
+  //     credentials: true,
+  //     origin: true,
+  //   })
+  // );
+  app.use(cors());
   app.use(
     session({
       store: new RedisStore({
