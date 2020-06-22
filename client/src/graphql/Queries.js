@@ -17,20 +17,25 @@ query getUser($userId: ID!) {
     department
     position
     employment
-    getTimeline{
-      id
-      likes
-      shares
-      text
-      date
-    }
     follower_count
     about_me
     location
+    getSpecialties{
+      title
+      subtitle
+    }
   }
 }
 `;
 
-const GET_SPECIALTIES = gql`
-query 
-`
+export const GET_SPECIALTIES = gql`
+query getSpecialties($userId: ID!) {
+  user(userId: $userId){
+    getSpecialties{
+      title
+      subtitle
+    }
+
+  }
+}
+`;

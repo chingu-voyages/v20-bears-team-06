@@ -56,7 +56,9 @@ const ProfilePage = () => {
   const isLoggedIn = me?true:false;
   const isOwnProfile = profileCheck || false;
 
-  console.log(isLoggedIn, isOwnProfile);
+
+
+  
 
   return (
 
