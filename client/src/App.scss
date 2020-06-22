@@ -1,21 +1,22 @@
-@import './components/shared';
+@import "./components/shared";
 
-*{
-    box-sizing: border-box;
+* {
+  box-sizing: border-box;
+  margin: 0;
 }
 
-.main-content{
-    @include for-size(phone-only){
-        height: 100%;
-        padding-top: 100px;
-    }
+.main-content {
+  @include for-size(phone-only) {
+    height: 100%;
+    padding-top: 100px;
+  }
 
-    @include for-size(tablet-portrait-up){
-        height: 100%;
-        padding-top: 120px;
-    }
+  @include for-size(tablet-portrait-up) {
+    height: 100%;
+    padding-top: 120px;
+  }
 
-    @include for-size(tablet-landscape-up){
-        padding-top: 50px;
-    }
+  @include for-size(tablet-landscape-up) {
+    padding-top: 50px;
+  }
 }
