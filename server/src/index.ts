@@ -26,7 +26,7 @@ const main = async () => {
   const app = Express();
 
   const RedisStore = connectRedis(session);
-
+  app.set("trust proxy", 1);
   app.use(cors(corsOptions));
 
   app.use(
@@ -42,7 +42,6 @@ const main = async () => {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
         maxAge: 1000 * 60 * 60 * 24 * 7 * 365, // 7 years
-        // domain: "brave-einstein-04bd68.netlify.app",
       },
     })
   );
