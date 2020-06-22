@@ -1,5 +1,5 @@
 import React from "react";
-import { gql } from "apollo-boost";
+import { gql } from "graphql-tag";
 import { useMutation } from "@apollo/react-hooks";
 import { Formik, Form } from "formik";
 import * as Yup from "yup";
