@@ -1,6 +1,6 @@
 import React from "react";
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
-import ApolloClient from "apollo-client";
+import { ApolloClient } from "apollo-client";
 import { ApolloProvider } from "@apollo/react-hooks";
 import Header from "./components/Header";
 import ProfilePage from "./pages/ProfilePage";
@@ -8,7 +8,7 @@ import EditPage from "./pages/EditPage";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import { createHttpLink } from "apollo-link-http";
-
+import { InMemoryCache } from "apollo-cache-inmemory";
 import "./App.scss";
 
 const client = new ApolloClient({
@@ -16,6 +16,7 @@ const client = new ApolloClient({
     uri: "https://chingu-bears-06.herokuapp.com/graphql",
     credentials: "include",
   }),
+  cache: new InMemoryCache(),
   onError: ({ graphQLErrors, networkError }) => {
     if (graphQLErrors)
       graphQLErrors.map(({ message, locations, path }) =>
