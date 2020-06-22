@@ -12,7 +12,12 @@ const main = async () => {
   await createConnection();
 
   const schema = await createSchema();
-
+  const corsOptions = {
+    credentials: true,
+    origin:
+      "https://5ef0c460e7a714e2b8194dcc--brave-einstein-04bd68.netlify.app",
+    allowedHeaders: ["Content-Type", "Authorization"],
+  };
   const apolloServer = new ApolloServer({
     schema,
     context: ({ req, res }: any) => ({ req, res }),
@@ -24,13 +29,8 @@ const main = async () => {
 
   const RedisStore = connectRedis(session);
 
-  app.use(
-    cors({
-      credentials: true,
-      origin:
-        "https://5ef0c460e7a714e2b8194dcc--brave-einstein-04bd68.netlify.app",
-    })
-  );
+  app.use(cors(corsOptions));
+
   app.use(
     session({
       store: new RedisStore({
