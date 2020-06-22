@@ -7,6 +7,8 @@ import ProfilePage from "./pages/ProfilePage";
 import EditPage from "./pages/EditPage";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
+import { createHttpLink } from "apollo-link-http";
+
 import "./App.scss";
 
 const client = new ApolloClient({
