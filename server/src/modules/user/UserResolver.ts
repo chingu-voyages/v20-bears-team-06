@@ -26,7 +26,8 @@ export class UserResolver {
 
   @Mutation(() => User)
   async editUser(
-    @Arg('edit') { school, department, position, userId, about_me }: EditUserInput
+    @Arg('edit')
+    { school, department, position, userId, about_me, location}: EditUserInput
   ): Promise<User | undefined> {
     try {
       let user = await User.findOne(userId);
@@ -36,6 +37,7 @@ export class UserResolver {
       user.school = school || user.school;
       user.position = position || user.position;
       user.about_me = about_me || user.about_me;
+      user.location = location || user.location;
 
       await user.save();
 
@@ -47,9 +49,4 @@ export class UserResolver {
       return undefined;
     }
   }
-
-  
-
-  
-  }
-
+}

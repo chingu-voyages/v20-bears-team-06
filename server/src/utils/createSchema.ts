@@ -12,6 +12,7 @@ import { UserResolver } from "../modules/user/UserResolver";
 import { PostResolver } from "../modules/post/PostResolver";
 import { PostsResolver } from "../modules/user/field_resolvers/PostsResolver";
 import { FollowResolver} from "../modules/user/field_resolvers/FollowResolver";
+import { SpecialtyResolver } from "../modules/specialty/SpecialtyResolver";
 import { Container } from "typedi";
 
 export const createSchema = () =>
@@ -27,6 +28,7 @@ export const createSchema = () =>
       LogoutResolver,
       MeResolver,
       RegisterResolver,
+      SpecialtyResolver,
       CreateUserResolver,
       ProfilePictureResolve,
       UserResolver

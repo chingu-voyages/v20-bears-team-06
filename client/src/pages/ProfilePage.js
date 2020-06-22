@@ -6,7 +6,7 @@ import SearchIcon from '@material-ui/icons/Search';
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import { useLocation } from 'react-router-dom';
 import { useQuery, useMutation } from '@apollo/react-hooks';
-import { GET_PROFILE } from '../graphql/Queries';
+import { GET_PROFILE, GET_ME } from '../graphql/Queries';
 import ProfileInfo from '../components/ProfileInfo';
 import PostFeed from '../components/PostFeed';
 
@@ -15,7 +15,7 @@ const useStyles = makeStyles((theme)=>({
     marginTop: theme.spacing(4) 
   },
   main : {
-    height: '100vh'
+    minHeight: '40vh'
   }
 }));
 
@@ -43,12 +43,31 @@ const ProfilePage = () => {
     console.log(err);
   }
 
+  let { data } = useQuery(GET_ME);
+
+  let me = data&&data.me;
+
+  let profileCheck;
+
+  if (me){
+    profileCheck = me.id === userId;
+  }
+
+  const isLoggedIn = me?true:false;
+  const isOwnProfile = profileCheck || false;
+
+  console.log(isLoggedIn, isOwnProfile);
+
   return (
 
     <Container className={classes.root}  >
       <Grid className={classes.root} container xs={12} direction='column' alignItems='center' justify='center'>
-      <ProfileInfo profile={profile} />
+        <Grid item container className={classes.main}>
+      <ProfileInfo profile={profile} auth={{ isLoggedIn, isOwnProfile }} />
+      </Grid>
+      <Grid item container className={classes.main}>
       <PostFeed timeline={timeline} />
+      </Grid>
       </Grid>
     </Container>
   );

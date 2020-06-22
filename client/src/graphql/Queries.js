@@ -26,6 +26,7 @@ query getUser($userId: ID!) {
     }
     follower_count
     about_me
+    location
   }
 }
 `;

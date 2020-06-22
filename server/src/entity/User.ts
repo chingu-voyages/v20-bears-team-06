@@ -10,6 +10,7 @@ import {
 } from 'typeorm';
 import { ObjectType, Field, ID, Root } from 'type-graphql';
 import { Post } from './Post';
+import { Specialty } from './Specialty';
 import { Lazy } from '../utils/Lazy';
 
 @ObjectType()
@@ -59,6 +60,11 @@ export class User extends BaseEntity {
   @Field(() => String!)
   about_me: string;
 
+  @Column({ default: ''})
+  @Field(() => String!)
+  location: string;
+
+
   @Field({complexity:3})
   employment(@Root() parent:User) : string{
     return `${parent.department} ${parent.position}`;
@@ -70,6 +76,10 @@ export class User extends BaseEntity {
   @OneToMany(() => Post, (post) => post.author, { lazy: true })
   @Field(() => [Post])
   posts: Lazy<Post[]>;
+
+  @OneToMany(() => Specialty, (specialty) => specialty.users, { lazy: true})
+  @Field(() => [Specialty])
+  specialties: Lazy<Specialty[]>;
 
 
   @ManyToMany(() => User, user => user.following, {lazy:true})

@@ -22,8 +22,31 @@ export const useStyles = makeStyles((theme) => ({
     
   },
   gridSection:{
-    maxHeight: '50vh',
     minHeight: '40vh'
+  },
+
+  infoCard : {
+    [theme.breakpoints.up('xs')] : {
+      minHeight : '20vh'
+    },
+    [theme.breakpoints.up('md')] : {
+      minHeight: '35vh'
+    }
+  },
+
+  nestedCard : {
+    [theme.breakpoints.up('xs')] : {
+      minHeight: '15vh'
+    },
+    [theme.breakpoints.up('md')] : {
+      minHeight: '30vh'
+    }
+  },
+
+  profilePic:{
+    height: theme.spacing(15),
+    width : theme.spacing(15),
+    marginBottom: theme.spacing(3)
   }
   
 
@@ -37,56 +60,55 @@ const ProfileInfo = (props) => {
   let theme = useTheme();
   const classes = useStyles(theme);
 
+  let profileImage = profile&&profile.hasOwnProperty('image')
+  ? profile.image:
+  null;
+
+  const { isLoggedIn, isOwnProfile } = props.auth;
+
+  
   
 
 
   return (
-    <Grid container direction='row' justify='center' spacing={4} xs={12} alignItems='center'>
-    <Grid
-      direction="column"
-      container
-      item
-      xs={12}
-      md={3}
-      
-      className={`${classes.root} ${classes.gridSection}`}
-      alignItems = 'center'
-      spacing={1}
-      justify='center'
-      
-    >
-      <Card item className={classes.title} gutterBottom>
-        <CardActionArea>
-          <CardMedia className={classes.title}
-            component={(profile&&profile.profilePic)?"img":"Avatar"}
-            alt = {profile?profile.name:'user profile'}
-            gutterBottom
-            item
-            >{(profile&&!profile.profilePic)?<Avatar></Avatar>:null}</CardMedia>
-        </CardActionArea>
-      </Card>
-      
+    <>
+    <Grid item container xs={12} md={3} direction='column'>
+      <Grid item xs={12}>
+        <Card >
+          <CardActionArea className={classes.infoCard}>
+            <Grid  item container xs={12} direction='column' alignItems='center' justify='center'>
+            <Avatar gutterBottom spacing={4} className={classes.profilePic} align='center' src={`${profileImage}`}></Avatar>
+            <Typography variant='h6' align='center'>{profile&&profile.name}</Typography>
+            <Typography variant='body1' align='center'>{profile&&profile.employment}
+            <br/>
+            {profile&&profile.school}
+            <br/>
+            {profile&&profile.location}
+            </Typography>
+            </Grid>
+
+          </CardActionArea>
+          <CardContent className={classes.infoCard}>
+            <Card className={classes.nestedCard}>
+              <CardContent>
+
+              </CardContent>
+            </Card>
+
+          </CardContent>
         
-         
-      <Typography item className={classes.text} align='center' variant='h5' gutterBottom >{profile&&profile.name}</Typography>
-      <Typography item className={classes.text} align='center' variant='body2' gutterBottom>{profile&&profile.school}</Typography>
-      <Typography item className={classes.text} align='center' variant ='body2' gutterBottom>{profile&&profile.employment}</Typography>
-      <Typography item className={classes.text} align='center'  variant='subtitle2'>{`${profile&&profile.follower_count} followers`}</Typography>
-      
-     
-  
+        </Card>
       </Grid>
-      <Grid xs={12} md={8} className={`${classes.aboutme} ${classes.text} ${classes.gridSection}`} item container alignItems='center' justify='center' >
-        <Grid container item xs={12} sm={9} md={8} alignItems='center'  justify='center' className={classes.gridSection} direction='column'>
-          <Paper className={classes.gridSection}>
-        <Typography align='justify'  className={`${classes.aboutme} ${classes.text}`} variant='caption' >{profile&&profile.about_me}</Typography>
-        </Paper>
-        </Grid>
-        </Grid>
-      
-      </Grid>
-      
-  );
+
+
+    </Grid>
+    <Grid item container xs={12} md={7}>
+
+    </Grid>
+    
+    
+    </>
+  )
 };
 
 export default ProfileInfo;

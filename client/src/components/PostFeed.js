@@ -19,18 +19,7 @@ const PostFeed = (props) => {
   
 
 
-  return(
-    <Grid item container xs={12} spacing={4} direction='row' className={classes.gridSection}>
-      <Grid xs={0} md={3} item>
-      <Paper className={classes.gridSection} ></Paper>
-      </Grid>
-      <Grid xs={0} md={8} item>
-      <Paper className={classes.gridSection} ></Paper>
-      </Grid>
-      
-       
-    </Grid>
-  )
+  return null;
   
 };
 
