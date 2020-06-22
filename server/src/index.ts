@@ -38,19 +38,18 @@ const main = async () => {
       secret: "aslkdfjoiq12312",
       resave: false,
       saveUninitialized: false,
-      cookie: {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        maxAge: 1000 * 60 * 60 * 24 * 7 * 365, // 7 years
-        domain: "brave-einstein-04bd68.netlify.app",
-      },
+      // cookie: {
+      //   httpOnly: true,
+      //   secure: process.env.NODE_ENV === "production",
+      //   maxAge: 1000 * 60 * 60 * 24 * 7 * 365, // 7 years
+      //   domain: "brave-einstein-04bd68.netlify.app",
+      // },
     })
   );
 
   apolloServer.applyMiddleware({ app, path: "/", cors: false });
 
   const PORT = process.env.PORT || 4000;
-  console.log("server started on http://localhost:4000/graphql");
   app.listen(PORT, () => {
     console.log(`Our app is running on port ${PORT}`);
   });
