@@ -1,20 +1,30 @@
 import React, { useState } from 'react';
-import {
-  BrowserRouter as Route,
-  Link,
-  Switch,
-  useLocation,
-} from 'react-router-dom';
+import PropTypes from 'prop-types';
+import { makeStyles, fade } from '@material-ui/core/styles';
+import { Container, Grid } from '@material-ui/core';
+import SearchIcon from '@material-ui/icons/Search';
+import AccountCircle from '@material-ui/icons/AccountCircle';
+import { useLocation } from 'react-router-dom';
 import { useQuery, useMutation } from '@apollo/react-hooks';
-import { gql } from 'apollo-boost';
 import { GET_PROFILE } from '../graphql/Queries';
 import ProfileInfo from '../components/ProfileInfo';
 import PostFeed from '../components/PostFeed';
-import dummyData from './dummyData'; // just for testing
-import './profilepage.scss';
+
+const useStyles = makeStyles((theme)=>({
+  root:{
+    marginTop: theme.spacing(4) 
+  },
+  main : {
+    height: '100vh'
+  }
+}));
 
 const ProfilePage = () => {
   const userId = useLocation().pathname.split('/')[2];
+
+  const classes = useStyles();
+
+  
 
   let profile, timeline;
 
@@ -26,7 +36,7 @@ const ProfilePage = () => {
     const user = response.data.user || null;
     profile = user;
 
-    if (profile){
+    if (profile) {
       timeline = profile.getTimeline || null;
     }
   } catch (err) {
@@ -34,10 +44,13 @@ const ProfilePage = () => {
   }
 
   return (
-    <div className="main-content" id="profile-page">
+
+    <Container className={classes.root}  >
+      <Grid className={classes.root} container xs={12} direction='column' alignItems='center' justify='center'>
       <ProfileInfo profile={profile} />
       <PostFeed timeline={timeline} />
-    </div>
+      </Grid>
+    </Container>
   );
 };
 

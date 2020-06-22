@@ -55,6 +55,10 @@ export class User extends BaseEntity {
   @Field(() => String!)
   position: string;
 
+  @Column({ default: ''})
+  @Field(() => String!)
+  about_me: string;
+
   @Field({complexity:3})
   employment(@Root() parent:User) : string{
     return `${parent.department} ${parent.position}`;

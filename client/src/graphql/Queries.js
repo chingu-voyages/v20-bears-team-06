@@ -24,6 +24,8 @@ query getUser($userId: ID!) {
       text
       date
     }
+    follower_count
+    about_me
   }
 }
 `;

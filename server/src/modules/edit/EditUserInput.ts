@@ -18,4 +18,8 @@ export class EditUserInput{
     @Field({nullable:true})
     @Length(1,50, {message:"position must be between 1-50 characters"})
     position: string;
+
+    @Field({nullable:true})
+    @Length(1,2000, {message:"about me must be between 1-2000 characters"})
+    about_me: string;
 }
