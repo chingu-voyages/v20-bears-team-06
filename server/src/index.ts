@@ -27,7 +27,8 @@ const main = async () => {
   app.use(
     cors({
       credentials: true,
-      origin: true,
+      origin:
+        "https://5ef0c460e7a714e2b8194dcc--brave-einstein-04bd68.netlify.app",
     })
   );
   app.use(
