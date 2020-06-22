@@ -44,6 +44,7 @@ const main = async () => {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
         maxAge: 1000 * 60 * 60 * 24 * 7 * 365, // 7 years
+        domain: "5ef0c460e7a714e2b8194dcc--brave-einstein-04bd68.netlify.app",
       },
     })
   );
