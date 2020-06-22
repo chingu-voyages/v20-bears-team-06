@@ -38,12 +38,12 @@ const main = async () => {
       secret: "aslkdfjoiq12312",
       resave: false,
       saveUninitialized: false,
-      // cookie: {
-      //   httpOnly: true,
-      //   secure: process.env.NODE_ENV === "production",
-      //   maxAge: 1000 * 60 * 60 * 24 * 7 * 365, // 7 years
-      //   domain: "brave-einstein-04bd68.netlify.app",
-      // },
+      cookie: {
+        httpOnly: true,
+        // secure: process.env.NODE_ENV === "production",
+        maxAge: 1000 * 60 * 60 * 24 * 7 * 365, // 7 years
+        // domain: "brave-einstein-04bd68.netlify.app",
+      },
     })
   );
 
