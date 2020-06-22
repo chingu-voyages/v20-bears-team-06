@@ -17,8 +17,6 @@ const main = async () => {
 
   const schema = await createSchema();
 
-  
-
   const apolloServer = new ApolloServer({
     schema,
     context: ({ req, res }: any) => ({ req, res }),

@@ -9,9 +9,9 @@ module.exports = {
   logging: true,
   synchronize: true,
   entities: ["src/entity/*.*"],
-  // extra: {
-  //   ssl: {
-  //     rejectUnauthorized: false,
-  //   },
-  // },
+  extra: {
+    ssl: {
+      rejectUnauthorized: false,
+    },
+  },
 };
