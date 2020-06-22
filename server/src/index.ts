@@ -33,7 +33,10 @@ const main = async () => {
   app.use(
     cors({
       credentials: true,
-      origin: "https://brave-einstein-04bd68.netlify.app",
+      origin:
+        process.env.NODE_ENV === "production"
+          ? "https://brave-einstein-04bd68.netlify.app"
+          : "http://localhost:3000",
     })
   );
 

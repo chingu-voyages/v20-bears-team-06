@@ -1,4 +1,6 @@
-const dbUrl = process.env.DB_URL;
+const dbUrl =
+  process.env.DB_URL ||
+  "postgresql:mypass@postgres//localhost:5432/typegraphql-example";
 
 module.exports = {
   name: "default",
@@ -7,9 +9,9 @@ module.exports = {
   logging: true,
   synchronize: true,
   entities: ["src/entity/*.*"],
-  extra: {
-    ssl: {
-      rejectUnauthorized: false,
-    },
-  },
+  // extra: {
+  //   ssl: {
+  //     rejectUnauthorized: false,
+  //   },
+  // },
 };
