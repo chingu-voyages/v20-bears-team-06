@@ -7,7 +7,7 @@ import {
   faPeopleArrows,
   faHouseUser,
 } from "@fortawesome/free-solid-svg-icons";
-import { gql } from "graphql-tag";
+import gql from "graphql-tag";
 import { useQuery } from "@apollo/react-hooks";
 
 import "./navbar.scss";
