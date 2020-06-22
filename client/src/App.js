@@ -1,6 +1,6 @@
 import React from "react";
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
-import ApolloClient from "apollo-boost";
+import ApolloClient from "apollo-client";
 import { ApolloProvider } from "@apollo/react-hooks";
 import Header from "./components/Header";
 import ProfilePage from "./pages/ProfilePage";
@@ -10,8 +10,10 @@ import RegisterPage from "./pages/RegisterPage";
 import "./App.scss";
 
 const client = new ApolloClient({
-  uri: "https://chingu-bears-06.herokuapp.com/graphql",
-  credentials: "include",
+  link: createHttpLink({
+    uri: "https://chingu-bears-06.herokuapp.com/graphql",
+    credentials: "include",
+  }),
   onError: ({ graphQLErrors, networkError }) => {
     if (graphQLErrors)
       graphQLErrors.map(({ message, locations, path }) =>

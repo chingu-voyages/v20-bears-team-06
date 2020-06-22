@@ -14,8 +14,8 @@ const main = async () => {
   const schema = await createSchema();
   const corsOptions = {
     credentials: true,
-    origin: "https://chingu-bears-06.herokuapp.com/graphql",
-    // "https://5ef0c460e7a714e2b8194dcc--brave-einstein-04bd68.netlify.app",
+    origin:
+      "https://5ef0c460e7a714e2b8194dcc--brave-einstein-04bd68.netlify.app",
   };
   const apolloServer = new ApolloServer({
     schema,
