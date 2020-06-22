@@ -53,10 +53,10 @@ export default function App() {
             <MuiThemeProvider theme={theme}>
               <Route exact path="/profile/:userid/edit" component={EditPage} />
               <Route path="/profile/:userid" component={ProfilePage} />
+              <Route exact path="/register" component={RegisterPage} />
+              <Route exact path="/login" component={LoginPage} />
+              <Route path="/" component={Home} />
             </MuiThemeProvider>
-            <Route path="/register" component={RegisterPage} />
-            <Route path="/login" component={LoginPage} />
-            <Route path="/" component={Home} />
           </Switch>
         </div>
       </Router>

@@ -10,7 +10,6 @@ import {
 import { gql } from "apollo-boost";
 import { useQuery } from "@apollo/react-hooks";
 
-import "./navbar.scss";
 const GET_ME = gql`
   {
     me {
