@@ -1,37 +1,26 @@
 import React from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-  faHeart,
-  faRetweet,
-  faCalendarDay,
-} from '@fortawesome/free-solid-svg-icons';
+import { Grid, Paper, Avatar, Container, Typography, Button } from '@material-ui/core';
+import Card from '@material-ui/core/Card';
+import CardActionArea from '@material-ui/core/CardActionArea';
+import CardActions from '@material-ui/core/CardActions';
+import CardContent from '@material-ui/core/CardContent';
+import CardMedia from '@material-ui/core/CardMedia';
+import { useTheme } from '@material-ui/core/styles';
+import { useStyles } from './ProfileInfo';
+
+
 
 const PostFeed = (props) => {
-  return (
-    <div className="post-feed">
-      {props.posts.map((el) => {
-        return (
-          <article className="post" key={el.postId}>
-            <p>{el.text}</p>
-            <span>
-              <h6>
-                <FontAwesomeIcon icon={faCalendarDay} />
-                {el.date}
-              </h6>
-              <h6>
-                <FontAwesomeIcon icon={faHeart} />
-                {el.likes}
-              </h6>
-              <h6>
-                <FontAwesomeIcon icon={faRetweet} />
-                {el.shares}
-              </h6>
-            </span>
-          </article>
-        );
-      })}
-    </div>
-  );
+
+  const theme = useTheme();
+  const classes = useStyles(theme);
+
+
+  
+
+
+  return null;
+  
 };
 
 export default PostFeed;

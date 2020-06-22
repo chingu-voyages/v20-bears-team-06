@@ -2,6 +2,7 @@ import React from "react";
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 import ApolloClient from "apollo-boost";
 import { ApolloProvider } from "@apollo/react-hooks";
+import { createMuiTheme, MuiThemeProvider, responsiveFontSizes } from '@material-ui/core/styles';
 import Header from "./components/Header";
 import ProfilePage from "./pages/ProfilePage";
 import EditPage from "./pages/EditPage";
@@ -27,14 +28,29 @@ const client = new ApolloClient({
 });
 
 export default function App() {
+  
+  let theme = createMuiTheme({
+    typography:{
+      body2: {
+        fontSize: '0.75rem'
+      },
+      caption: {
+        fontSize: '.8rem'
+      }
+    }
+  });
+  theme = responsiveFontSizes(theme,6);
+
   return (
     <ApolloProvider client={client}>
       <Router>
         <div id="App">
           <Header />
           <Switch>
+            <MuiThemeProvider theme={theme}>
             <Route exact path="/profile/:userid/edit" component={EditPage} />
             <Route path="/profile/:userid" component={ProfilePage} />
+            </MuiThemeProvider>
             <Route path="/register" component={RegisterPage} />
             <Route path="/login" component={LoginPage} />
             <Route path="/" component={Home} />
