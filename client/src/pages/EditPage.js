@@ -10,7 +10,7 @@ const EditPage = (props) =>{
 
     return (
         <div className='main-content'>
-            <ProfileInfo />
+           
             <EditForm />
             
 

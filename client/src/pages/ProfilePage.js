@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import {BrowserRouter as Router, Redirect, useRouteMatch} from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { makeStyles, fade } from '@material-ui/core/styles';
 import { Container, Grid, Paper } from '@material-ui/core';
@@ -71,8 +72,21 @@ const ProfilePage = () => {
   const isLoggedIn = me ? true : false;
   const isOwnProfile = profileCheck || false;
 
+  const [redirect, setRedirect] = useState(false);
+
+  const { url, path} = useRouteMatch();
+  
+  const editClick = () => {
+
+    setRedirect(true);
+
+  }
+
   return (
     <Container className={classes.root}>
+      {redirect===true
+      ?<Redirect to={`${url}/edit`} />
+      :null}
       <Grid
         className={classes.root}
         container
@@ -81,7 +95,7 @@ const ProfilePage = () => {
         alignItems="flext-start"
       >
         <Grid xs={12} md={3} item container className={classes.main}>
-          <ProfileInfo profile={profile} auth={{ isLoggedIn, isOwnProfile }} />
+          <ProfileInfo profile={profile} editClick={editClick} auth={{ isLoggedIn, isOwnProfile }} />
         </Grid>
         <Grid xs={12} md={9} spacing={1} item container className={classes.main} direction='row' alignItems='flex-start' justify="space-evenly">
          

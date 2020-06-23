@@ -103,11 +103,19 @@ const ProfileInfo = (props) => {
   let theme = useTheme();
   const classes = useStyles(theme);
 
+  
+
   let profileImage =
     profile && profile.hasOwnProperty('image') ? profile.image : null;
 
-  const { isLoggedIn, isOwnProfile } = props.auth;
+  let isOwnProfile = props && props.auth
+  ?props.auth.isOwnProfile
+  :null;
 
+  let isLoggedIn = props && props.auth
+  ?props.auth.isLoggedIn
+  :null;
+  
   let specialties =
     profile && profile.getSpecialties ? profile.getSpecialties : null;
 
@@ -195,7 +203,7 @@ const ProfileInfo = (props) => {
             {isOwnProfile ? (
               <Grid container xs={12}  alignItems="center" justify="center">
                 <Grid item gutterBottom>
-                  <Button className={classes.editButton} variant="outlined" color="textSecondary">
+                  <Button className={classes.editButton} onClick={props.editClick} variant="outlined" color="textSecondary">
                     <Typography variant="body2" color="secondaryLight">
                       edit
                     </Typography>
