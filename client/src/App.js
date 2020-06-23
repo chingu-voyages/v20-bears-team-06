@@ -1,10 +1,8 @@
-import React from "react";
-import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
-import ApolloClient from "apollo-boost";
-import { ApolloProvider } from "@apollo/react-hooks";
+import React, { useState } from "react";
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import {
   createMuiTheme,
-  MuiThemeProvider,
+  ThemeProvider,
   responsiveFontSizes,
 } from "@material-ui/core/styles";
 import Header from "./components/Header";
@@ -12,26 +10,12 @@ import ProfilePage from "./pages/ProfilePage";
 import EditPage from "./pages/EditPage";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
+
 import "./App.scss";
 
-const client = new ApolloClient({
-  uri: "https://chingu-bears-06.herokuapp.com/graphql",
-  credentials: "include",
-  onError: ({ graphQLErrors, networkError }) => {
-    if (graphQLErrors)
-      graphQLErrors.map(({ message, locations, path }) =>
-        console.log(
-          `[GraphQL error]: Message: ${message}, Location: ${JSON.stringify(
-            locations
-          )}, Path: ${path}`
-        )
-      );
+export default function App({ client }) {
+  const [isLoggedIn, setLoggedIn] = useState(false);
 
-    if (networkError) console.log(`[Network error]: ${networkError}`);
-  },
-});
-
-export default function App() {
   let theme = createMuiTheme({
     typography: {
       body2: {
@@ -43,24 +27,45 @@ export default function App() {
     },
   });
   theme = responsiveFontSizes(theme, 6);
-
   return (
-    <ApolloProvider client={client}>
-      <Router>
-        <div id="App">
-          <Header />
-          <Switch>
-            <MuiThemeProvider theme={theme}>
-              <Route exact path="/profile/:userid/edit" component={EditPage} />
-              <Route path="/profile/:userid" component={ProfilePage} />
-              <Route exact path="/register" component={RegisterPage} />
-              <Route exact path="/login" component={LoginPage} />
-              <Route path="/" component={Home} />
-            </MuiThemeProvider>
-          </Switch>
-        </div>
-      </Router>
-    </ApolloProvider>
+    <Router>
+      <div id="App">
+        <Header
+          setLoggedIn={setLoggedIn}
+          isLoggedIn={isLoggedIn}
+          client={client}
+        />
+        <Switch>
+          {/* <ThemeProvider theme={theme}> */}
+          <Route exact path="/profile/:userid/edit" component={EditPage} />
+          <Route path="/profile/:userid" component={ProfilePage} />
+          <Route
+            exact
+            path="/register"
+            render={(props) => (
+              <RegisterPage
+                {...props}
+                setLoggedIn={setLoggedIn}
+                isLoggedIn={isLoggedIn}
+              />
+            )}
+          />
+          <Route
+            exact
+            path="/login"
+            render={(props) => (
+              <LoginPage
+                {...props}
+                setLoggedIn={setLoggedIn}
+                isLoggedIn={isLoggedIn}
+              />
+            )}
+          />
+          <Route exact path="/" component={Home} />
+          {/* </ThemeProvider> */}
+        </Switch>
+      </div>
+    </Router>
   );
 }
 

@@ -1,14 +1,11 @@
 import React from "react";
-import { Formik, Form } from "formik";
-import * as Yup from "yup";
-import { TextInputField } from "../components/fields/TextInputField";
 import "./loginpage.scss";
 import { LoginForm } from "../components/LoginForm";
 
-const LoginPage = () => {
+const LoginPage = ({ setLoggedIn, isLoggedIn }) => {
   return (
     <div className="login-page">
-      <LoginForm />
+      <LoginForm setLoggedIn={setLoggedIn} isLoggedIn={isLoggedIn} />
     </div>
   );
 };

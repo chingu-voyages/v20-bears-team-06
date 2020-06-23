@@ -1,9 +1,8 @@
 import React from "react";
-import { useMutation, useQuery } from "@apollo/react-hooks";
+import { useMutation } from "@apollo/react-hooks";
 import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
 import { Link as RouterLink, Redirect, useHistory } from "react-router-dom";
-import { GET_ME } from "../graphql/Queries";
 import { LOGIN_MUTATION } from "../graphql/Mutations";
 import {
   Avatar,
@@ -39,14 +38,12 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export const LoginForm = () => {
+export const LoginForm = ({ isLoggedIn, setLoggedIn }) => {
   const [login] = useMutation(LOGIN_MUTATION);
+
   const classes = useStyles();
   let history = useHistory();
-  const { data } = useQuery(GET_ME);
-  const isLoggedIn = data && data.me;
- 
-  
+
   function returnHome() {
     history.push("/");
   }
@@ -92,12 +89,11 @@ export const LoginForm = () => {
                     );
                     return;
                   }
+                  setLoggedIn(true);
                   returnHome();
                 } catch (e) {
                   console.log("error with login", e);
                 }
-
-                setSubmitting(false);
               }, 400);
             }}
           >

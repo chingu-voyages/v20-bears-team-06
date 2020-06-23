@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -25,6 +25,7 @@ const NavBar = () => {
   if (error) return `Error! ${error.message}`;
   const userName = data.me ? data.me.name : "John Doe";
   console.log(data);
+  const isLoggedIn = useState(false);
   return (
     <nav id="navbar">
       <div id="image-holder">

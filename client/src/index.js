@@ -1,20 +1,33 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import { BrowserRouter as Router, Route, Link, Switch } from "react-router-dom";
 import ApolloClient from "apollo-boost";
+import { ApolloProvider } from "@apollo/react-hooks";
 import App from "./App";
 
-// const client = new ApolloClient({
-//   uri: 'http://localhost:4000/graphql',
-// });
+const graphqlUrl = process.env.GRAPHQL_URL || "http://localhost:4000/graphql";
 
-// fetch('http://localhost:4000/graphql').then((res) => {
-//   console.log(res);
-// });
+const client = new ApolloClient({
+  uri: graphqlUrl,
+  credentials: "include",
+  onError: ({ graphQLErrors, networkError }) => {
+    if (graphQLErrors)
+      graphQLErrors.map(({ message, locations, path }) =>
+        console.log(
+          `[GraphQL error]: Message: ${message}, Location: ${JSON.stringify(
+            locations
+          )}, Path: ${path}`
+        )
+      );
+
+    if (networkError) console.log(`[Network error]: ${networkError}`);
+  },
+});
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <ApolloProvider client={client}>
+      <App client={client} />
+    </ApolloProvider>
   </React.StrictMode>,
   document.getElementById("root")
 );
