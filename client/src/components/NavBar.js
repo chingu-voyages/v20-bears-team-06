@@ -20,19 +20,24 @@ const GET_ME = gql`
   }
 `;
 
-const NavBar = () => {
+const NavBar = (props) => {
   const { loading, error, data } = useQuery(GET_ME);
+  if (!props.me){
+  
   if (loading) return "Loading...";
   if (error) return `Error! ${error.message}`;
   const userName = data.me ? data.me.name : "John Doe";
-  console.log(data);
+  if (userName){
+    Window.sessionStorage.setItem('me',true)
+  }
+}
   return (
     <nav id="navbar">
       <div id="image-holder">
         <Link to="profile/{userId}">
           <img id="nav-profile-pic" />
         </Link>
-        <span className="username-span">{userName}</span>
+        <span className="username-span"></span>
       </div>
       <div id="menu-holder">
         <ul className="nav-links">
