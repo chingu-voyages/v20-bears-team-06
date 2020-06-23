@@ -1,5 +1,5 @@
 import React from "react";
-import { useMutation, useQuery } from "@apollo/react-hooks";
+import { useMutation } from "@apollo/react-hooks";
 import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
 import { Link as RouterLink, Redirect, useHistory } from "react-router-dom";
@@ -16,7 +16,8 @@ import {
 } from "@material-ui/core";
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import { REGISTER_MUTATION } from "../graphql/Mutations";
-import { GET_ME } from "../graphql/Queries";
+import { LOGIN_MUTATION } from "../graphql/Mutations";
+
 import { TextInputField } from "./fields/TextInputField";
 
 const validationSchema = Yup.object({
@@ -57,13 +58,13 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export const RegistrationForm = () => {
+export const RegistrationForm = ({ isLoggedIn, setLoggedIn }) => {
   //For Router, add reference for *confirmed = useState
   const [register] = useMutation(REGISTER_MUTATION);
+  const [login] = useMutation(LOGIN_MUTATION);
+
   const classes = useStyles();
   let history = useHistory();
-  const { data } = useQuery(GET_ME);
-  const isLoggedIn = data && data.me;
 
   function returnHome() {
     history.push("/");
@@ -103,10 +104,19 @@ export const RegistrationForm = () => {
                     },
                   });
                   console.log(response);
+                  const responseLogin = await login({
+                    variables: {
+                      email: values.email,
+                      password: values.password,
+                    },
+                  });
+                  console.log(responseLogin);
+                  setLoggedIn(true);
                   returnHome();
-                  // Insert Redirect component through here by setting state from hook : isConfirmed then
                 } catch (e) {
+                  console.log(e);
                   if (
+                    e.graphQLErrors &&
                     e.graphQLErrors[0].extensions.exception.validationErrors[0]
                       .constraints.IsEmailAlreadyExistConstraint
                   ) {
@@ -122,7 +132,6 @@ export const RegistrationForm = () => {
 
                   console.log("error with registration", JSON.stringify(e));
                 }
-                setSubmitting(false);
               }, 400);
             }}
           >

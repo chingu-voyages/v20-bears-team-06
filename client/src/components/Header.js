@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import PropTypes from "prop-types";
 import { gql } from "apollo-boost";
 import { useQuery, useMutation } from "@apollo/react-hooks";
@@ -76,17 +76,28 @@ const GET_ME = gql`
     }
   }
 `;
+
 const LOGOUT = gql`
   mutation {
     logout
   }
 `;
-export default function Header() {
-  const classes = useStyles();
 
-  const { client, data } = useQuery(GET_ME);
+export default function Header({ setLoggedIn, isLoggedIn, client }) {
+  const classes = useStyles();
   const [logout] = useMutation(LOGOUT);
-  console.log("data", JSON.stringify(data));
+  const { data, refetch } = useQuery(GET_ME);
+
+  useEffect(() => {
+    if (isLoggedIn !== (data && data.me)) {
+      refetch();
+    }
+    if (data && data.me) {
+      setLoggedIn(true);
+    } else {
+      setLoggedIn(false);
+    }
+  });
 
   const handleAccountRedirect = () => {
     return null;
@@ -105,10 +116,11 @@ export default function Header() {
         variant="outlined"
         size="small"
         color="inherit"
-        onClick={() => {
+        onClick={async () => {
+          await logout(LOGOUT);
+          await setLoggedIn(false);
           setTimeout(async () => {
-            await logout(LOGOUT);
-            client.resetStore();
+            await client.resetStore();
           }, 400);
         }}
       >
@@ -160,7 +172,7 @@ export default function Header() {
               inputProps={{ "aria-label": "search" }}
             />
           </div>
-          {data && data.me ? renderUser : renderGuest}
+          {isLoggedIn ? renderUser : renderGuest}
         </Toolbar>
       </AppBar>
     </div>
