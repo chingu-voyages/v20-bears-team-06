@@ -4,7 +4,7 @@ import ApolloClient from "apollo-boost";
 import { ApolloProvider } from "@apollo/react-hooks";
 import App from "./App";
 
-const graphqlUrl = process.env.GRAPHQL_URL || "http://localhost:4000/graphql";
+const graphqlUrl = "https://chingu-bears-06.herokuapp.com/graphql";
 
 const client = new ApolloClient({
   uri: graphqlUrl,
