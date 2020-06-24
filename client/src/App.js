@@ -4,7 +4,7 @@ import ApolloClient from "apollo-boost";
 import { ApolloProvider } from "@apollo/react-hooks";
 import { createMuiTheme, MuiThemeProvider, responsiveFontSizes } from '@material-ui/core/styles';
 import Header from "./components/Header";
-import ProfilePage from "./pages/ProfilePage";
+import { ProfilePage } from "./pages/ProfilePage";
 import EditPage from "./pages/EditPage";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
@@ -45,16 +45,18 @@ export default function App() {
     <ApolloProvider client={client}>
       <Router>
         <div id="App">
+        <MuiThemeProvider theme={theme}>
           <Header />
           <Switch>
-            <MuiThemeProvider theme={theme}>
-            <Route exact path="/profile/:userid/edit" component={EditPage} />
-            <Route path="/profile/:userid" component={ProfilePage} />
-            </MuiThemeProvider>
+            
+            <Route path="/profile/:userid/edit" component={EditPage} />
+            <Route exact path="/profile/:userid" component={ProfilePage} />
+           
             <Route path="/register" component={RegisterPage} />
             <Route path="/login" component={LoginPage} />
             <Route path="/" component={Home} />
           </Switch>
+          </MuiThemeProvider>
         </div>
       </Router>
     </ApolloProvider>

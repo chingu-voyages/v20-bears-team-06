@@ -1,5 +1,9 @@
-import React, { useState } from 'react';
-import {BrowserRouter as Router, Redirect, useRouteMatch} from 'react-router-dom';
+import React, { useState, useContext, createContext } from 'react';
+import {
+  BrowserRouter as Router,
+  Redirect,
+  useRouteMatch,
+} from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { makeStyles, fade } from '@material-ui/core/styles';
 import { Container, Grid, Paper } from '@material-ui/core';
@@ -12,32 +16,27 @@ import ProfileInfo from '../components/ProfileInfo';
 import { ContentBoard } from '../components/ContentBoard';
 
 const useStyles = makeStyles((theme) => ({
-  root: {
-    marginTop: theme.spacing(4),
-    height: theme.spacing(54)
-  },
-  main: {
-    minHeight: theme.spacing(27),
-    [theme.breakpoints.down('md')] : {
-      margin: 0,
-      height: '100%'
+  root : {
+    [theme.breakpoints.up('md')] : {
+      height: '87vh',
+      padding: '3.5vh'
     }
   },
-  mainPaper : {
-    backgroundColor: theme.palette.primary.light,
-    width: '100%',
-    [theme.breakpoints.up('xs')] : {
-      marginLeft: '0'
-    },
-    [theme.breakpoints.up('md')]:{
-    marginLeft: theme.spacing(5),
-   
-  },
+  profileGrid : {
+    [theme.breakpoints.up('md')] : {
+      height: '100%',
+      marginTop : theme.spacing(5)
+    }
+  }
+}));
 
+export const ProfileContext = createContext({
+  isLoggedIn: null,
+  isOwnProfile: null,
+  profile: null,
+});
 
-}}));
-
-const ProfilePage = () => {
+export const ProfilePage = (props) => {
   const userId = useLocation().pathname.split('/')[2];
 
   const classes = useStyles();
@@ -72,41 +71,31 @@ const ProfilePage = () => {
   const isLoggedIn = me ? true : false;
   const isOwnProfile = profileCheck || false;
 
-  const [redirect, setRedirect] = useState(false);
-
-  const { url, path} = useRouteMatch();
   
-  const editClick = () => {
-
-    setRedirect(true);
-
-  }
 
   return (
-    <Container className={classes.root}>
-      {redirect===true
-      ?<Redirect to={`${url}/edit`} />
-      :null}
-      <Grid
-        className={classes.root}
-        container
-        xs={12}
-        direction="row"
-        alignItems="flext-start"
+    
+      <ProfileContext.Provider
+        value={{
+          isLoggedIn: isLoggedIn || null,
+          isOwnProfile: isOwnProfile || null,
+          profile: profile || null,
+        }}
       >
-        <Grid xs={12} md={3} item container className={classes.main}>
-          <ProfileInfo profile={profile} editClick={editClick} auth={{ isLoggedIn, isOwnProfile }} />
-        </Grid>
-        <Grid xs={12} md={9} spacing={1} item container className={classes.main} direction='row' alignItems='flex-start' justify="space-evenly">
-         
-          <ContentBoard profile={profile} auth={{isLoggedIn, isOwnProfile}} />
-          
-        </Grid>
-      
-      </Grid>
-      
-    </Container>
+       
+          <Grid className={classes.profileGrid}  spacing={1} container direction='row' alignItems='stretch' justify='space-evenly' xs={12}>
+            <Grid item container xs={12} md={3} direction='row' alignItems='stretch'>
+            <ProfileInfo />
+            </Grid>
+            <Grid item container xs={12} md={9}>
+            <ContentBoard />
+            </Grid>
+          </Grid>
+        
+       
+      </ProfileContext.Provider>
+    
   );
 };
 
-export default ProfilePage;
+

@@ -138,7 +138,7 @@ export const LoginForm = () => {
                 <Grid item xs>
                   <Link href="#" variant="body2">
                     Forgot password?
-                  </Link>
+                  </Link> 
                 </Grid>
                 <Grid item>
                   <Link component={RouterLink} to="/register" variant="body2">

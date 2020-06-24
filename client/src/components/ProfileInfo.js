@@ -1,5 +1,5 @@
-import React from 'react';
-import {Link} from 'react-router-dom';
+import React, { useContext } from 'react';
+import { Link , useRouteMatch } from 'react-router-dom';
 import { Grid, Avatar, Container, Paper, Typography } from '@material-ui/core';
 import { useQuery } from '@apollo/react-hooks';
 import { GET_SPECIALTIES } from '../graphql/Queries';
@@ -8,213 +8,124 @@ import Button from '@material-ui/core/Button';
 import CardActionArea from '@material-ui/core/CardActionArea';
 import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
-import CardHeader from '@material-ui/core/CardHeader';
+import Chip from '@material-ui/core/Chip';
+import CardMedia from '@material-ui/core/CardMedia';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import CoverPhoto from './CoverPhoto';
+import { ProfileContext } from '../pages/ProfilePage';
 
-const useSpecialties = (userId) => {
-  let res = useQuery(GET_SPECIALTIES, {
-    variables: { userId },
-  });
-  if (res) {
-    return res.data.user.getSpecialties;
-  } else return null;
-};
-
-export const useStyles = makeStyles((theme) => ({
-  title: {
-    padding: theme.spacing(2, 0),
-    outline: 'none',
-    boxShadow: 'none',
-    '& h6': {
-      fontSize: '.7rem',
+const useStyles = makeStyles((theme) => ({
+  mainCard: {
+    [theme.breakpoints.up('md')]: {
+      height: '84vh',
     },
   },
-  gridSection: {
-    minHeight: '40vh',
-  },
-
-  aboutMe: {
+  avatar: {
     [theme.breakpoints.up('xs')]: {
-      minHeight: '40vh',
+      height: theme.spacing(8),
+      width : theme.spacing(8),
+      marginLeft: 'auto',
+      marginRight: 'auto',
+      marginBottom : theme.spacing(2),
+      marginTop : theme.spacing(4)
     },
     [theme.breakpoints.up('md')]: {
-      minHeight: '35vh',
-      marginLeft: theme.spacing(3),
-      marginRight: theme.spacing(3),
-      marginBottom: theme.spacing(3),
+      height: theme.spacing(15),
+      width: theme.spacing(15),
+      marginLeft: 'auto',
+      marginRight : 'auto',
+      marginBottom : theme.spacing(4)
     },
   },
-
-  infoCard: {
-    [theme.breakpoints.up('xs')]: {
-      minHeight: '20vh',
-    },
-    [theme.breakpoints.up('md')]: {
-      height: '100%',
-    },
+  specialtyCard : {
+    boxShadow : 'none'
   },
-
-  nestedCard: {
-    [theme.breakpoints.up('xs')]: {
-      minHeight: '15vh',
-    },
-    [theme.breakpoints.up('md')]: {
-      minHeight: '30vh',
-    },
-  },
-
-  doubleNest: {
-    [theme.breakpoints.up('xs')]: {
-      minHeight: '1vh',
-    },
-    [theme.breakpoints.up('md')]: {
-      minHeight: '3vh',
-    },
-    backgroundColor: theme.palette.primary.light,
-    width: '100%',
+  cardList : {
+    listStyle : 'none',
+    display: 'flex',
+    flexDirection : 'column',
     justifyContent: 'center',
-    fontSize: '.8rem',
-    margin: theme.spacing(1),
+    '& li' : {
+      margin : theme.spacing(1,'auto'),
+      '& div' : {
+        minWidth : theme.spacing(10)
+      }
+    }
   },
-
-  profilePic: {
-    height: theme.spacing(15),
-    width: theme.spacing(15),
-    marginBottom: theme.spacing(3),
+  longCard : {
+    height: '100%'
   },
-
-  cardTitle: {
-    fontSize: '1.2rem',
-    textAlign: 'center',
-  },
-
-  profileInfoCard: {
-    marginBottom: theme.spacing(5),
-  },
-
-  editButton : {
-    marginBottom: theme.spacing(2)
+  routerLink : {
+    textDecoration : 'none',
+    height: '75%',
+    width: '75%'
   }
 }));
 
-const ProfileInfo = (props) => {
-  let profile = props.profile;
-  let theme = useTheme();
-  const classes = useStyles(theme);
+const ProfileInfo = () => {
+  let context = useContext(ProfileContext);
 
-  
+  let { profile, isOwnProfile } = context || null;
 
-  let profileImage =
-    profile && profile.hasOwnProperty('image') ? profile.image : null;
+  let { url } = useRouteMatch();
 
-  let isOwnProfile = props && props.auth
-  ?props.auth.isOwnProfile
-  :null;
+  const classes = useStyles();
 
-  let isLoggedIn = props && props.auth
-  ?props.auth.isLoggedIn
-  :null;
-  
   let specialties =
     profile && profile.getSpecialties ? profile.getSpecialties : null;
-
   if (specialties) {
     specialties = specialties.map((el) => {
-      return (
-        <Grid xs={8} item container direction="column" justify="space-around">
-          <Card
-            className={classes.doubleNest}
-            key={`${el.title}:${el.subtitle}`}
-          >
-            <Typography align="center" variant="subtitle2">
-              {el.title}
-            </Typography>
-            {el.subtitle ? (
-              <Typography align="center" variant="subtitle2">
-                <em>{el.subtitle}</em>
-              </Typography>
-            ) : null}
-          </Card>
-        </Grid>
-      );
+      return(
+        <li key={`${profile.id}${el.title}`}>
+          <Chip variant='outlined' color='primary' size='small' label={el.title} />
+        </li>
+    
+
+      )
     });
   }
 
   return (
-    <>
-      <Grid
-        item
-        container
-        direction="column"
-        className={classes.profileInfoCard}
-      >
-        <Grid item justify="center">
-          <Card>
-            <CardActionArea className={classes.infoCard}>
-              <Grid
-                item
-                container
-                direction="column"
-                alignItems="center"
-                justify="center"
-              >
-                <Avatar
-                  gutterBottom
-                  spacing={4}
-                  className={classes.profilePic}
-                  align="center"
-                  src={`${profileImage}`}
-                ></Avatar>
-                <Typography variant="h6" align="center">
-                  {profile && profile.name}
-                </Typography>
-                <Typography variant="body1" align="center">
-                  {profile && profile.employment}
-                  <br />
-                  {profile && profile.school}
-                  <br />
-                  {profile && profile.location}
-                </Typography>
-              </Grid>
-            </CardActionArea>
-            <CardContent className={classes.infoCard}>
-              <Card className={classes.nestedCard}>
-                <CardContent>
-                  <Typography
-                    className={classes.cardTitle}
-                    color="textSecondary"
-                    gutterBottom
-                  >
-                    Specialties
-                  </Typography>
-                  <Grid
-                    container
-                    xs={12}
-                    direction="row"
-                    justify="center"
-                    alignItems="center"
-                  >
-                    {specialties}
-                  </Grid>
+    <Grid item container xs={12} direction="column">
+      <Card>
+        <CardActionArea>
+        <CardMedia>
+          <Avatar className={classes.avatar} src={profile && profile.image}></Avatar>
+        </CardMedia>
+        <Grid  container direction='row' justify='center' xs={12}>
+        <Grid item gutterBottom>
+        {isOwnProfile&&<Link className={classes.routerLink} to={`${url}/edit`}><Button className={classes.routerLink} gutterBottom size='small' variant='outlined' color='primary'>edit</Button></Link>}
+        </Grid>
+        </Grid>
+        
+          <Typography align='center' variant='h6'>{profile&&profile.name}</Typography>
+        
+        </CardActionArea>
+        <CardContent>
+          <Typography align='center' variant='subtitle1'>{profile&&profile.location}</Typography>
+          <Typography align='center' variant='subtitle1'>{profile&&profile.employment}</Typography>
+          <Typography align='center' variant='subtitle1'>{profile&&profile.school}</Typography>
+
+
+          <Grid container xs={12} alignItems='center' direction='column'>
+            <Grid item xs={10}>
+              <Card className={classes.specialtyCard}>
+                
+                <CardContent className={classes.cardList} component='ul'>
+                <Typography color='primary' variant='body1' align='center' gutterBottom='true'><strong>Specialties</strong></Typography>
+                  {specialties}
+
                 </CardContent>
               </Card>
-            </CardContent>
-            {isOwnProfile ? (
-              <Grid container xs={12}  alignItems="center" justify="center">
-                <Grid item gutterBottom>
-                  <Button className={classes.editButton} onClick={props.editClick} variant="outlined" color="textSecondary">
-                    <Typography variant="body2" color="secondaryLight">
-                      edit
-                    </Typography>
-                  </Button>
-                </Grid>
-              </Grid>
-            ) : null}
-          </Card>
-        </Grid>
-      </Grid>
-    </>
+          
+
+          </Grid>
+         
+          </Grid>
+          
+        </CardContent>
+      </Card>
+    </Grid>
   );
 };
 

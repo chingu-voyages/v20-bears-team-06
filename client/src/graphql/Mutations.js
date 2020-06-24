@@ -31,4 +31,54 @@ export const REGISTER_MUTATION = gql`
   }
 `;
 
+export const EDIT_PROFILE_MUTATION = gql`
+  mutation editUser(
+    $userId: ID! 
+    $school: String
+    $department: String
+    $position: String
+    $about_me: String
+    $location: String 
+  ) {
+    editUser(edit:{
+      userId: $userId
+      school: $school
+      department: $department
+      position: $position
+      about_me: $about_me
+      location: $location
+    }){
+      id
+      school
+      department
+      position
+      about_me
+      location
+    }
+  } 
+`;
+
+export const ADD_USER_SPEC = gql`
+  mutation addUserSpecialty(
+    $title: String!
+    $subtitle: String
+    $userId: ID
+    $postToAdd: ID
+  ){
+    addUserSpecialty(data:{
+      userId: $userId
+      title: $title
+      subtitle: $subtitle
+    }){
+      id
+      name
+      getSpecialties{
+        id
+        title
+        subtitle
+      }
+    }
+  }
+`;
+
 

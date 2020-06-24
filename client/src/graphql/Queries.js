@@ -12,6 +12,7 @@ export const GET_ME = gql`
 export const GET_PROFILE = gql`
 query getUser($userId: ID!) {
   user(userId: $userId) {
+    id
     name
     school
     department
