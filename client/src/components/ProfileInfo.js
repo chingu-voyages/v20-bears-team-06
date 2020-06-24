@@ -1,8 +1,8 @@
 import React, { useContext } from 'react';
-import { Link , useRouteMatch } from 'react-router-dom';
+import { Link , useRouteMatch, useParams } from 'react-router-dom';
 import { Grid, Avatar, Container, Paper, Typography } from '@material-ui/core';
-import { useQuery } from '@apollo/react-hooks';
-import { GET_SPECIALTIES } from '../graphql/Queries';
+import { useQuery , useMutation } from '@apollo/react-hooks';
+import { ADD_USER_SPEC } from '../graphql/Mutations'
 import Card from '@material-ui/core/Card';
 import Button from '@material-ui/core/Button';
 import CardActionArea from '@material-ui/core/CardActionArea';
@@ -13,6 +13,8 @@ import CardMedia from '@material-ui/core/CardMedia';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import CoverPhoto from './CoverPhoto';
 import { ProfileContext } from '../pages/ProfilePage';
+import AddCircleIcon from '@material-ui/icons/AddCircle';
+import AddSpecialtyPopover from './mui_components/AddSpecialtyPopover.js';
 
 const useStyles = makeStyles((theme) => ({
   mainCard: {
@@ -69,6 +71,12 @@ const ProfileInfo = () => {
 
   let { url } = useRouteMatch();
 
+  let { userid } = useParams();
+
+  
+
+  
+
   const classes = useStyles();
 
   let specialties =
@@ -77,7 +85,7 @@ const ProfileInfo = () => {
     specialties = specialties.map((el) => {
       return(
         <li key={`${profile.id}${el.title}`}>
-          <Chip variant='outlined' color='primary' size='small' label={el.title} />
+          <Chip variant='outlined' color='primary' size='small' label={el.title[0].toUpperCase()+el.title.slice(1).toLowerCase()} />
         </li>
     
 
@@ -87,6 +95,7 @@ const ProfileInfo = () => {
 
   return (
     <Grid item container xs={12} direction="column">
+      
       <Card>
         <CardActionArea>
         <CardMedia>
@@ -114,6 +123,7 @@ const ProfileInfo = () => {
                 <CardContent className={classes.cardList} component='ul'>
                 <Typography color='primary' variant='body1' align='center' gutterBottom='true'><strong>Specialties</strong></Typography>
                   {specialties}
+                  <AddSpecialtyPopover />
 
                 </CardContent>
               </Card>

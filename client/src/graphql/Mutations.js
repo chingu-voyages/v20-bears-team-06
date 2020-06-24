@@ -69,6 +69,7 @@ export const ADD_USER_SPEC = gql`
       userId: $userId
       title: $title
       subtitle: $subtitle
+      postToAdd : $postToAdd
     }){
       id
       name

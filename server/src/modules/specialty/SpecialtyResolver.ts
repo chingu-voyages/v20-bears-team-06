@@ -22,6 +22,8 @@ export class SpecialtyResolver {
     @Arg('data')
     { title, subtitle }: SpecialtyInput
   ): Promise<Specialty | Object | undefined> {
+    title = title.toUpperCase(),
+    subtitle = subtitle.toUpperCase() || '';
     let spec = await Specialty.findOne({ where: { title, subtitle } });
     if (spec) {
       return Object.assign({ message: 'specialty already exists' }, spec);
