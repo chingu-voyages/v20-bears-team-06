@@ -1,46 +1,43 @@
-import { Resolver, FieldResolver, Mutation, Arg, Root, Query} from 'type-graphql';
+import { Resolver, FieldResolver, Mutation, Arg, Query, Root} from 'type-graphql';
+import { FollowInput } from './FollowInput';
 import { User } from '../../../entity/User';
 
 @Resolver(User)
 export class FollowResolver{
-
-    @FieldResolver(() => [User])
     @Mutation(() => [User])
-    async follow(
-        @Arg('to_follow') to_follow: string,
-        @Root() user : User
-    ): Promise<User[] | undefined> {
-
-        let userOne = await User.findOne(to_follow);
-        if (userOne){
-            (await userOne.followers).push(user);
-            (await user.following).push(userOne);
-
-            let save = await Promise.all(
-                [userOne.save(),
-                user.save()]);
-
-            if(!save){
-                return undefined;
-            }
-
-            let updatedOne = await User.findOne(to_follow);
-            let updatedTwo = await User.findOne(user.id);
-
-            if (!updatedOne || !updatedTwo){
-                return undefined;
-            }
-
-            return [updatedOne,updatedTwo];
-
-
-            
-              
-            
+    async followUser(
+        @Arg('users') {userId, toFollow} : FollowInput
+    ):Promise<User[] | undefined>{
+        let one = await User.findOne(userId);
+        let two = await User.findOne(toFollow);
+        if (!one || !two){
+            return;
         }
 
-        return undefined;
+        let following = await one.following;
+        let followers = await two.following;
 
+        followers = followers.filter(el=>el.id===Number(userId));
+        following = following.filter(el=>el.id===Number(toFollow));
+
+        if (followers.length===0){
+            (await two.followers).push(one);
+        }
+
+        if(following.length===0){
+            (await one.following).push(two);
+        }
+
+        one = await one.save();
+        two = await two.save();
+
+        if (!one || !two){
+            return;
+        }
+
+        return [one,two];
+
+   
         
     }
 

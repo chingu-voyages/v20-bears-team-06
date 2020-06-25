@@ -28,7 +28,7 @@ export default function AddSpecialtyPopover() {
     <PopupState variant="popover" popupId="demo-popup-popover">
       {(popupState) => (
         <div>
-          <Chip variant="outlined" label='add new' icon={<AddCircleIcon color='action' />} color="primary" {...bindTrigger(popupState)}/>
+          <Chip size="small" variant="outlined" label='add new' icon={<AddCircleIcon color='action' />} color="primary" {...bindTrigger(popupState)}/>
           <Popover
             {...bindPopover(popupState)}
             anchorOrigin={{

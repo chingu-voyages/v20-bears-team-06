@@ -7,6 +7,7 @@ import {
   Typography,
   Button,
 } from '@material-ui/core';
+import { useParams } from 'react-router-dom';
 import { ProfileContext } from '../pages/ProfilePage';
 import Card from '@material-ui/core/Card';
 import CardActionArea from '@material-ui/core/CardActionArea';
@@ -18,6 +19,9 @@ import AvatarGroup from '@material-ui/lab/AvatarGroup';
 import { AppBar, Toolbar, IconButton } from '@material-ui/core';
 import { useTheme, makeStyles } from '@material-ui/core/styles';
 import AccountCircleIcon  from '@material-ui/icons/AccountCircle';
+import { useQuery, useMutation } from '@apollo/react-hooks';
+import { FOLLOW_USER_MUTATION } from '../graphql/Mutations';
+import { GET_ME } from '../graphql/Queries';
 
 const useStyles = makeStyles((theme) => ({
  root: {
@@ -70,6 +74,37 @@ export const ContentBoard = (props) => {
 
   let {profile, isLoggedIn, isOwnProfile } = context;
 
+  const { userid } = useParams();
+
+  const [follow] = useMutation(FOLLOW_USER_MUTATION);
+
+  
+
+  let { data } = useQuery(GET_ME);
+  let meId;
+  if (data){
+    meId = data.me.id
+  }
+
+  
+
+  
+
+
+  const followUser = async() => {
+    const response = await follow({
+      variables:{
+        userId: meId,
+        toFollow: userid
+      }
+    });
+
+    console.log(response)
+    
+  }
+
+  
+
   return (
     <>
       <Grid className={classes.contentCard} item container xs={12} md={4} direction='row' >
@@ -100,9 +135,10 @@ export const ContentBoard = (props) => {
               </AvatarGroup>
               <Grid container justify='center' xs={12}>
                 <Grid item className={classes.followButton}>
-              <Button size='small' variant='outlined' color='primary'>
+                  {!isOwnProfile &&
+              <Button size='small' variant='outlined' color='primary' onClick={followUser}>
                 follow
-              </Button>
+              </Button>}
               </Grid>
               </Grid>
               </Card>

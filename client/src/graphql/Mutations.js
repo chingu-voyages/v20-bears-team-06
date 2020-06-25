@@ -82,4 +82,24 @@ export const ADD_USER_SPEC = gql`
   }
 `;
 
+export const FOLLOW_USER_MUTATION = gql`
+  mutation followUser(
+    $userId: ID!
+    $toFollow: ID!
+  ){
+    followUser(users:{
+      userId: $userId,
+      toFollow: $toFollow
+    }){
+      id
+      name
+      followers{
+        id
+        name
+      }
+    }
+  }
+
+`;
+
 

@@ -40,3 +40,5 @@ query getSpecialties($userId: ID!) {
   }
 }
 `;
+
+

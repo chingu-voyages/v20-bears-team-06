@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import { Link , useRouteMatch, useParams } from 'react-router-dom';
 import { Grid, Avatar, Container, Paper, Typography } from '@material-ui/core';
 import { useQuery , useMutation } from '@apollo/react-hooks';
-import { ADD_USER_SPEC } from '../graphql/Mutations'
+import { ADD_USER_SPEC  } from '../graphql/Mutations';
 import Card from '@material-ui/core/Card';
 import Button from '@material-ui/core/Button';
 import CardActionArea from '@material-ui/core/CardActionArea';
@@ -123,7 +123,7 @@ const ProfileInfo = () => {
                 <CardContent className={classes.cardList} component='ul'>
                 <Typography color='primary' variant='body1' align='center' gutterBottom='true'><strong>Specialties</strong></Typography>
                   {specialties}
-                  <AddSpecialtyPopover />
+                  <li><AddSpecialtyPopover /></li>
 
                 </CardContent>
               </Card>
