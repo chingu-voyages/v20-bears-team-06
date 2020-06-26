@@ -14,6 +14,7 @@
   "dependencies": {
     "@types/shortid": "^0.0.29",
     "apollo-server-express": "^2.14.3",
+    "aws-sdk": "^2.705.0",
     "bcryptjs": "^2.4.3",
     "class-validator": "^0.12.2",
     "connect-redis": "^4.0.4",
@@ -23,6 +24,7 @@
     "graphql": "^15.1.0",
     "graphql-upload": "^11.0.0",
     "ioredis": "^4.17.3",
+    "moment": "^2.27.0",
     "nodemailer": "^6.4.8",
     "nodemon": "^2.0.4",
     "pg": "^8.2.1",

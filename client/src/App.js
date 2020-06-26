@@ -10,12 +10,11 @@ import ProfilePage from "./pages/ProfilePage";
 import EditPage from "./pages/EditPage";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
-
+import { UploadExample } from "./components/UploadExample";
 import "./App.scss";
 
 export default function App({ client }) {
   const [isLoggedIn, setLoggedIn] = useState(false);
-
   let theme = createMuiTheme({
     typography: {
       body2: {
@@ -61,6 +60,7 @@ export default function App({ client }) {
               />
             )}
           />
+          <Route exact path="/upload" component={UploadExample} />
           <Route exact path="/" component={Home} />
           {/* </ThemeProvider> */}
         </Switch>
