@@ -44,8 +44,9 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export const LoginForm = () => {
+export const LoginForm = ({ isLoggedIn, setLoggedIn }) => {
   const [login] = useMutation(LOGIN_MUTATION);
+
   const classes = useStyles();
   let history = useHistory();
   const { data } = useQuery(GET_ME);
@@ -96,12 +97,11 @@ export const LoginForm = () => {
                     );
                     return;
                   }
+                  setLoggedIn(true);
                   returnHome();
                 } catch (e) {
                   console.log('error with login', e);
                 }
-
-                setSubmitting(false);
               }, 400);
             }}
           >
