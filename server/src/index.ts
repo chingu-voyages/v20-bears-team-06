@@ -8,6 +8,8 @@ import connectRedis from 'connect-redis';
 import cors from 'cors';
 import { redis } from './redis';
 import { createSchema } from './utils/createSchema';
+import { createServer } from 'http';
+//import { buildTdR } from './utils/createSchema';
 
 useContainer(Container);
 
@@ -15,6 +17,8 @@ const main = async () => {
   await createConnection();
 
   const schema = await createSchema();
+
+  //await buildTdR();
 
   const apolloServer = new ApolloServer({
     schema,
@@ -26,14 +30,14 @@ const main = async () => {
   const app = Express();
 
   const RedisStore = connectRedis(session);
-  app.set("trust proxy", 1);
+  app.set('trust proxy', 1);
   app.use(
     cors({
       credentials: true,
       origin:
-        process.env.NODE_ENV === "production"
-          ? "https://brave-einstein-04bd68.netlify.app"
-          : "http://localhost:3000",
+        process.env.NODE_ENV === 'production'
+          ? 'https://brave-einstein-04bd68.netlify.app'
+          : 'http://localhost:3000',
     })
   );
 
@@ -56,9 +60,18 @@ const main = async () => {
 
   apolloServer.applyMiddleware({ app, cors: false });
 
+  const httpServer = createServer(app);
+
+  apolloServer.installSubscriptionHandlers(httpServer);
+
   const PORT = process.env.PORT || 4000;
-  app.listen(PORT, () => {
-    console.log(`Our app is running on port ${PORT}`);
+  httpServer.listen({ port: PORT }, () => {
+    console.log(
+      `🚀 Server ready at http://localhost:${PORT}${apolloServer.graphqlPath}`
+    );
+    console.log(
+      `🚀 Subscriptions ready at ws://localhost:${PORT}${apolloServer.subscriptionsPath}`
+    );
   });
 };
 

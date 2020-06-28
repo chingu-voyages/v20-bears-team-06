@@ -4,8 +4,8 @@ import { InputType, Field, ID } from 'type-graphql';
 @InputType()
 export class FollowInput{
     @Field(()=>ID)
-    userId: string;
+    userId: number;
 
     @Field(() => ID)
-    toFollow: string;
+    toFollow: number;
 }

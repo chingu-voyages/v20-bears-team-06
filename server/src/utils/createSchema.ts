@@ -15,6 +15,10 @@ import { FollowResolver } from '../modules/user/field_resolvers/FollowResolver';
 import { SpecialtyResolver } from '../modules/specialty/SpecialtyResolver';
 import { SpecialtiesResolver } from '../modules/user/field_resolvers/SpecialtiesResolver';
 import { Container } from 'typedi';
+import { pubSub } from '../redis';
+//import { buildTypeDefsAndResolvers } from 'type-graphql';
+
+
 
 export const createSchema = () =>
   buildSchema({
@@ -39,4 +43,39 @@ export const createSchema = () =>
       return !!req.session.userId;
     },
     container: Container,
+    validate: false,
+    pubSub
   });
+
+/*export async function buildTdR(){
+  const { typeDefs, resolvers } = await buildTypeDefsAndResolvers({
+    resolvers: [
+      ChangePasswordResolver,
+      ConfirmUserResolver,
+      PostResolver,
+      PostsResolver,
+      ForgotPasswordResolver,
+      FollowResolver,
+      LoginResolver,
+      LogoutResolver,
+      MeResolver,
+      RegisterResolver,
+      SpecialtyResolver,
+      SpecialtiesResolver,
+      CreateUserResolver,
+      ProfilePictureResolve,
+      UserResolver,
+    ],
+    authChecker: ({ context: { req } }) => {
+      return !!req.session.userId;
+    },
+    container: Container,
+    validate: false,
+    pubSub
+    
+  });
+
+  console.log(typeDefs, resolvers);
+
+}*/
+
