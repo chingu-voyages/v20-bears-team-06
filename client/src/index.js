@@ -10,7 +10,6 @@ import { getMainDefinition } from 'apollo-utilities';
 import { ApolloProvider } from "@apollo/react-hooks";
 import App from "./App";
 
-<<<<<<< HEAD
 //const graphqlUrl = "https://chingu-bears-06.herokuapp.com/graphql";
 const graphqlUrl = 'http://localhost:4000/graphql';
 const wsUrl = 'ws://localhost:4000/subscriptions';
@@ -54,12 +53,6 @@ const splitLink = split(
   wsLink,
   httpLink
 );
-=======
-const graphqlUrl =
-  process.env.NODE_ENV === "development"
-    ? "http://localhost:4000/graphql"
-    : "https://chingu-bears-06.herokuapp.com/graphql";
->>>>>>> 7f0656f2df0b93c2db76ea9fa28cda82ddb674df
 
 const client = new ApolloClient({
   link : splitLink,
