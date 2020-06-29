@@ -9,6 +9,13 @@ import cors from 'cors';
 import { redis } from './redis';
 import { createSchema } from './utils/createSchema';
 import { createServer } from 'http';
+import dotenv from 'dotenv';
+dotenv.config({
+  path: './config.env'
+});
+
+
+
 
 
 useContainer(Container);

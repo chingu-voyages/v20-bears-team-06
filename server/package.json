@@ -6,7 +6,7 @@
   "scripts": {
     "production": "ts-node src/index.ts",
     "start": "node -r ts-node/register --inspect --max_old_space_size=4096 src/index.ts",
-    "dev": "APP_ENV=development ts-node-dev --respawn src/index.ts",
+    "dev": "ts-node-dev --respawn src/index.ts",
     "db:setup": "ts-node ./src/test-utils/setup.ts",
     "test": "npm run db:setup && jest"
   },
@@ -15,11 +15,12 @@
   "dependencies": {
     "@types/shortid": "^0.0.29",
     "apollo-server-express": "^2.14.3",
-    "aws-sdk": "^2.705.0",
+    "aws-sdk": "^2.707.0",
     "bcryptjs": "^2.4.3",
     "class-validator": "^0.12.2",
     "connect-redis": "^4.0.4",
     "cors": "^2.8.5",
+    "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "express-session": "^1.17.1",
     "graphql": "^15.1.0",
