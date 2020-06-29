@@ -1,4 +1,4 @@
-import { Resolver, Mutation, Arg, Ctx } from "type-graphql";
+import { Resolver, Mutation, Arg } from "type-graphql";
 import { SignedS3Payload } from "../../entity/SignedS3Payload";
 import aws from "aws-sdk";
 
@@ -9,12 +9,13 @@ export class SignS3Resolver {
     @Arg("filename") filename: string,
     @Arg("filetype") filetype: string
   ): Promise<SignedS3Payload | null> {
-    const s3Bucket = "chingu-bears-06";
-
+    const s3Bucket = process.env.S3_BUCKET_NAME || "chingu-bears-06";
     const s3 = new aws.S3({
       region: "us-west-1",
       signatureVersion: "v4",
     });
+    console.log(s3Bucket);
+    console.log(s3);
     const s3Params = {
       Bucket: s3Bucket,
       Key: filename,
@@ -22,11 +23,9 @@ export class SignS3Resolver {
       ContentType: filetype,
       ACL: "public-read",
     };
-    const signedRequest = await s3.getSignedUrl("putObject", s3Params);
-    const url = `https://${s3Bucket}.s3.amazonaws.com/${filename}`;
-    return {
-      signedRequest,
-      url,
-    };
+    let returnObject = new SignedS3Payload();
+    returnObject.signedRequest = await s3.getSignedUrl("putObject", s3Params);
+    returnObject.url = `https://${s3Bucket}.s3.amazonaws.com/${filename}`;
+    return returnObject;
   }
 }
