@@ -31,4 +31,11 @@ export const REGISTER_MUTATION = gql`
   }
 `;
 
-
+export const S3_SIGN_MUTATION = gql`
+  mutation SignS3($filename: String!, $filetype: String!) {
+    signS3(filename: $filename, filetype: $filetype) {
+      url
+      signedRequest
+    }
+  }
+`;
