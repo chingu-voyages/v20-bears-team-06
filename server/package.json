@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "ts-node src/index.ts",
+    "production": "ts-node src/index.ts",
+    "start": "node -r ts-node/register --inspect --max_old_space_size=4096 src/index.ts",
     "dev": "APP_ENV=development ts-node-dev --respawn src/index.ts",
     "db:setup": "ts-node ./src/test-utils/setup.ts",
     "test": "npm run db:setup && jest"
