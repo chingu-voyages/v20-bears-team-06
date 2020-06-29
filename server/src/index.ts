@@ -26,11 +26,7 @@ const main = async () => {
     introspection: true,
     playground: true,
     subscriptions: {
-      path: '/subscriptions',
-      onConnect: (connectionParams, webSocket) => {
-        console.log(connectionParams)
-        console.log(webSocket)
-      }
+      path: '/subscriptions'
     }
   });
 

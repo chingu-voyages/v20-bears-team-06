@@ -10,12 +10,12 @@ import './profilepage.scss';
 import './editpage.scss';
 
 const EditPage = () =>{
-    const params = useParams();
+    const { userId } = useParams();
 
     let { data } = useQuery(GET_ME);
 
     let profile = useQuery(GET_PROFILE, {
-        variables: {userId : params.userid}
+        variables: {userId}
     })
     
 
@@ -23,7 +23,7 @@ const EditPage = () =>{
     
     if (data&&data.me){
         const { id } = data.me;
-        isOwnProfile = id === params.userid;
+        isOwnProfile = id === userId
     }
 
  
