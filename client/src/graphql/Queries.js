@@ -12,6 +12,7 @@ export const GET_ME = gql`
 export const GET_PROFILE = gql`
 query getUser($userId: ID!) {
   user(userId: $userId) {
+    id
     name
     school
     department
@@ -19,6 +20,9 @@ query getUser($userId: ID!) {
     employment
     follower_count
     about_me
+    followers{
+      id
+    }
     location
     getSpecialties{
       title
@@ -39,3 +43,17 @@ query getSpecialties($userId: ID!) {
   }
 }
 `;
+
+export const FOLLOWER_IDS = gql`
+query user($userId: ID!) {
+  user(userId:$userId){
+    followers{
+      id
+    }
+  }
+}
+`;
+
+
+
+

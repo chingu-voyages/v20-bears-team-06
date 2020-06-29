@@ -1,9 +1,10 @@
-import React from "react";
-import { useMutation } from "@apollo/react-hooks";
-import { Formik, Form, Field } from "formik";
-import * as Yup from "yup";
-import { Link as RouterLink, Redirect, useHistory } from "react-router-dom";
-import { LOGIN_MUTATION } from "../graphql/Mutations";
+import React from 'react';
+import { useMutation, useQuery } from '@apollo/react-hooks';
+import { Formik, Form, Field } from 'formik';
+import * as Yup from 'yup';
+import { Link as RouterLink, Redirect, useHistory } from 'react-router-dom';
+import { GET_ME } from '../graphql/Queries';
+import { LOGIN_MUTATION } from '../graphql/Mutations';
 import {
   Avatar,
   Button,
@@ -13,28 +14,33 @@ import {
   Link,
   makeStyles,
   Typography,
-} from "@material-ui/core";
-import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
+} from '@material-ui/core';
+import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 
-import { TextInputField } from "./fields/TextInputField";
+import { TextInputField } from './fields/TextInputField';
 
 const useStyles = makeStyles((theme) => ({
   paper: {
     marginTop: theme.spacing(8),
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
   },
   avatar: {
     margin: theme.spacing(1),
     backgroundColor: theme.palette.secondary.main,
   },
   form: {
-    width: "100%", // Fix IE 11 issue.
+    width: '100%', // Fix IE 11 issue.
     marginTop: theme.spacing(1),
   },
   submit: {
     margin: theme.spacing(3, 0, 2),
+  },
+  input: {
+    [theme.breakpoints.up('md')]: {
+      height: theme.spacing(4),
+    },
   },
 }));
 
@@ -43,13 +49,15 @@ export const LoginForm = ({ isLoggedIn, setLoggedIn }) => {
 
   const classes = useStyles();
   let history = useHistory();
+  const { data } = useQuery(GET_ME);
+
 
   function returnHome() {
-    history.push("/");
+    history.push('/');
   }
   if (isLoggedIn) {
-    console.log("redirecting");
-    return <Redirect to={{ pathname: "/" }} />;
+    console.log('redirecting');
+    return <Redirect to={{ pathname: '/' }} />;
   } else {
     return (
       <Container component="main" maxWidth="xs">
@@ -63,14 +71,14 @@ export const LoginForm = ({ isLoggedIn, setLoggedIn }) => {
           </Typography>
           <Formik
             initialValues={{
-              email: "",
-              password: "",
+              email: '',
+              password: '',
             }}
             validateOnBlur={false}
             validateOnChange={false}
             validationSchema={Yup.object({
-              email: Yup.string().email("Invalid email address").required(),
-              password: Yup.string().required("Please Enter your password"),
+              email: Yup.string().email('Invalid email address').required(),
+              password: Yup.string().required('Please Enter your password'),
             })}
             onSubmit={(values, { setSubmitting, setFieldError }) => {
               setTimeout(async () => {
@@ -84,15 +92,15 @@ export const LoginForm = ({ isLoggedIn, setLoggedIn }) => {
                   console.log(response);
                   if (response && response.data && !response.data.login) {
                     setFieldError(
-                      "password",
-                      "Incorrect email and/or password"
+                      'password',
+                      'Incorrect email and/or password'
                     );
                     return;
                   }
                   setLoggedIn(true);
                   returnHome();
                 } catch (e) {
-                  console.log("error with login", e);
+                  console.log('error with login', e);
                 }
               }, 400);
             }}
@@ -110,6 +118,8 @@ export const LoginForm = ({ isLoggedIn, setLoggedIn }) => {
                 as={TextInputField}
               />
               <Field
+                className={classes.input}
+                size='small'
                 variant="outlined"
                 margin="normal"
                 required

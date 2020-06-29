@@ -1,78 +1,99 @@
-import React, { useState } from 'react';
-import PropTypes from 'prop-types';
+import React, { useState, useContext, createContext } from 'react';
+import {
+  BrowserRouter as Router,
+  Redirect,
+  useRouteMatch,
+} from 'react-router-dom';
+
 import { makeStyles, fade } from '@material-ui/core/styles';
-import { Container, Grid } from '@material-ui/core';
-import SearchIcon from '@material-ui/icons/Search';
-import AccountCircle from '@material-ui/icons/AccountCircle';
-import { useLocation } from 'react-router-dom';
+import { Container, Grid, Paper } from '@material-ui/core';
+
+import { useParams } from 'react-router-dom';
 import { useQuery, useMutation } from '@apollo/react-hooks';
 import { GET_PROFILE, GET_ME } from '../graphql/Queries';
 import ProfileInfo from '../components/ProfileInfo';
-import PostFeed from '../components/PostFeed';
-
-const useStyles = makeStyles((theme)=>({
-  root:{
-    marginTop: theme.spacing(4) 
+import { ContentBoard } from '../components/ContentBoard';
+const useStyles = makeStyles((theme) => ({
+  root : {
+    [theme.breakpoints.up('md')] : {
+      height: '87vh',
+      padding: '3.5vh'
+    }
   },
-  main : {
-    minHeight: '40vh'
+  profileGrid : {
+    [theme.breakpoints.up('md')] : {
+      height: '100%',
+      marginTop : theme.spacing(5)
+    }
   }
 }));
 
-const ProfilePage = () => {
-  const userId = useLocation().pathname.split('/')[2];
+const useProfile = () => {
+  const { userId } = useParams();
+  let { error, loading, data } = useQuery(GET_PROFILE,{
+    variables:{
+      userId: userId
+    }});
 
-  const classes = useStyles();
-
-  
-
-  let profile, timeline;
-
-  try {
-    const response = useQuery(GET_PROFILE, {
-      variables: { userId },
-    });
-
-    const user = response.data.user || null;
-    profile = user;
-
-    if (profile) {
-      timeline = profile.getTimeline || null;
+    if (!loading&&data){
+      if (data.user){
+        return data.user;
+      }
     }
-  } catch (err) {
-    console.log(err);
+}
+
+const useChecks = () => {
+  const { userId } = useParams();
+  const { loading, error, data } = useQuery(GET_ME);
+  if (!loading&&data&&data.me&&data.me.id){
+    return { isLoggedIn: true, isOwnProfile: data.me.id===userId, meId:data.me.id}
   }
+  return { isLoggedIn:false, isOwnProfile: false, meId:null};
+}
 
-  let { data } = useQuery(GET_ME);
+export const ProfileContext = createContext({
+  isLoggedIn: null,
+  isOwnProfile: null,
+  profile: null,
+});
 
-  let me = data&&data.me;
+export const ProfilePage = (props) => {
 
-  let profileCheck;
 
-  if (me){
-    profileCheck = me.id === userId;
-  }
 
-  const isLoggedIn = me?true:false;
-  const isOwnProfile = profileCheck || false;
+const classes= useStyles();
+const profile = useProfile();
+const { isLoggedIn, isOwnProfile, meId } = useChecks();
+
 
 
 
   
 
   return (
-
-    <Container className={classes.root}  >
-      <Grid className={classes.root} container xs={12} direction='column' alignItems='center' justify='center'>
-        <Grid item container className={classes.main}>
-      <ProfileInfo profile={profile} auth={{ isLoggedIn, isOwnProfile }} />
-      </Grid>
-      <Grid item container className={classes.main}>
-      <PostFeed timeline={timeline} />
-      </Grid>
-      </Grid>
-    </Container>
+    
+      <ProfileContext.Provider
+        value={{
+          isLoggedIn: isLoggedIn,
+          isOwnProfile: isOwnProfile,
+          profile: profile,
+          meId: meId
+        }}
+      >
+       
+          <Grid className={classes.profileGrid}  spacing={1} container item direction='row' alignItems='stretch' justify='space-evenly' xs={12}>
+            <Grid item container xs={12} md={3}  direction='row' alignItems='stretch'>
+            <ProfileInfo />
+            </Grid>
+            <Grid item container xs={12} md={9}>
+            <ContentBoard />
+            </Grid>
+          </Grid>
+        
+       
+      </ProfileContext.Provider>
+    
   );
 };
 
-export default ProfilePage;
+

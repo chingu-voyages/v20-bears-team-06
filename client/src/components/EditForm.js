@@ -1,78 +1,220 @@
-import React from "react";
-import { Formik, Form, Field } from "formik";
-import * as Yup from "yup";
+import React, { useContext, useState } from 'react';
+import {Redirect} from 'react-router-dom';
+import { Formik, Form, Field } from 'formik';
+import { useMutation } from '@apollo/react-hooks';
+import { ADD_USER_SPEC, EDIT_PROFILE_MUTATION } from '../graphql/Mutations';
+import {
+  Avatar,
+  Button,
+  Container,
+  CssBaseline,
+  Grid,
+  Link,
+  makeStyles,
+  useTheme,
+  Paper,
+  Typography,
+  TextField,
+} from '@material-ui/core';
+import { TextInputField } from './fields/TextInputField';
+import { TextAreaField } from './fields/TextAreaField';
+import { ProfileContext } from '../pages/ProfilePage';
+import * as Yup from 'yup';
 
-const editSchema = Yup.object().shape({
-  firstName: Yup.string()
-    .min(2, "Name entered was too short")
-    .max(40, "Name entered was too long"),
-  lastName: Yup.string()
-    .min(2, "Name entered was too short")
-    .max(40, "Name entered was too long"),
-  email: Yup.string().email("invalid email"),
-  school: Yup.string()
-    .min(2, "School name entered was too short")
-    .max(40, "School name entered was too long"),
-  position: Yup.string()
-    .min(2, "Position entered was too short")
-    .max(40, "Position entered was too long"),
-  department: Yup.string()
-    .min(2, "Department entered was too short")
-    .max(40, "Department entered was too long"),
-});
+const useStyles = makeStyles((theme) => ({
+  paper: {
+    marginTop: theme.spacing(8),
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+  },
+  avatar: {
+    margin: theme.spacing(1),
+    backgroundColor: theme.palette.secondary.main,
+  },
+  form: {
+    width: '100%', // Fix IE 11 issue.
+    marginTop: theme.spacing(1),
+  },
+  submit: {
+    margin: theme.spacing(3, 0, 2),
+  },
+}));
 
-export const EditForm = () => {
-  return (
-    <div className="post-feed edit-form">
-      <h1>Edit Profile</h1>
-      <Formik
-        initialValues={{
-          firstName: "",
-          lastName: "",
-          email: "",
-          school: "",
-          position: "",
-          department: "",
-        }}
-        validationSchema={editSchema}
-        onSubmit={(values) => {
-          console.log(values);
-        }}
-      >
-        {({ errors, touched }) => (
-          <Form>
-            <label htmlFor="firstName">{"First Name"}</label>
-            <Field name="firstName" />
-            {errors.firstName && touched.firstName ? (
-              <div>{errors.firstName}</div>
-            ) : null}
-            <label htmlFor="lastName">{"Last Name"}</label>
-            <Field name="lastName" />
-            {errors.lastName && touched.lastName ? (
-              <div>{errors.lastName}</div>
-            ) : null}
-            <label htmlFor="email">{"Email address"}</label>
-            <Field name="email" />
-            {errors.email && touched.email ? <div>{errors.email}</div> : null}
-            <label htmlFor="school">{"School"}</label>
-            <Field name="school" />
-            {errors.school && touched.school ? (
-              <div>{errors.school}</div>
-            ) : null}
-            <label htmlFor="position">{"Position"}</label>
-            <Field name="position" />
-            {errors.position && touched.position ? (
-              <div>{errors.position}</div>
-            ) : null}
-            <label htmlFor="department">{"Department"}</label>
-            <Field name="department" />
-            {errors.department && touched.department ? (
-              <div>{errors.department}</div>
-            ) : null}
-            <button type="submit">Submit Edits</button>
-          </Form>
-        )}
-      </Formik>
-    </div>
-  );
+const EditForm = (props) => {
+  const [edit] = useMutation(EDIT_PROFILE_MUTATION);
+  let isOwnProfile = props.isOwnProfile || null;
+  const profile = props.profile || null;
+  
+
+  
+ 
+  
+
+  
+  
+
+
+  const { id } = profile;
+
+  console.log(profile)
+
+  const theme = useTheme();
+
+  const classes = useStyles(theme);
+
+  
+
+  if (isOwnProfile) {
+    return (
+      <Container component="main" maxWidth="xs">
+        <CssBaseline />
+        <div className={classes.paper}>
+          
+          <Typography variant='h3' component='h1' color='primary' gutterBottom>
+            Edit Profile
+          </Typography>
+          <Formik
+            initialValues={{
+              school: profile.school,
+              department: profile.department,
+              position: profile.position,
+              aboutMe: profile.about_me,
+              location : profile.location
+            }}
+            validateOnBlur={false}
+            validateOnChange={false}
+            validationSchema={Yup.object({
+              school: Yup.string()
+                .min(3)
+                .max(60, 'School name must be between 3-60 characters'),
+              department: Yup.string()
+                .min(3)
+                .max(60, 'department name must be between 3-60 characters'),
+              position: Yup.string()
+                .min(3)
+                .max(60, 'position must be between 3-60 characters'),
+              aboutMe: Yup.string()
+                .min(1)
+                .max(5000, 'School name must be between 1-5000 characters'),
+            })}
+            onSubmit={(values, { setSubmitting, setFieldError }) => {
+              setTimeout(async () => {
+                try {
+                  const response = await edit({
+                    variables: {
+                      userId : profile.id,
+                      school: values.school ? values.school : profile.school,
+                      department: values.department
+                        ? values.department
+                        : profile.department,
+                      position: values.position
+                        ? values.position
+                        : profile.position,
+                      about_me: values.aboutMe
+                        ? values.aboutMe
+                        : profile.about_me,
+                    },
+                  });
+                  console.log(response);
+                  if (response && response.data && !response.data.user) {
+                    setFieldError('invalid field data');
+                    return;
+                  }
+
+                  
+                } catch (e) {
+                  console.log('error with edit', e);
+                }
+
+                setSubmitting(false);
+              }, 400);
+            }}
+          > 
+            <Form className={classes.form} noValidate>
+              <Field
+                label='Update School'
+                name='school'
+                type='text'
+                placeholder = {profile.school||'enter school name'}
+                variant="outlined"
+                autoFocus
+                fullWidth
+                id="school"
+                as={TextInputField}
+              ></Field>
+              <Field
+                variant="outlined"
+                margin="normal"
+                fullWidth
+                name="department"
+                label="Department"
+                type="text"
+                id="department"
+                placeholder = {profile.school||null}
+                as={TextInputField}
+              />
+              <Field
+                variant="outlined"
+                margin="normal"
+      
+                fullWidth
+                name="position"
+                label="Position"
+                type="text"
+                id="position"
+                placeholder={profile.position||null}
+                as={TextInputField}
+              />
+              <Field
+                variant="outlined"
+                margin="normal"
+      
+                fullWidth
+                name="location"
+                label="Location"
+                type="text"
+                id="location"
+                placeholder={profile.location||null}
+                as={TextInputField}
+              />
+              <Field
+                variant="outlined"
+                margin="normal"
+                
+                fullWidth
+                name="aboutMe"
+                label="About Me"
+                type="text"
+                id="aboutMe"
+                placeholder = {profile.about_me||null}
+                as={TextAreaField}
+              />
+              <Button
+                fullWidth
+                variant="contained"
+                color="primary"
+                type="submit"
+                className={classes.submit}
+              >
+                Submit
+              </Button>
+              
+            </Form>
+          </Formik>
+        </div>
+        
+      </Container>
+    );
+  } else {
+    return (
+      <Grid container xs={12} justify="center" alignItems="center">
+        <Grid item xs={6}>
+          <Button>go back</Button>
+        </Grid>
+      </Grid>
+    );
+  }
 };
+
+export default EditForm;
