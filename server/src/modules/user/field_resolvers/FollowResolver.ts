@@ -104,5 +104,47 @@ export class FollowResolver{
 
     }
 
+    @Mutation(() => Boolean)
+    async unfollowUser(
+        @Arg('users') {userId, toUnfollow} : FollowInput,
+        @PubSub(Topic.FollowEvent) followEvent: Publisher<FollowEventPayload>  
+    ) : Promise<Boolean>{
+        
+
+        let user = await User.findOne(toUnfollow);
+        let followers = await user?.followers;
+        if (followers){
+            followers = followers.filter(el=>el.id!==Number(userId));
+            console.log(followers);
+            if (user){
+                user.followers = followers;
+                await user.save();
+
+                if (user){
+                    let updatedUser = await User.findOne(toUnfollow);
+                    let unfollower = await User.findOne(userId);
+                    if (unfollower&&updatedUser){
+                        await followEvent({
+                            toFollowId: toUnfollow,
+                            dateString: Date.now().toString(),
+                            followerId: userId,
+                            follower_name: unfollower.name(unfollower),
+                            event_type: 'unfollow',
+                            follower_count: updatedUser.follower_count,
+                            following_count: unfollower.following_count
+
+                        })
+
+                        return true;
+                    }   
+                }
+            }
+        }
+       
+
+        return false;
+
+    }
+
 }
 

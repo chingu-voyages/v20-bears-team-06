@@ -6,6 +6,9 @@ export class FollowInput{
     @Field(()=>ID)
     userId: number;
 
-    @Field(() => ID)
+    @Field(() => ID, {nullable:true})
     toFollow: number;
+
+    @Field(() => ID, {nullable:true})
+    toUnfollow: number;
 }

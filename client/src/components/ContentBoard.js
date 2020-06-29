@@ -1,4 +1,4 @@
-import React , {useContext} from 'react';
+import React , {useContext, useState} from 'react';
 import {
   Grid,
   Paper,
@@ -20,7 +20,7 @@ import { AppBar, Toolbar, IconButton } from '@material-ui/core';
 import { useTheme, makeStyles } from '@material-ui/core/styles';
 import AccountCircleIcon  from '@material-ui/icons/AccountCircle';
 import { useQuery, useMutation } from '@apollo/react-hooks';
-import { FOLLOW_USER_MUTATION } from '../graphql/Mutations';
+import { FOLLOW_USER_MUTATION, UNFOLLOW_USER_MUTATION } from '../graphql/Mutations';
 import { GET_ME, FOLLOWER_IDS } from '../graphql/Queries';
 import { FollowerCount } from './FollowerCount';
 
@@ -91,7 +91,9 @@ export const ContentBoard = (props) => {
 
   let {profile, isLoggedIn, isOwnProfile, meId } = context;
 
-  const isFollowing = useIsFollowing(profile,meId);
+  const following = useIsFollowing(profile,meId);
+
+  const [isFollowing,setIsFollowing] = useState(following);
 
   
 
@@ -99,6 +101,7 @@ export const ContentBoard = (props) => {
   const { userId } = useParams();
 
   const [follow] = useMutation(FOLLOW_USER_MUTATION);
+  const [unfollow] = useMutation(UNFOLLOW_USER_MUTATION)
 
   
 
@@ -118,8 +121,25 @@ export const ContentBoard = (props) => {
     });
 
     console.log(response)
+    if (response){
+      setIsFollowing(!isFollowing);
+    }
     
   }
+
+ const unfollowUser = async () => {
+   const response = await unfollow({
+     variables:{
+       userId: meId || null,
+       toUnfollow: userId || null
+     }
+   });
+
+   if (response){
+     setIsFollowing(!isFollowing);
+   }
+
+ } 
 
   
 
@@ -159,7 +179,7 @@ export const ContentBoard = (props) => {
                 follow
               </Button>}
                   {(!isOwnProfile&&meId&&isFollowing)&&
-                  <Button onclick={null} size='small' variant='outlined' color='primary'>
+                  <Button onClick={unfollowUser} size='small' variant='outlined' color='primary'>
                     <Typography color='secondary' variant='subtitle2' align='center'>
                       unfollow
                     </Typography>

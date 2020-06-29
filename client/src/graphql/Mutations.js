@@ -103,3 +103,15 @@ export const FOLLOW_USER_MUTATION = gql`
 `;
 
 
+export const UNFOLLOW_USER_MUTATION = gql`
+  mutation unfollowUser(
+    $userId: ID!,
+    $toUnfollow: ID!){
+      unfollowUser(users:{
+        userId: $userId,
+        toUnfollow: $toUnfollow
+      })      
+    }
+`;
+
+
