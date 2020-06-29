@@ -14,6 +14,7 @@ import { PostsResolver } from '../modules/user/field_resolvers/PostsResolver';
 import { FollowResolver } from '../modules/user/field_resolvers/FollowResolver';
 import { SpecialtyResolver } from '../modules/specialty/SpecialtyResolver';
 import { SpecialtiesResolver } from '../modules/user/field_resolvers/SpecialtiesResolver';
+import { SignS3Resolver } from "../modules/uploads/S3Signed";
 import { Container } from 'typedi';
 import { pubSub } from '../redis';
 
@@ -34,8 +35,8 @@ export const createSchema = () =>
       SpecialtyResolver,
       SpecialtiesResolver,
       CreateUserResolver,
-      ProfilePictureResolver,
-      UserResolver
+      UserResolver,
+      SignS3Resolver
     ],
     authChecker: ({ context: { req } }) => {
       return !!req.session.userId;
@@ -62,8 +63,12 @@ export const createSchema = () =>
       SpecialtiesResolver,
       CreateUserResolver,
       ProfilePictureResolve,
+      ProfilePictureResolver,
       UserResolver,
-      SignS3Resolver,
+      
+      
+      
+      ,
     ],
     authChecker: ({ context: { req } }) => {
       return !!req.session.userId;

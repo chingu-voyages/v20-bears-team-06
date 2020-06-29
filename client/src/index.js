@@ -10,9 +10,14 @@ import { getMainDefinition } from 'apollo-utilities';
 import { ApolloProvider } from "@apollo/react-hooks";
 import App from "./App";
 
-//const graphqlUrl = "https://chingu-bears-06.herokuapp.com/graphql";
-const graphqlUrl = 'http://localhost:4000/graphql';
-const wsUrl = 'ws://localhost:4000/subscriptions';
+const graphqlUrl =
+  process.env.NODE_ENV === "development"
+    ? "http://localhost:4000/graphql"
+    : "https://chingu-bears-06.herokuapp.com/graphql";
+
+const wsUrl = process.env.NODE_ENV === "development"
+    ? "ws://localhost:4000/subscriptions"
+    : "ws://chingu-bears-06.herokuapp.com/subscriptions";
 
 const httpLink = new HttpLink({
   uri: graphqlUrl,
@@ -58,10 +63,7 @@ const client = new ApolloClient({
   link : splitLink,
   onError: errorLink,
   cache: new InMemoryCache()
-
 })
-
-
 
 /*const client = new ApolloClient({
   uri: graphqlUrl,

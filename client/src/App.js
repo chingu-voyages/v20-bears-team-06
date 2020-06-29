@@ -12,18 +12,11 @@ import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import { useSubscription } from '@apollo/react-hooks';
 import { FOLLOWER_SUB } from './graphql/Subscriptions';
-import { UploadExample } from './components/UploadExample';
-
-
-
-
+import { UploadExample } from "./components/UploadExample";
 import "./App.scss";
 
 export default function App({ client }) {
   const [isLoggedIn, setLoggedIn] = useState(false);
-
-  
-
   let theme = createMuiTheme({
     typography: {
       body2: {

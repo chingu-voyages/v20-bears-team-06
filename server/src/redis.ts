@@ -10,6 +10,7 @@ const options: Redis.RedisOptions = process.env.NODE_ENV==='production'
 ?{
   host: 'dory.redistogo.com',
   port: 9976,
+  
   retryStrategy: (times:number) => Math.max(times * 100, 3000)
 }
 :{
