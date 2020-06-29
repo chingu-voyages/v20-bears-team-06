@@ -7,7 +7,7 @@ import { ForgotPasswordResolver } from '../modules/user/ForgotPassword';
 import { ConfirmUserResolver } from '../modules/user/ConfirmUser';
 import { ChangePasswordResolver } from '../modules/user/ChangePassword';
 import { buildSchema } from 'type-graphql';
-import { ProfilePictureResolve } from '../modules/user/ProfilePicture';
+import { ProfilePictureResolver } from '../modules/user/ProfilePicture';
 import { UserResolver } from '../modules/user/UserResolver';
 import { PostResolver } from '../modules/post/PostResolver';
 import { PostsResolver } from '../modules/user/field_resolvers/PostsResolver';
@@ -34,7 +34,7 @@ export const createSchema = () =>
       SpecialtyResolver,
       SpecialtiesResolver,
       CreateUserResolver,
-      ProfilePictureResolve,
+      ProfilePictureResolver,
       UserResolver
     ],
     authChecker: ({ context: { req } }) => {
@@ -63,6 +63,7 @@ export const createSchema = () =>
       CreateUserResolver,
       ProfilePictureResolve,
       UserResolver,
+      SignS3Resolver,
     ],
     authChecker: ({ context: { req } }) => {
       return !!req.session.userId;

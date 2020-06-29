@@ -68,6 +68,7 @@ export default function App({ client }) {
               />
             )}
           />
+          <Route exact path="/upload" component={UploadExample} />
           <Route exact path="/" component={Home} />
           {/* </ThemeProvider> */}
         </Switch>
