@@ -16,8 +16,6 @@ import { SpecialtyResolver } from '../modules/specialty/SpecialtyResolver';
 import { SpecialtiesResolver } from '../modules/user/field_resolvers/SpecialtiesResolver';
 import { Container } from 'typedi';
 import { pubSub } from '../redis';
-//import { buildTypeDefsAndResolvers } from 'type-graphql';
-
 
 
 export const createSchema = () =>
@@ -37,7 +35,7 @@ export const createSchema = () =>
       SpecialtiesResolver,
       CreateUserResolver,
       ProfilePictureResolve,
-      UserResolver,
+      UserResolver
     ],
     authChecker: ({ context: { req } }) => {
       return !!req.session.userId;
@@ -77,5 +75,5 @@ export const createSchema = () =>
 
   console.log(typeDefs, resolvers);
 
-}*/
+} */
 

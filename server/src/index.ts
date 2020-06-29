@@ -9,7 +9,7 @@ import cors from 'cors';
 import { redis } from './redis';
 import { createSchema } from './utils/createSchema';
 import { createServer } from 'http';
-//import { buildTdR } from './utils/createSchema';
+
 
 useContainer(Container);
 
@@ -18,13 +18,20 @@ const main = async () => {
 
   const schema = await createSchema();
 
-  //await buildTdR();
+ 
 
   const apolloServer = new ApolloServer({
     schema,
     context: ({ req, res }: any) => ({ req, res }),
     introspection: true,
     playground: true,
+    subscriptions: {
+      path: '/subscriptions',
+      onConnect: (connectionParams, webSocket) => {
+        console.log(connectionParams)
+        console.log(webSocket)
+      }
+    }
   });
 
   const app = Express();
@@ -51,7 +58,7 @@ const main = async () => {
       resave: false,
       saveUninitialized: false,
       cookie: {
-        httpOnly: true,
+        httpOnly: false,
         secure: process.env.NODE_ENV === 'production',
         maxAge: 1000 * 60 * 60 * 24 * 7 * 365, // 7 years
       },
@@ -63,6 +70,7 @@ const main = async () => {
   const httpServer = createServer(app);
 
   apolloServer.installSubscriptionHandlers(httpServer);
+
 
   const PORT = process.env.PORT || 4000;
   httpServer.listen({ port: PORT }, () => {

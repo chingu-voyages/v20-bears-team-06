@@ -21,7 +21,20 @@ import { useTheme, makeStyles } from '@material-ui/core/styles';
 import AccountCircleIcon  from '@material-ui/icons/AccountCircle';
 import { useQuery, useMutation } from '@apollo/react-hooks';
 import { FOLLOW_USER_MUTATION } from '../graphql/Mutations';
-import { GET_ME } from '../graphql/Queries';
+import { GET_ME, FOLLOWER_IDS } from '../graphql/Queries';
+import { FollowerCount } from './FollowerCount';
+
+
+
+
+const useIsFollowing = (profile, meId) => {
+
+  if (profile&&meId){
+    let ids = profile.followers.map(el=>el.id);
+    return ids.includes(meId);
+  }
+
+}
 
 const useStyles = makeStyles((theme) => ({
  root: {
@@ -66,25 +79,30 @@ const useStyles = makeStyles((theme) => ({
  }
 }));
 
+
+
 export const ContentBoard = (props) => {
   const theme = useTheme();
   const classes = useStyles(theme);
 
+  
+
   let context = useContext(ProfileContext);
 
-  let {profile, isLoggedIn, isOwnProfile } = context;
+  let {profile, isLoggedIn, isOwnProfile, meId } = context;
 
-  const { userid } = useParams();
+  const isFollowing = useIsFollowing(profile,meId);
+
+  
+
+
+  const { userId } = useParams();
 
   const [follow] = useMutation(FOLLOW_USER_MUTATION);
 
   
 
-  let { data } = useQuery(GET_ME);
-  let meId;
-  if (data){
-    meId = data.me.id
-  }
+  
 
   
 
@@ -94,8 +112,8 @@ export const ContentBoard = (props) => {
   const followUser = async() => {
     const response = await follow({
       variables:{
-        userId: meId,
-        toFollow: userid
+        userId: meId || null,
+        toFollow: userId || null
       }
     });
 
@@ -107,6 +125,7 @@ export const ContentBoard = (props) => {
 
   return (
     <>
+    
       <Grid className={classes.contentCard} item container xs={12} md={4} direction='row' >
         <Grid item container xs={12} justify='center' alignItems='center'>
           <Grid item xs={12} md={10}>
@@ -124,7 +143,7 @@ export const ContentBoard = (props) => {
         <Grid item container xs={12} justify='center'>
           <Grid item xs={12} md={10}>
             <Card >
-              <Typography className={classes.followerCard} variant='h4' align='center' color='primary' gutterBottom>{profile&&profile.follower_count}</Typography>
+              <FollowerCount currentCount={profile&&profile.follower_count} />
               <Typography variant='h5' align='center' color='primary' >followers</Typography>
               <AvatarGroup className={classes.avatarGroup} align='center' max={4} size='small'>
                 <Avatar/>
@@ -135,10 +154,16 @@ export const ContentBoard = (props) => {
               </AvatarGroup>
               <Grid container justify='center' xs={12}>
                 <Grid item className={classes.followButton}>
-                  {!isOwnProfile &&
-              <Button size='small' variant='outlined' color='primary' onClick={followUser}>
+                  {(!isOwnProfile && meId &&!isFollowing) &&
+              <Button onClick={followUser} size='small' variant='outlined' color='primary' >
                 follow
               </Button>}
+                  {(!isOwnProfile&&meId&&isFollowing)&&
+                  <Button onclick={null} size='small' variant='outlined' color='primary'>
+                    <Typography color='secondary' variant='subtitle2' align='center'>
+                      unfollow
+                    </Typography>
+                    </Button>}
               </Grid>
               </Grid>
               </Card>

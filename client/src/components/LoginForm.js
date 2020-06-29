@@ -50,7 +50,7 @@ export const LoginForm = ({ isLoggedIn, setLoggedIn }) => {
   const classes = useStyles();
   let history = useHistory();
   const { data } = useQuery(GET_ME);
-  const isLoggedIn = data && data.me;
+
 
   function returnHome() {
     history.push('/');

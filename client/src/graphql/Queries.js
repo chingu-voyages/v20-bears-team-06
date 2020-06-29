@@ -20,6 +20,9 @@ query getUser($userId: ID!) {
     employment
     follower_count
     about_me
+    followers{
+      id
+    }
     location
     getSpecialties{
       title
@@ -40,5 +43,17 @@ query getSpecialties($userId: ID!) {
   }
 }
 `;
+
+export const FOLLOWER_IDS = gql`
+query user($userId: ID!) {
+  user(userId:$userId){
+    followers{
+      id
+    }
+  }
+}
+`;
+
+
 
 
