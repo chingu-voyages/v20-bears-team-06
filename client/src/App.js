@@ -6,16 +6,17 @@ import {
   responsiveFontSizes,
 } from "@material-ui/core/styles";
 import Header from "./components/Header";
-import ProfilePage from "./pages/ProfilePage";
+import { ProfilePage } from "./pages/ProfilePage";
 import EditPage from "./pages/EditPage";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
-
+import { useSubscription } from '@apollo/react-hooks';
+import { FOLLOWER_SUB } from './graphql/Subscriptions';
+import { UploadExample } from "./components/UploadExample";
 import "./App.scss";
 
 export default function App({ client }) {
   const [isLoggedIn, setLoggedIn] = useState(false);
-
   let theme = createMuiTheme({
     typography: {
       body2: {
@@ -37,8 +38,8 @@ export default function App({ client }) {
         />
         <Switch>
           {/* <ThemeProvider theme={theme}> */}
-          <Route exact path="/profile/:userid/edit" component={EditPage} />
-          <Route path="/profile/:userid" component={ProfilePage} />
+          <Route exact path="/profile/:userId/edit" component={EditPage} />
+          <Route path="/profile/:userId" component={ProfilePage} />
           <Route
             exact
             path="/register"
@@ -61,6 +62,7 @@ export default function App({ client }) {
               />
             )}
           />
+          <Route exact path="/upload" component={UploadExample} />
           <Route exact path="/" component={Home} />
           {/* </ThemeProvider> */}
         </Switch>

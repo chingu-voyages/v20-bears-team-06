@@ -19,8 +19,10 @@ const GET_ME = gql`
   }
 `;
 
-const NavBar = () => {
+const NavBar = (props) => {
   const { loading, error, data } = useQuery(GET_ME);
+  if (!props.me){
+  
   if (loading) return "Loading...";
   if (error) return `Error! ${error.message}`;
   const userName = data.me ? data.me.name : "John Doe";
@@ -32,7 +34,7 @@ const NavBar = () => {
         <Link to="profile/{userId}">
           <img id="nav-profile-pic" />
         </Link>
-        <span className="username-span">{userName}</span>
+        <span className="username-span"></span>
       </div>
       <div id="menu-holder">
         <ul className="nav-links">
@@ -54,5 +56,6 @@ const NavBar = () => {
     </nav>
   );
 };
+}
 
 export default NavBar;

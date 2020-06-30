@@ -31,4 +31,95 @@ export const REGISTER_MUTATION = gql`
   }
 `;
 
+export const EDIT_PROFILE_MUTATION = gql`
+  mutation editUser(
+    $userId: ID! 
+    $school: String
+    $department: String
+    $position: String
+    $about_me: String
+    $location: String 
+  ) {
+    editUser(edit:{
+      userId: $userId
+      school: $school
+      department: $department
+      position: $position
+      about_me: $about_me
+      location: $location
+    }){
+      id
+      school
+      department
+      position
+      about_me
+      location
+    }
+  } 
+`;
 
+export const ADD_USER_SPEC = gql`
+  mutation addUserSpecialty(
+    $title: String!
+    $subtitle: String
+    $userId: ID
+    $postToAdd: ID
+  ){
+    addUserSpecialty(data:{
+      userId: $userId
+      title: $title
+      subtitle: $subtitle
+      postToAdd : $postToAdd
+    }){
+      id
+      name
+      getSpecialties{
+        id
+        title
+        subtitle
+      }
+    }
+  }
+`;
+
+export const FOLLOW_USER_MUTATION = gql`
+  mutation followUser(
+    $userId: ID!
+    $toFollow: ID!
+  ){
+    followUser(users:{
+      userId: $userId,
+      toFollow: $toFollow
+    }){
+      id
+      name
+      followers{
+        id
+        name
+      }
+    }
+  }
+
+`;
+
+
+export const UNFOLLOW_USER_MUTATION = gql`
+  mutation unfollowUser(
+    $userId: ID!,
+    $toUnfollow: ID!){
+      unfollowUser(users:{
+        userId: $userId,
+        toUnfollow: $toUnfollow
+      })      
+    }
+`;
+
+
+export const S3_SIGN_MUTATION = gql`
+  mutation SignS3($filename: String!, $filetype: String!) {
+    signS3(filename: $filename, filetype: $filetype) {
+      url
+      signedRequest
+    }
+  }
+`;

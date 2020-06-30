@@ -1,167 +1,173 @@
-import React from 'react';
+import React, { useContext } from 'react';
+import { Link, useRouteMatch, useParams } from 'react-router-dom';
 import { Grid, Avatar, Container, Paper, Typography } from '@material-ui/core';
-import { useQuery } from '@apollo/react-hooks';
-import { GET_SPECIALTIES } from '../graphql/Queries'
+import { useQuery, useMutation } from '@apollo/react-hooks';
+import { ADD_USER_SPEC } from '../graphql/Mutations';
 import Card from '@material-ui/core/Card';
+import Button from '@material-ui/core/Button';
 import CardActionArea from '@material-ui/core/CardActionArea';
 import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
-import CardHeader from '@material-ui/core/CardHeader';
+import Chip from '@material-ui/core/Chip';
+import CardMedia from '@material-ui/core/CardMedia';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import CoverPhoto from './CoverPhoto';
+import { ProfileContext } from '../pages/ProfilePage';
+import AddCircleIcon from '@material-ui/icons/AddCircle';
+import AddSpecialtyPopover from './mui_components/AddSpecialtyPopover.js';
 
-const useSpecialties = (userId) => {
-  let res = useQuery(GET_SPECIALTIES, {
-    variables : {userId}
-  });
-  if (res){
-    return res.data.user.getSpecialties;
-  }else return null;
-}
-
-
-export const useStyles = makeStyles((theme) => ({
-  
-  title: {
-    padding: theme.spacing(2,0),
-    outline : 'none',
-    boxShadow : 'none',
-    '& h6' : {
-      fontSize: '.7rem'
+const useStyles = makeStyles((theme) => ({
+  mainCard: {
+    [theme.breakpoints.up('md')]: {
+      height: '84vh',
+    },
+  },
+  avatar: {
+    [theme.breakpoints.up('xs')]: {
+      height: theme.spacing(8),
+      width: theme.spacing(8),
+      marginLeft: 'auto',
+      marginRight: 'auto',
+      marginBottom: theme.spacing(2),
+      marginTop: theme.spacing(4),
+    },
+    [theme.breakpoints.up('md')]: {
+      height: theme.spacing(15),
+      width: theme.spacing(15),
+      marginLeft: 'auto',
+      marginRight: 'auto',
+      marginBottom: theme.spacing(4),
+    },
+  },
+  specialtyCard: {
+    boxShadow: 'none',
+  },
+  cardList: {
+    listStyle: 'none',
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    '& li': {
+      margin: theme.spacing(1, 'auto'),
+      '& div': {
+        minWidth: theme.spacing(10),
+      },
+    },
+  },
+  longCard: {
+    height: '100%',
+  },
+  routerLink: {
+    textDecoration: 'none',
+    '& :hover' : {
+      color : 'blue'
     }
-    
-    
   },
-  gridSection:{
-    minHeight: '40vh'
-  },
-
-  infoCard : {
-    [theme.breakpoints.up('xs')] : {
-      minHeight : '20vh'
-    },
-    [theme.breakpoints.up('md')] : {
-      minHeight: '35vh'
-    }
-  },
-
-  nestedCard : {
-    [theme.breakpoints.up('xs')] : {
-      minHeight: '15vh'
-    },
-    [theme.breakpoints.up('md')] : {
-      minHeight: '30vh'
-    }
-  },
-
-  doubleNest : {
-    [theme.breakpoints.up('xs')] : {
-      minHeight: '1vh'
-    },
-    [theme.breakpoints.up('md')] : {
-      minHeight: '3vh'
-    },
-    backgroundColor : theme.palette.primary.light,
-    width: '100%',
-    justifyContent : 'center',
-    fontSize : '.8rem',
-    margin: theme.spacing(1)
-  },
-
-  profilePic:{
-    height: theme.spacing(15),
-    width : theme.spacing(15),
-    marginBottom: theme.spacing(3)
-  },
-
-  cardTitle: {
-    fontSize: '1.2rem',
-    textAlign: 'center'
-  }
-  
-
- 
-  
-  
 }));
 
-const ProfileInfo = (props) => {
-  let profile = props.profile;
-  let theme = useTheme();
-  const classes = useStyles(theme);
+const ProfileInfo = () => {
+  let context = useContext(ProfileContext);
 
-  let profileImage = profile&&profile.hasOwnProperty('image')
-  ? profile.image:
-  null;
+  let { profile, isOwnProfile } = context || null;
 
-  const { isLoggedIn, isOwnProfile } = props.auth;
+  let { url } = useRouteMatch();
 
-  let specialties = profile&&profile.getSpecialties
-  ?profile.getSpecialties
-  :null;
+  let { userid } = useParams();
 
-  if (specialties){
-    specialties = specialties.map(el=>{
-      return(
-        <Grid xs={8} item container direction='column' justify='space-around'>
-      <Card className={classes.doubleNest}  key={`${el.title}:${el.subtitle}`}>
-      <Typography align='center'  variant='subtitle2'>{el.title}</Typography>
-      {el.subtitle?<Typography align='center' variant='subtitle2'><em>{el.subtitle}</em></Typography>:null}
-      </Card>
-      </Grid>
-      )
-    })
+  const classes = useStyles();
+
+  let specialties =
+    profile && profile.getSpecialties ? profile.getSpecialties : null;
+  if (specialties) {
+    specialties = specialties.map((el) => {
+      return (
+        <li
+          key={`${profile.id}${el.title}${el.subtitle || Math.random() * 3000}`}
+        >
+          <Chip
+            variant="outlined"
+            color="primary"
+            size="small"
+            label={el.title[0].toUpperCase() + el.title.slice(1).toLowerCase()}
+          />
+        </li>
+      );
+    });
   }
-  
-  
-
 
   return (
-    <>
-    <Grid item container xs={12} md={3} direction='column'>
-      <Grid item xs={12} justify='center'>
-        <Card >
-          <CardActionArea className={classes.infoCard}>
-            <Grid  item container xs={12} direction='column' alignItems='center' justify='center'>
-            <Avatar gutterBottom spacing={4} className={classes.profilePic} align='center' src={`${profileImage}`}></Avatar>
-            <Typography variant='h6' align='center'>{profile&&profile.name}</Typography>
-            <Typography variant='body1' align='center'>{profile&&profile.employment}
-            <br/>
-            {profile&&profile.school}
-            <br/>
-            {profile&&profile.location}
-            </Typography>
+    <Grid item container xs={12} md={12} direction="column">
+      <Card>
+        <CardActionArea>
+          <CardMedia>
+            <Avatar
+              className={classes.avatar}
+              src={profile && profile.image}
+            ></Avatar>
+          </CardMedia>
+          <Grid
+            container
+            direction="row"
+            justify="center"
+            alignItems="center"
+            item
+            xs={12}
+          >
+            <Grid xs={12} item container justify="center" alignItems="center">
+              {isOwnProfile && (
+                <Grid xs={5} item>
+                  <Link to={`${url}/edit`} className={classes.routerLink}>
+                    <Typography variant='subtitle1' color='secondary' align='center'>
+                      edit
+                    </Typography>
+                  </Link>
+                  </Grid>
+                
+              )}
             </Grid>
+          </Grid>
 
-          </CardActionArea>
-          <CardContent className={classes.infoCard}>
-            <Card className={classes.nestedCard}>
-              
-              <CardContent>
-                <Typography className={classes.cardTitle} color='textSecondary' gutterBottom>
-                  Specialties
-                </Typography>
-                <Grid container xs={12} direction='row' justify='center' alignItems='center'>
-                {specialties}
-                </Grid>
+          <Typography align="center" variant="h6">
+            {profile && profile.name}
+          </Typography>
+        </CardActionArea>
+        <CardContent>
+          <Typography align="center" variant="subtitle1">
+            {profile && profile.location}
+          </Typography>
+          <Typography align="center" variant="subtitle1">
+            {profile && profile.employment}
+          </Typography>
+          <Typography align="center" variant="subtitle1">
+            {profile && profile.school}
+          </Typography>
 
-              </CardContent>
-            </Card>
-
-          </CardContent>
-        
-        </Card>
-      </Grid>
-
-
+          <Grid container xs={12} alignItems="center" direction="column">
+            <Grid item xs={10}>
+              <Card className={classes.specialtyCard}>
+                <CardContent className={classes.cardList} component="ul">
+                  <Typography
+                    color="primary"
+                    variant="body1"
+                    align="center"
+                    gutterBottom
+                  >
+                    <strong>Specialties</strong>
+                  </Typography>
+                  {specialties}
+                  {isOwnProfile && (
+                    <li>
+                      <AddSpecialtyPopover />
+                    </li>
+                  )}
+                </CardContent>
+              </Card>
+            </Grid>
+          </Grid>
+        </CardContent>
+      </Card>
     </Grid>
-    <Grid item container xs={12} md={7}>
-
-    </Grid>
-    
-    
-    </>
-  )
+  );
 };
 
 export default ProfileInfo;

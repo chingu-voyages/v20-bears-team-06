@@ -1,12 +1,70 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import ApolloClient from "apollo-boost";
+import { ApolloClient } from "apollo-client";
+import { split, ApolloLink } from "apollo-link";
+import { HttpLink } from "apollo-link-http";
+import { WebSocketLink } from "apollo-link-ws";
+import { onError } from "apollo-link-error";
+import { InMemoryCache } from "apollo-cache-inmemory";
+import { getMainDefinition } from "apollo-utilities";
 import { ApolloProvider } from "@apollo/react-hooks";
 import App from "./App";
 
-const graphqlUrl = process.env.GRAPHQL_URL || "http://localhost:4000/graphql";
+const graphqlUrl =
+  process.env.NODE_ENV === "development"
+    ? "http://localhost:4000/graphql"
+    : "https://chingu-bears-06.herokuapp.com/graphql";
+
+const wsUrl =
+  process.env.NODE_ENV === "development"
+    ? "wss://localhost:4000/subscriptions"
+    : "wss://chingu-bears-06.herokuapp.com/subscriptions";
+
+const httpLink = new HttpLink({
+  uri: graphqlUrl,
+  credentials: "include",
+});
+
+const wsLink = new WebSocketLink({
+  uri: wsUrl,
+  credentials: "include",
+  options: {
+    reconnect: true,
+  },
+});
+
+const errorLink = onError(({ graphQLErrors, networkError }) => {
+  if (graphQLErrors)
+    graphQLErrors.map(({ message, locations, path }) =>
+      console.log(
+        `[GraphQL error]: Message: ${message}, Location: ${JSON.stringify(
+          locations
+        )}, Path: ${path}`
+      )
+    );
+
+  if (networkError) console.log(`[Network error]: ${networkError}`);
+});
+
+const splitLink = split(
+  ({ query }) => {
+    const definition = getMainDefinition(query);
+    return (
+      definition.kind === "OperationDefinition" &&
+      definition.operation === "subscription"
+    );
+  },
+  wsLink,
+  httpLink
+);
 
 const client = new ApolloClient({
+  link: splitLink,
+  onError: errorLink,
+  cache: new InMemoryCache(),
+});
+
+/*const client = new ApolloClient({
   uri: graphqlUrl,
   credentials: "include",
   onError: ({ graphQLErrors, networkError }) => {
@@ -21,7 +79,7 @@ const client = new ApolloClient({
 
     if (networkError) console.log(`[Network error]: ${networkError}`);
   },
-});
+}); */
 
 ReactDOM.render(
   <React.StrictMode>
