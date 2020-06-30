@@ -17,6 +17,7 @@ import "./App.scss";
 
 export default function App({ client }) {
   const [isLoggedIn, setLoggedIn] = useState(false);
+  const [meId, setMeId] = useState(null);
   let theme = createMuiTheme({
     typography: {
       body2: {
@@ -35,6 +36,8 @@ export default function App({ client }) {
           setLoggedIn={setLoggedIn}
           isLoggedIn={isLoggedIn}
           client={client}
+          meId = {meId}
+          setMeId = {setMeId}
         />
         <Switch>
           {/* <ThemeProvider theme={theme}> */}

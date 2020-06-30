@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect , useState } from "react";
 import PropTypes from "prop-types";
 import { gql } from "apollo-boost";
 import { useQuery, useMutation } from "@apollo/react-hooks";
@@ -15,6 +15,7 @@ import {
 import SearchIcon from "@material-ui/icons/Search";
 import AccountCircle from "@material-ui/icons/AccountCircle";
 import { Link as RouterLink } from "react-router-dom";
+import { Notifications } from './Notifications';
 
 const useStyles = makeStyles((theme) => ({
   grow: {
@@ -83,7 +84,7 @@ const LOGOUT = gql`
   }
 `;
 
-export default function Header({ setLoggedIn, isLoggedIn, client }) {
+export default function Header({ setLoggedIn, isLoggedIn, client, meId, setMeId }) {
   const classes = useStyles();
   const [logout] = useMutation(LOGOUT);
   const { data, refetch } = useQuery(GET_ME);
@@ -94,6 +95,7 @@ export default function Header({ setLoggedIn, isLoggedIn, client }) {
     }
     if (data && data.me) {
       setLoggedIn(true);
+      setMeId(data.me.id);
     } else {
       setLoggedIn(false);
     }
@@ -104,7 +106,9 @@ export default function Header({ setLoggedIn, isLoggedIn, client }) {
   };
 
   const renderUser = (
+    
     <div className="accountIcons">
+      <Notifications meId={meId} />
       <IconButton
         aria-label="account of current user"
         onClick={handleAccountRedirect}
@@ -151,9 +155,9 @@ export default function Header({ setLoggedIn, isLoggedIn, client }) {
       </Button>
     </div>
   );
-
   return (
     <div className={classes.grow}>
+
       <AppBar position="static">
         <Toolbar className={classes.toolbar}>
           <Typography variant="h5" color="inherit" align="left" noWrap>
