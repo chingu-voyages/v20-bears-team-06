@@ -46,8 +46,8 @@ export const UploadExample = () => {
         });
         const { signedRequest, url } = response.data.signS3;
 
-        await uploadToS3(fileToUpload, signedRequest);
-
+        const s3Response = await uploadToS3(fileToUpload, signedRequest);
+        console.log(s3Response);
         //do the rest of mutations for post, profile, etc. using the url variable above
       }}
     >
