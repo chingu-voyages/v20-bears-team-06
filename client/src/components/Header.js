@@ -1,8 +1,6 @@
 import React, { useEffect } from "react";
 import PropTypes from "prop-types";
-import { gql } from "apollo-boost";
 import { useQuery, useMutation } from "@apollo/react-hooks";
-
 import { makeStyles, fade } from "@material-ui/core/styles";
 import {
   AppBar,
@@ -15,32 +13,39 @@ import {
 import SearchIcon from "@material-ui/icons/Search";
 import AccountCircle from "@material-ui/icons/AccountCircle";
 import { Link as RouterLink } from "react-router-dom";
+import { GET_ME } from "../graphql/Queries";
+import { LOGOUT } from "../graphql/Mutations";
 
 const useStyles = makeStyles((theme) => ({
   grow: {
     flexGrow: 1,
   },
-  toolbar: {
-    borderBottom: `1px solid ${theme.palette.divider}`,
-  },
   accountIcons: {
-    position: "relative",
-    marginRight: 0,
-    marginLeft: theme.spacing(1),
+    margin: theme.spacing(1),
+    flexWrap: "nowrap",
+    flexDirection: "row-reverse",
+    display: "flex",
+    textAlign: "center",
+  },
+
+  title: {
+    display: "none",
+    [theme.breakpoints.up("sm")]: {
+      display: "block",
+    },
   },
   search: {
-    flex: 1,
     position: "relative",
     borderRadius: theme.shape.borderRadius,
     backgroundColor: fade(theme.palette.common.white, 0.15),
     "&:hover": {
       backgroundColor: fade(theme.palette.common.white, 0.25),
     },
-    marginRight: theme.spacing(4),
+    marginRight: theme.spacing(2),
     marginLeft: 0,
     width: "100%",
     [theme.breakpoints.up("sm")]: {
-      marginLeft: theme.spacing(1),
+      marginLeft: theme.spacing(3),
       width: "auto",
     },
   },
@@ -68,21 +73,6 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const GET_ME = gql`
-  {
-    me {
-      id
-      name
-    }
-  }
-`;
-
-const LOGOUT = gql`
-  mutation {
-    logout
-  }
-`;
-
 export default function Header({ setLoggedIn, isLoggedIn, client }) {
   const classes = useStyles();
   const [logout] = useMutation(LOGOUT);
@@ -99,15 +89,12 @@ export default function Header({ setLoggedIn, isLoggedIn, client }) {
     }
   });
 
-  const handleAccountRedirect = () => {
-    return null;
-  };
-
   const renderUser = (
-    <div className="accountIcons">
+    <div className={classes.accountIcons}>
       <IconButton
         aria-label="account of current user"
-        onClick={handleAccountRedirect}
+        component={RouterLink}
+        to={`${isLoggedIn ? "/profile/" + data.me.id : "/"}`}
         color="inherit"
       >
         <AccountCircle />
@@ -130,7 +117,7 @@ export default function Header({ setLoggedIn, isLoggedIn, client }) {
   );
 
   const renderGuest = (
-    <div className="accountIcons">
+    <div className={classes.accountIcons}>
       <Button
         component={RouterLink}
         to={"/login"}
@@ -140,6 +127,7 @@ export default function Header({ setLoggedIn, isLoggedIn, client }) {
       >
         Log In
       </Button>
+
       <Button
         component={RouterLink}
         to={"/register"}
@@ -156,7 +144,14 @@ export default function Header({ setLoggedIn, isLoggedIn, client }) {
     <div className={classes.grow}>
       <AppBar position="static">
         <Toolbar className={classes.toolbar}>
-          <Typography variant="h5" color="inherit" align="left" noWrap>
+          <Typography
+            component={RouterLink}
+            to={"/"}
+            variant="h5"
+            color="inherit"
+            align="left"
+            noWrap
+          >
             Teachers App
           </Typography>
           <div className={classes.search}>
@@ -172,6 +167,7 @@ export default function Header({ setLoggedIn, isLoggedIn, client }) {
               inputProps={{ "aria-label": "search" }}
             />
           </div>
+          <div className={classes.grow} />
           {isLoggedIn ? renderUser : renderGuest}
         </Toolbar>
       </AppBar>
