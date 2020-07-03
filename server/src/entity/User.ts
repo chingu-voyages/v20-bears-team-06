@@ -67,15 +67,21 @@ export class User extends BaseEntity {
     return `${parent.department} ${parent.position}`;
   }
 
-  @OneToMany(() => Post, (post) => post.author, { lazy: true })
+  @OneToMany(() => Post, (post) => post.author, { lazy: true, cascade: true })
   @Field(() => [Post])
   posts: Lazy<Post[]>;
 
-  @OneToMany(() => Specialty, (specialty) => specialty.users, { lazy: true })
+  @OneToMany(() => Specialty, (specialty) => specialty.users, {
+    lazy: true,
+    cascade: true,
+  })
   @Field(() => [Specialty])
   specialties: Lazy<Specialty[]>;
 
-  @ManyToMany(() => User, (user) => user.following, { lazy: true })
+  @ManyToMany(() => User, (user) => user.following, {
+    lazy: true,
+    cascade: true,
+  })
   @JoinTable()
   @Field(() => [User])
   followers: Lazy<User[]>;
