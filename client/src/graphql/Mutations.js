@@ -8,6 +8,11 @@ export const LOGIN_MUTATION = gql`
   }
 `;
 
+export const LOGOUT = gql`
+  mutation {
+    logout
+  }
+`;
 export const REGISTER_MUTATION = gql`
   mutation Register(
     $firstName: String!
@@ -33,21 +38,23 @@ export const REGISTER_MUTATION = gql`
 
 export const EDIT_PROFILE_MUTATION = gql`
   mutation editUser(
-    $userId: ID! 
+    $userId: ID!
     $school: String
     $department: String
     $position: String
     $about_me: String
-    $location: String 
+    $location: String
   ) {
-    editUser(edit:{
-      userId: $userId
-      school: $school
-      department: $department
-      position: $position
-      about_me: $about_me
-      location: $location
-    }){
+    editUser(
+      edit: {
+        userId: $userId
+        school: $school
+        department: $department
+        position: $position
+        about_me: $about_me
+        location: $location
+      }
+    ) {
       id
       school
       department
@@ -55,7 +62,7 @@ export const EDIT_PROFILE_MUTATION = gql`
       about_me
       location
     }
-  } 
+  }
 `;
 
 export const ADD_USER_SPEC = gql`
@@ -64,16 +71,18 @@ export const ADD_USER_SPEC = gql`
     $subtitle: String
     $userId: ID
     $postToAdd: ID
-  ){
-    addUserSpecialty(data:{
-      userId: $userId
-      title: $title
-      subtitle: $subtitle
-      postToAdd : $postToAdd
-    }){
+  ) {
+    addUserSpecialty(
+      data: {
+        userId: $userId
+        title: $title
+        subtitle: $subtitle
+        postToAdd: $postToAdd
+      }
+    ) {
       id
       name
-      getSpecialties{
+      getSpecialties {
         id
         title
         subtitle
@@ -83,37 +92,23 @@ export const ADD_USER_SPEC = gql`
 `;
 
 export const FOLLOW_USER_MUTATION = gql`
-  mutation followUser(
-    $userId: ID!
-    $toFollow: ID!
-  ){
-    followUser(users:{
-      userId: $userId,
-      toFollow: $toFollow
-    }){
+  mutation followUser($userId: ID!, $toFollow: ID!) {
+    followUser(users: { userId: $userId, toFollow: $toFollow }) {
       id
       name
-      followers{
+      followers {
         id
         name
       }
     }
   }
-
 `;
-
 
 export const UNFOLLOW_USER_MUTATION = gql`
-  mutation unfollowUser(
-    $userId: ID!,
-    $toUnfollow: ID!){
-      unfollowUser(users:{
-        userId: $userId,
-        toUnfollow: $toUnfollow
-      })      
-    }
+  mutation unfollowUser($userId: ID!, $toUnfollow: ID!) {
+    unfollowUser(users: { userId: $userId, toUnfollow: $toUnfollow })
+  }
 `;
-
 
 export const S3_SIGN_MUTATION = gql`
   mutation SignS3($filename: String!, $filetype: String!) {
