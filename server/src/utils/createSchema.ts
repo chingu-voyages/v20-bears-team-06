@@ -1,3 +1,4 @@
+import { NotificationsResolver } from './../modules/notifications/NotificationsResolver';
 import { ContentFileResolver } from './../modules/contentfile/ContentFileResolver';
 import { CreateUserResolver } from '../modules/user/CreateUser';
 import { RegisterResolver } from '../modules/user/Register';
@@ -38,7 +39,8 @@ export const createSchema = () =>
       CreateUserResolver,
       UserResolver,
       SignS3Resolver,
-      ContentFileResolver
+      ContentFileResolver,
+      NotificationsResolver
     ],
     authChecker: ({ context: { req } }) => {
       return !!req.session.userId;

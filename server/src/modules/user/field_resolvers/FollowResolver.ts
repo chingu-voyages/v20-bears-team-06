@@ -20,6 +20,7 @@ import { User } from '../../../entity/User';
 import { Topic } from '../../../types/Topic';
 import { FollowEventPayload } from '../../../types/Payloads';
 import { FollowEvent } from '../../../types/FollowEvent';
+import { NotificationPayload } from '../../../types/Payloads';
 
 @ArgsType()
 class FollowEventArgs {
@@ -78,10 +79,20 @@ export class FollowResolver {
       following_count: one.following_count,
     };
 
+    await User.addNewNotification({
+      userId: toFollow,
+      type: NotificationType.Follow,
+      message: NotificationType.Follow,
+      fromUserId: userId
+    });
+
+    const notificationPayload: NotificationPayload = new NotificationPayload(toFollow);
+
     
     
 
     pubSub.publish(Topic.FollowEvent, payload);
+    pubSub.publish(Topic.NewNotification, notificationPayload);
     return [one, two];
   }
 

@@ -2,7 +2,7 @@ import { Lazy } from './../utils/Lazy';
 import { User } from './User';
 
 import { Entity, BaseEntity, Column, PrimaryGeneratedColumn,  CreateDateColumn, ManyToOne, RelationId } from 'typeorm';
-import { ObjectType, Field, ID } from 'type-graphql';
+import { ObjectType, Field, ID, ArgsType } from 'type-graphql';
 
 
 
@@ -17,9 +17,9 @@ export class Notification extends BaseEntity {
     @Field(() => ID, {nullable:true})
     id:number;
 
-    @CreateDateColumn()
-    @Field(() => Date)
-    date: Date;
+    @Column({default:new Date().toString()})
+    @Field({defaultValue: new Date().toString()})
+    date: string;
 
     @ManyToOne(() => User, user => user.notifications, {eager:true, cascade:true})
     @Field(() => User)
@@ -40,6 +40,10 @@ export class Notification extends BaseEntity {
 
     @Column({nullable:true})
     @Field()
+    fromUserName: string;
+
+    @Column({nullable:true})
+    @Field()
     type: string;
 
     @Column({nullable:true})
@@ -57,6 +61,8 @@ export class Notification extends BaseEntity {
         .andWhere('notification.seen = :seen', {seen:false})
         .getMany();       
     }
+
+    
 
 
 

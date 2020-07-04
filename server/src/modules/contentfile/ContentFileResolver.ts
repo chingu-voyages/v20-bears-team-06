@@ -71,8 +71,7 @@ export class ContentFileResolver {
         @Root() filesPayload: FilesPayload,
         @Args() {userId}: FilesArgs
     ) : Promise<ContentFile[]|[]>{
-        console.log(filesPayload)
-        console.log(userId);
+        
         let files = await ContentFile.createQueryBuilder('file')
         .where('file.ownerId = :userId',{userId})
         .getMany();

@@ -1,25 +1,8 @@
-import { Int, ID, InterfaceType, Field } from 'type-graphql';
+import { Int, ID, InterfaceType, Field, ObjectType } from 'type-graphql';
 import { SignedS3Payload } from '../entity/SignedS3Payload';
 
 
-@InterfaceType()
-export abstract class NotificationPayload {
-   
-    @Field(() => ID)
-    userId: number;
 
-    @Field(() => ID)
-    fromUserId: number;
-
-    @Field()
-    fromUserName: string;
-
-    @Field()
-    type: string;
-
-    @Field()
-    message: string;
-}
 
 
 @InterfaceType()
@@ -74,6 +57,16 @@ export abstract class FilePayload extends SignedS3Payload {
 
 @InterfaceType()
 export abstract class FilesPayload {
+    userId: number;
+}
+
+@ObjectType()
+export  class NotificationPayload {
+    constructor(userId: any){
+        this.userId = userId;
+    }
+
+    @Field(() => ID)
     userId: number;
 }
 

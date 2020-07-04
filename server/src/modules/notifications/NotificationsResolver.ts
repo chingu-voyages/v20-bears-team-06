@@ -1,4 +1,3 @@
-import { NewNotifications } from './../../entity/Notifications';
 import { Topic } from './../../types/Topic';
 import { User } from './../../entity/User';
 
@@ -14,6 +13,7 @@ import {
   ResolverFilterData,
 } from 'type-graphql';
 import { Notification } from '../../entity/Notification';
+import { NotificationPayload } from '../../types/Payloads';
 
 
 @ArgsType()
@@ -24,30 +24,23 @@ export class NotificationsArgs {
 
 @Resolver()
 export class NotificationsResolver {
-  @Query(() => [Notification])
-  async newNotifications(
-    @Args() { userId }: NotificationsArgs
-  ): Promise<Notification[] | []> {
-    let user = await User.findOne(userId, { relations: ['new_notifications'] });
-    if (!user) return [];
-    let notifications = await user.new_notifications.notifications;
-    if (!notifications) {
-      return [];
-    }
-    return notifications;
+  
+  @Subscription(() => [Notification], {nullable:true, 
+  topics: [Topic.FollowEvent, Topic.NewFile, Topic.NewDownload, Topic.NewUpload],
+  filter : ({ payload, args }: ResolverFilterData<NotificationPayload , NotificationsArgs>)=>{
+   console.log(payload.userId,args.userId);
+   return true;
   }
+})
+  async notificationSub(
+    @Root() payload: NotificationPayload,
+    @Args() { userId } : NotificationsArgs
+  ): Promise<Notification[]|null>{
+    let notifications = await Notification.createQueryBuilder('notification')
+    .where('notification.userId = :userId', {userId})
+    .getMany();
 
-  @Query(() => [Notification])
-  async oldNotifications(
-    @Args() { userId }: NotificationsArgs
-  ): Promise<Notification[] | []> {
-    let user = await User.findOne(userId, { relations: ['old_notifications'] });
-    if (!user) return [];
-    let notifications = await user.old_notifications.notifications;
-    if (!notifications) {
-      return [];
-    }
-    return notifications;
+    return notifications || null;
   }
 
  

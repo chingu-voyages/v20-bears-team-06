@@ -11,11 +11,28 @@ import {
   RelationCount,
   RelationId
 } from 'typeorm';
-import { ObjectType, Field, ID, Root } from 'type-graphql';
+import { ObjectType, Field, ID, Root , ArgsType, Args } from 'type-graphql';
 import { Post } from './Post';
 import { Specialty } from './Specialty';
 import { Lazy } from '../utils/Lazy';
 import { NewFileArgs } from './../modules/contentfile/ContentFileResolver';
+
+@ArgsType()
+export class NewNotificationArgs{
+    @Field(() => ID)
+    userId: number;
+
+    @Field(() => ID)
+    fromUserId: number;
+
+    @Field()
+    type: string;
+
+    @Field()
+    message:string;
+
+    
+}
 
 
 @ObjectType()
@@ -150,6 +167,27 @@ export class User extends BaseEntity {
     if (file) return file;
     return null;
     
+
+  }
+
+  static async addNewNotification(@Args() {userId, type, message, fromUserId }: NewNotificationArgs):
+  Promise<Notification|null>{
+        let user = await this.findOne(userId);
+        let fromUser = await this.findOne(fromUserId);
+        const name = fromUser?.name(fromUser)
+        let notification = await Notification.create({
+          user: user,
+          fromUserId,
+          message,
+          type,
+          url: `/profile/${fromUserId}`,
+          fromUserName: name
+
+
+        }).save();
+
+        return notification||null;
+
 
   }
 
