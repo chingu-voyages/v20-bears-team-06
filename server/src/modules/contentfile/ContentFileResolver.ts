@@ -1,9 +1,10 @@
+import { NotificationType, NotificationString } from './../../types/NotificationEnums';
 
 import { Topic } from './../../types/Topic';
 import { ContentFile } from './../../entity/ContentFile';
 import { Resolver, Query, Mutation, Args, Arg, ArgsType, ID, Field, Subscription, ResolverFilterData, Root, PubSub, PubSubEngine } from 'type-graphql';
 import { User } from '../../entity/User';
-import { FilesPayload } from '../../types/Payloads';
+import { FilesPayload, NotificationPayload } from '../../types/Payloads';
 
 @ArgsType()
 export class NewFileArgs {
@@ -53,10 +54,18 @@ export class ContentFileResolver {
     ): Promise<ContentFile|null>{
 
         let file = await User.addNewFile({userId, filename, filetype, url});
+        await User.addNewNotification({
+            userId,
+            type : NotificationType.FollowingUpload,
+            fromUserId: userId,
+            message: NotificationString.FollowingUpload
+        });
         const payload: FilesPayload = {
             userId: userId
         };
+        const notificationPayload: NotificationPayload = new NotificationPayload(userId);
         pubSub.publish(Topic.NewFile,payload);
+        pubSub.publish(Topic.NewNotification, notificationPayload);
         return file;
         
     }

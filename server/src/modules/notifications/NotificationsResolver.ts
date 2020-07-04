@@ -26,10 +26,9 @@ export class NotificationsArgs {
 export class NotificationsResolver {
   
   @Subscription(() => [Notification], {nullable:true, 
-  topics: [Topic.FollowEvent, Topic.NewFile, Topic.NewDownload, Topic.NewUpload],
+  topics: Topic.NewNotification,
   filter : ({ payload, args }: ResolverFilterData<NotificationPayload , NotificationsArgs>)=>{
-   console.log(payload.userId,args.userId);
-   return true;
+   return payload.userId === args.userId;
   }
 })
   async notificationSub(
