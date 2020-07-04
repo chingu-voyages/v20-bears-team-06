@@ -7,6 +7,7 @@ module.exports =
         logging: true,
         synchronize: true,
         entities: ["src/entity/*.*"],
+        subscribers:["src/subscribers/*.*"],
         extra: {
           ssl: {
             rejectUnauthorized: false,
@@ -24,4 +25,5 @@ module.exports =
         logging: true,
         synchronize: true,
         entities: ["src/entity/*.*"],
+        subscribers: ["src/subscribers/*.*"]
       };

@@ -1,3 +1,4 @@
+import { ContentFileResolver } from './../modules/contentfile/ContentFileResolver';
 import { CreateUserResolver } from '../modules/user/CreateUser';
 import { RegisterResolver } from '../modules/user/Register';
 import { MeResolver } from '../modules/user/Me';
@@ -13,9 +14,10 @@ import { PostsResolver } from '../modules/user/field_resolvers/PostsResolver';
 import { FollowResolver } from '../modules/user/field_resolvers/FollowResolver';
 import { SpecialtyResolver } from '../modules/specialty/SpecialtyResolver';
 import { SpecialtiesResolver } from '../modules/user/field_resolvers/SpecialtiesResolver';
-import { SignS3Resolver } from "../modules/uploads/S3Signed";
+import { SignS3Resolver } from '../modules/uploads/S3Signed';
 import { Container } from 'typedi';
 import { pubSub } from '../redis';
+
 
 
 export const createSchema = () =>
@@ -35,14 +37,15 @@ export const createSchema = () =>
       SpecialtiesResolver,
       CreateUserResolver,
       UserResolver,
-      SignS3Resolver
+      SignS3Resolver,
+      ContentFileResolver
     ],
     authChecker: ({ context: { req } }) => {
       return !!req.session.userId;
     },
     container: Container,
     validate: false,
-    pubSub
+    pubSub,
   });
 
 /*export async function buildTdR(){
@@ -81,4 +84,3 @@ export const createSchema = () =>
   console.log(typeDefs, resolvers);
 
 } */
-

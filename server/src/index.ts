@@ -9,23 +9,17 @@ import cors from 'cors';
 import { redis } from './redis';
 import { createSchema } from './utils/createSchema';
 import { createServer } from 'http';
-import dotenv from 'dotenv';
-dotenv.config({
-  path: './config.env'
-});
 
-
-
-
+console.log(process.env.NODE_ENV);
 
 useContainer(Container);
 
 const main = async () => {
   await createConnection();
 
-  const schema = await createSchema();
+  
 
- 
+  const schema = await createSchema();
 
   const apolloServer = new ApolloServer({
     schema,
@@ -33,8 +27,8 @@ const main = async () => {
     introspection: true,
     playground: true,
     subscriptions: {
-      path: '/subscriptions'
-    }
+      path: '/subscriptions',
+    },
   });
 
   const app = Express();
@@ -72,8 +66,8 @@ const main = async () => {
 
   const httpServer = createServer(app);
 
-  apolloServer.installSubscriptionHandlers(httpServer);
 
+  apolloServer.installSubscriptionHandlers(httpServer);
 
   const PORT = process.env.PORT || 4000;
   httpServer.listen({ port: PORT }, () => {

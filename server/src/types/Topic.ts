@@ -5,4 +5,5 @@ export enum Topic {
   NewDownload = 'NEW_DOWNLOAD',
   NewProfilePic = 'NEW_PROFILE_PIC',
   DeleteContent = 'DELETE_CONTENT',
+  NewFile = 'NEW_FILE'
 }
