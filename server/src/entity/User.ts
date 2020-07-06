@@ -47,10 +47,10 @@ export class AddNewFileArgs{
   userId: number;
 
   @Field()
-  userUrl: string;
+  key: string;
 
   @Field()
-  contentUrl: string;
+  signedRequest: string;
 
   @Field()
   filetype: string;
@@ -239,7 +239,7 @@ export class User extends BaseEntity {
   };
 
   static async addNewFile(
-    @Args() {userId, userUrl, contentUrl, filetype, filename }: AddNewFileArgs
+    @Args() {userId, key, signedRequest, filetype, filename }: AddNewFileArgs
   ): Promise<ContentFile|undefined>{
     let user = await this.findOne(userId);
     if (!user) return;
@@ -247,7 +247,8 @@ export class User extends BaseEntity {
     if(!uploads) return;
     let newFile = await ContentFile.create({
       owner: user,
-      url: contentUrl,
+      signedRequest,
+      key,
       filetype,
       filename
 
@@ -263,7 +264,7 @@ export class User extends BaseEntity {
   };
 
   static async getNewFollowerNotifications(@Arg('userId') userId:number){
-   let user = await this.findOne(userId);
+   let user = await this.findOne(userId,);
    if (user){
      console.log(user);
      let notifications = (await user.notifications_fromFollowers).filter(el=>el.seen===false);

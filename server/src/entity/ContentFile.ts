@@ -42,6 +42,14 @@ export class ContentFile extends BaseEntity{
     @Field()
     url: string;
 
+    @Column({nullable:true})
+    @Field({nullable:true})
+    signedRequest: string;
+
+    @Column({nullable:true})
+    @Field({nullable:true})
+    key: string;
+
     @Column({default:0})
     @Field(() => Int, {defaultValue:0})
     download_count: number;

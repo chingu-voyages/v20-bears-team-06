@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { useQuery } from '@apollo/react-hooks';
-import { FOLLOWER_IDS , GET_PROFILE } from './Queries';
+import { useQuery , useMutation } from '@apollo/react-hooks';
+import { FOLLOWER_IDS , GET_PROFILE, GET_FILES } from './Queries';
+import { SET_SEEN } from './Mutations';
+
 
 
 
@@ -20,5 +22,19 @@ export async function useProfile(userId){
     
 
 }
+
+
+export function useSetSeen(notifications){
+    const { data, loading } = useMutation(SET_SEEN, {
+        variables:{notificationIds:notifications}
+    });
+
+    if(!loading&&data.setSeen){
+        return data.setSeen;
+    }
+};
+
+
+
 
 

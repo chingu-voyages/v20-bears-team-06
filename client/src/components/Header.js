@@ -95,6 +95,7 @@ export default function Header({ setLoggedIn, isLoggedIn, client, meId, setMeId 
   let history = useHistory();
 
   useEffect(() => {
+    if (isLoggedIn) return;
     if (isLoggedIn !== (data && data.me)) {
       refetch();
     }
@@ -117,7 +118,7 @@ export default function Header({ setLoggedIn, isLoggedIn, client, meId, setMeId 
   const renderUser = (
     
     <div className="accountIcons">
-      <NotificationsPopover meId={meId} />
+      {isLoggedIn&&<NotificationsPopover meId={meId} />}
       <IconButton
         aria-label="account of current user"
         component={RouterLink}

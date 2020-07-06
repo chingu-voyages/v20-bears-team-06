@@ -52,7 +52,8 @@ export const UploadExample = () => {
         const response = await signS3({
           variables: {
             filename: formatFileName(name),
-            filetype: type
+            filetype: type,
+            meId
           },
         });
         const { signedRequest, url } = response.data.signS3;

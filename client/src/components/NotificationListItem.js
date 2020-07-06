@@ -8,11 +8,11 @@ import Typography from '@material-ui/core/Typography';
 
 
 
-export function NotificationListItem({notification}){
+export function NotificationListItem({notification, history}){
 
     return(
         <>
-        <ListItem alignItems='flex-start'>
+        <ListItem button={true} onClick={()=>history.push(notification.url)}  alignItems='flex-start'>
             <ListItemAvatar>
                 <Avatar src={notification.avatarUrl} alt={notification.fromUserName} />
             </ListItemAvatar>

@@ -97,15 +97,12 @@ export class NotificationsResolver {
   }*/
   @Query(() => [NotificationObject])
   async newNotifications(@Args() {userId}: NotificationSubArgs){
-    const result:NotificationObject[] = [];
+    const result:any[] = [];
     let followingNotifications = await User.getNewFollowerNotifications(userId);
     let notifications = await User.getNewNotifications(userId);
     if (followingNotifications){
       followingNotifications.forEach(note=>{
-        let obj: NotificationObject = {
-        ...note
-
-        };
+        let obj = note;
         result.push(obj);
       })
     }
