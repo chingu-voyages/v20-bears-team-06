@@ -1,24 +1,24 @@
-import { Topic } from './../../types/Topic';
-import { ToFollowerNotification } from './../../entity/ToFollowerNotification';
-import { Notification } from './../../entity/Notification';
-import {
-  AddNotificationPayload,
-  AddToFollowerPayload,
-} from './types/NotificationPayloads';
-import { User } from '../../entity/User';
+import { Topic } from "./../../types/Topic";
+import { ToFollowerNotification } from "./../../entity/ToFollowerNotification";
+import { Notification } from "./../../entity/Notification";
+// import {
+//   AddNotificationPayload,
+//   AddToFollowerPayload,
+// } from './types/NotificationPayloads';
+import { User } from "../../entity/User";
 
 import {
   Query,
   Resolver,
   Subscription,
-  Root,
+  // Root,
   Args,
   ArgsType,
   ID,
   Field,
   Mutation,
-} from 'type-graphql';
-import { NotificationObject } from './types/NotificationObject';
+} from "type-graphql";
+import { NotificationObject } from "./types/NotificationObject";
 
 @ArgsType()
 export class SetSeenArgs {
@@ -36,8 +36,8 @@ export class NotificationSubArgs {
 export class NotificationsResolver {
   @Mutation(() => Boolean)
   async setSeen(@Args() { notificationIds }: SetSeenArgs): Promise<Boolean> {
-    let notes = await Notification.createQueryBuilder('notification')
-      .where('notification.id IN (:...notificationIds)', { notificationIds })
+    let notes = await Notification.createQueryBuilder("notification")
+      .where("notification.id IN (:...notificationIds)", { notificationIds })
       .getMany();
 
     if (notes.length >= 1) {
@@ -48,9 +48,9 @@ export class NotificationsResolver {
     }
 
     let followNotes = await ToFollowerNotification.createQueryBuilder(
-      'toFollowerNotification'
+      "toFollowerNotification"
     )
-      .where('toFollowerNotification.id IN (:...notificationIds)', {
+      .where("toFollowerNotification.id IN (:...notificationIds)", {
         notificationIds,
       })
       .getMany();
@@ -96,67 +96,64 @@ export class NotificationsResolver {
     return notifications;
   }*/
   @Query(() => [NotificationObject])
-  async newNotifications(@Args() {userId}: NotificationSubArgs){
-    const result:NotificationObject[] = [];
+  async newNotifications(@Args() { userId }: NotificationSubArgs) {
+    const result: NotificationObject[] = [];
     let followingNotifications = await User.getNewFollowerNotifications(userId);
     let notifications = await User.getNewNotifications(userId);
-    if (followingNotifications){
-      followingNotifications.forEach(note=>{
+    if (followingNotifications) {
+      followingNotifications.forEach((note) => {
         let obj: NotificationObject = {
-        ...note
-
+          ...note,
         };
         result.push(obj);
-      })
+      });
     }
 
-    if (notifications){
-      notifications.forEach(note=>{
+    if (notifications) {
+      notifications.forEach((note) => {
         let obj: NotificationObject = {
-          ...note
-        }
+          ...note,
+        };
         result.push(obj);
       });
-     
     }
 
     return result;
-
   }
 
   @Subscription(() => [NotificationObject], {
     topics: Topic.NewNotification,
-    filter: ( {payload, args }) => {
-      if (payload.hasOwnProperty('ownerIds')){
+    filter: ({ payload, args }) => {
+      if (payload.hasOwnProperty("ownerIds")) {
         let id = Number(args.userId);
         return payload.ownerIds.includes(id);
       }
       return payload.userId === args.userId;
-    }
+    },
   })
-  async notificationsSub(@Args() {userId}:NotificationSubArgs,
-  @Root() payload:any):Promise<NotificationObject[]|[]>{
-    const result:NotificationObject[] = [];
+  async notificationsSub(
+    @Args() { userId }: NotificationSubArgs
+  ): // @Root() payload: any
+  Promise<NotificationObject[] | []> {
+    const result: NotificationObject[] = [];
     let followingNotifications = await User.getNewFollowerNotifications(userId);
     let notifications = await User.getNewNotifications(userId);
-    if (followingNotifications){
-      followingNotifications.forEach(note=>{
+    if (followingNotifications) {
+      followingNotifications.forEach((note) => {
         let obj: NotificationObject = {
-        ...note
-
+          ...note,
         };
         result.push(obj);
-      })
+      });
     }
 
-    if (notifications){
-      notifications.forEach(note=>{
+    if (notifications) {
+      notifications.forEach((note) => {
         let obj: NotificationObject = {
-          ...note
-        }
+          ...note,
+        };
         result.push(obj);
       });
-     
     }
 
     return result;
