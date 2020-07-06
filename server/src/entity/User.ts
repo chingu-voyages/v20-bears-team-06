@@ -77,7 +77,7 @@ export class User extends BaseEntity {
   lastName: string;
 
   @Field()
-  @Column('text', { unique: true })
+  @Column("text", { unique: true })
   email: string;
 
   @Field({ complexity: 3 })
@@ -87,18 +87,18 @@ export class User extends BaseEntity {
   @Column()
   password: string;
 
-  @Column('bool', { default: false })
+  @Column("bool", { default: false })
   confirmed: boolean;
 
   @Column({ default: '' })
   @Field(() => String!)
   school: string;
 
-  @Column({ default: '' })
+  @Column({ default: "" })
   @Field(() => String!)
   department: string;
 
-  @Column({ default: '' })
+  @Column({ default: "" })
   @Field(() => String!)
   position: string;
 
@@ -161,7 +161,6 @@ export class User extends BaseEntity {
   })
   @Field(() => [Specialty])
   specialties: Lazy<Specialty[]>;
-
 
   @ManyToMany(() => User, (user) => user.following, {
     lazy: true,

@@ -1,8 +1,6 @@
 import React, { useEffect , useState } from "react";
 import PropTypes from "prop-types";
-import { gql } from "apollo-boost";
 import { useQuery, useMutation } from "@apollo/react-hooks";
-
 import { makeStyles, fade } from "@material-ui/core/styles";
 import {
   AppBar,
@@ -21,27 +19,32 @@ const useStyles = makeStyles((theme) => ({
   grow: {
     flexGrow: 1,
   },
-  toolbar: {
-    borderBottom: `1px solid ${theme.palette.divider}`,
-  },
   accountIcons: {
-    position: "relative",
-    marginRight: 0,
-    marginLeft: theme.spacing(1),
+    margin: theme.spacing(1),
+    flexWrap: "nowrap",
+    flexDirection: "row-reverse",
+    display: "flex",
+    textAlign: "center",
+  },
+
+  title: {
+    display: "none",
+    [theme.breakpoints.up("sm")]: {
+      display: "block",
+    },
   },
   search: {
-    flex: 1,
     position: "relative",
     borderRadius: theme.shape.borderRadius,
     backgroundColor: fade(theme.palette.common.white, 0.15),
     "&:hover": {
       backgroundColor: fade(theme.palette.common.white, 0.25),
     },
-    marginRight: theme.spacing(4),
+    marginRight: theme.spacing(2),
     marginLeft: 0,
     width: "100%",
     [theme.breakpoints.up("sm")]: {
-      marginLeft: theme.spacing(1),
+      marginLeft: theme.spacing(3),
       width: "auto",
     },
   },
@@ -88,6 +91,7 @@ export default function Header({ setLoggedIn, isLoggedIn, client, meId, setMeId 
   const classes = useStyles();
   const [logout] = useMutation(LOGOUT);
   const { data, refetch } = useQuery(GET_ME);
+  let history = useHistory();
 
   useEffect(() => {
     if (isLoggedIn !== (data && data.me)) {
@@ -101,9 +105,13 @@ export default function Header({ setLoggedIn, isLoggedIn, client, meId, setMeId 
     }
   });
 
-  const handleAccountRedirect = () => {
-    return null;
-  };
+  function search(terms) {
+    console.log("search values is", terms);
+    history.push("/search", { searchTerm: terms });
+  }
+
+  console.log("data is ", JSON.stringify(data));
+  console.log("is logged in? ", isLoggedIn);
 
   const renderUser = (
     
@@ -111,7 +119,8 @@ export default function Header({ setLoggedIn, isLoggedIn, client, meId, setMeId 
       <Notifications meId={meId} />
       <IconButton
         aria-label="account of current user"
-        onClick={handleAccountRedirect}
+        component={RouterLink}
+        to={`${data && data.me ? "/profile/" + data.me.id : "/"}`}
         color="inherit"
       >
         <AccountCircle />
@@ -134,7 +143,7 @@ export default function Header({ setLoggedIn, isLoggedIn, client, meId, setMeId 
   );
 
   const renderGuest = (
-    <div className="accountIcons">
+    <div className={classes.accountIcons}>
       <Button
         component={RouterLink}
         to={"/login"}
@@ -144,6 +153,7 @@ export default function Header({ setLoggedIn, isLoggedIn, client, meId, setMeId 
       >
         Log In
       </Button>
+
       <Button
         component={RouterLink}
         to={"/register"}
@@ -160,7 +170,14 @@ export default function Header({ setLoggedIn, isLoggedIn, client, meId, setMeId 
 
       <AppBar position="static">
         <Toolbar className={classes.toolbar}>
-          <Typography variant="h5" color="inherit" align="left" noWrap>
+          <Typography
+            component={RouterLink}
+            to={"/"}
+            variant="h5"
+            color="inherit"
+            align="left"
+            noWrap
+          >
             Teachers App
           </Typography>
           <div className={classes.search}>
@@ -174,16 +191,15 @@ export default function Header({ setLoggedIn, isLoggedIn, client, meId, setMeId 
                 input: classes.inputInput,
               }}
               inputProps={{ "aria-label": "search" }}
+              onKeyUp={(event) => {
+                if (event.key == "Enter") search(event.target.value);
+              }}
             />
           </div>
+          <div className={classes.grow} />
           {isLoggedIn ? renderUser : renderGuest}
         </Toolbar>
       </AppBar>
     </div>
   );
 }
-
-Header.propTypes = {
-  sections: PropTypes.array,
-  title: PropTypes.string,
-};

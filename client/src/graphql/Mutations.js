@@ -8,6 +8,11 @@ export const LOGIN_MUTATION = gql`
   }
 `;
 
+export const LOGOUT = gql`
+  mutation {
+    logout
+  }
+`;
 export const REGISTER_MUTATION = gql`
   mutation Register(
     $firstName: String!
