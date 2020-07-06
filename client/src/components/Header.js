@@ -1,5 +1,6 @@
-import React, { useEffect } from "react";
+import React, { useEffect , useState } from "react";
 import PropTypes from "prop-types";
+import  gql  from 'graphql-tag';
 import { useQuery, useMutation } from "@apollo/react-hooks";
 import { makeStyles, fade } from "@material-ui/core/styles";
 import {
@@ -13,8 +14,7 @@ import {
 import SearchIcon from "@material-ui/icons/Search";
 import AccountCircle from "@material-ui/icons/AccountCircle";
 import { Link as RouterLink, useHistory } from "react-router-dom";
-import { GET_ME, SEARCH_USERS } from "../graphql/Queries";
-import { LOGOUT } from "../graphql/Mutations";
+import { NotificationsPopover } from './mui_components/NotificationsPopover';
 
 const useStyles = makeStyles((theme) => ({
   grow: {
@@ -73,7 +73,22 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Header({ setLoggedIn, isLoggedIn, client }) {
+const GET_ME = gql`
+  {
+    me {
+      id
+      name
+    }
+  }
+`;
+
+const LOGOUT = gql`
+  mutation {
+    logout
+  }
+`;
+
+export default function Header({ setLoggedIn, isLoggedIn, client, meId, setMeId }) {
   const classes = useStyles();
   const [logout] = useMutation(LOGOUT);
   const { data, refetch } = useQuery(GET_ME);
@@ -85,6 +100,7 @@ export default function Header({ setLoggedIn, isLoggedIn, client }) {
     }
     if (data && data.me) {
       setLoggedIn(true);
+      setMeId(data.me.id);
     } else {
       setLoggedIn(false);
     }
@@ -99,7 +115,9 @@ export default function Header({ setLoggedIn, isLoggedIn, client }) {
   console.log("is logged in? ", isLoggedIn);
 
   const renderUser = (
-    <div className={classes.accountIcons}>
+    
+    <div className="accountIcons">
+      <NotificationsPopover meId={meId} />
       <IconButton
         aria-label="account of current user"
         component={RouterLink}
@@ -148,9 +166,9 @@ export default function Header({ setLoggedIn, isLoggedIn, client }) {
       </Button>
     </div>
   );
-
   return (
     <div className={classes.grow}>
+
       <AppBar position="static">
         <Toolbar className={classes.toolbar}>
           <Typography

@@ -1,9 +1,12 @@
+import { ContentFile } from './ContentFile';
 import {
   Entity,
   PrimaryGeneratedColumn,
   Column,
   BaseEntity,
   ManyToOne,
+  ManyToMany,
+  JoinTable,
 } from 'typeorm';
 import { ObjectType, Field, ID } from 'type-graphql';
 import { User } from './User';
@@ -28,4 +31,11 @@ export class Specialty extends BaseEntity {
   @Field(() => User)
   @ManyToOne(() => User, { lazy: true })
   users: Lazy<User[]>;
+
+  @ManyToMany(() => ContentFile, file => file.categories, {lazy:true})
+  @JoinTable()
+  @Field(() => [ContentFile])
+  files: Lazy<ContentFile[]>;
+
+
 }

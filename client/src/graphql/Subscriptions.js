@@ -14,3 +14,19 @@ export const FOLLOWER_SUB = gql`
 
 
 
+export const NOTIFICATIONS = gql`
+    subscription notificationsSub($userId: ID!) {
+        notificationsSub(userId: $userId){
+            id
+            created_on
+            type
+            message
+            fromUserName
+            fromUserId
+            url
+        }
+    }
+`;
+
+
+
