@@ -1,6 +1,6 @@
-import { NotificationMessage } from './../../notifications/types/NotificationMessage';
-import { NotificationPayload, AddNotificationPayload } from '../../notifications/types/NotificationPayloads';
-import { NotificationType } from './../../notifications/types/NotificationType';
+import { NotificationMessage } from "./../../notifications/types/NotificationMessage";
+import { AddNotificationPayload } from "../../notifications/types/NotificationPayloads";
+import { NotificationType } from "./../../notifications/types/NotificationType";
 import {
   Field,
   ID,
@@ -15,13 +15,13 @@ import {
   PubSub,
   PubSubEngine,
   Subscription,
-  Args
-} from 'type-graphql';
-import { FollowInput } from './FollowInput';
-import { User } from '../../../entity/User';
-import { Topic } from '../../../types/Topic';
-import { FollowEventPayload } from '../../../types/Payloads';
-import { FollowEvent } from '../../../types/FollowEvent';
+  // Args,
+} from "type-graphql";
+import { FollowInput } from "./FollowInput";
+import { User } from "../../../entity/User";
+import { Topic } from "../../../types/Topic";
+import { FollowEventPayload } from "../../../types/Payloads";
+import { FollowEvent } from "../../../types/FollowEvent";
 
 @ArgsType()
 class FollowEventArgs {
@@ -30,7 +30,7 @@ class FollowEventArgs {
 }
 
 @ArgsType()
-export class AddNotificationArgs{
+export class AddNotificationArgs {
   @Field(() => ID)
   userId: number;
 
@@ -38,10 +38,10 @@ export class AddNotificationArgs{
   fromUserId: number;
 
   @Field()
-  type:string;
+  type: string;
 
   @Field()
-  message:string;
+  message: string;
 
   @Field()
   fromUserName: string;
@@ -49,17 +49,15 @@ export class AddNotificationArgs{
   @Field()
   url: string;
 
-  @Field({defaultValue:false})
+  @Field({ defaultValue: false })
   toFollowers: boolean;
-
 }
 
-
-@Resolver(()=>User)
+@Resolver(() => User)
 export class FollowResolver {
   @Mutation(() => [User])
   async followUser(
-    @Arg('users') { userId, toFollow }: FollowInput,
+    @Arg("users") { userId, toFollow }: FollowInput,
     @PubSub() pubSub: PubSubEngine
   ): Promise<User[] | undefined> {
     let one = await User.findOne(userId);
@@ -101,7 +99,7 @@ export class FollowResolver {
       dateString: Date.now().toString(),
       followerId: userId,
       follower_name: one.name(one),
-      event_type: 'follow',
+      event_type: "follow",
       follower_count: two.follower_count,
       following_count: one.following_count,
     };
@@ -113,9 +111,8 @@ export class FollowResolver {
       type: NotificationType.Follow,
       message: NotificationMessage.Follow,
       url: `/profile/${userId}`,
-      toFollowers: false
+      toFollowers: false,
     };
-
 
     let addArgs: AddNotificationArgs = {
       userId: toFollow,
@@ -124,28 +121,17 @@ export class FollowResolver {
       type: NotificationType.Follow,
       message: NotificationMessage.Follow,
       fromUserName: await User.getName(userId),
-      toFollowers: false
+      toFollowers: false,
     };
 
     let success;
-    if (addArgs){
-      success = await User.addNotification(addArgs)
+    if (addArgs) {
+      success = await User.addNotification(addArgs);
     }
 
-
-
-    
-
-    
-
-    
-
-    
-    
-
-    if (success){
-    pubSub.publish(Topic.NewNotification, addNotification)
-    };
+    if (success) {
+      pubSub.publish(Topic.NewNotification, addNotification);
+    }
     pubSub.publish(Topic.FollowEvent, payload);
     return [one, two];
   }
@@ -162,37 +148,19 @@ export class FollowResolver {
     },
   })
   newFollowEvents(
-    @Root() newFollowEvent: FollowEventPayload,
-    @Args() { userId }: FollowEventArgs
+    @Root() newFollowEvent: FollowEventPayload
+    // @Args() { userId }: FollowEventArgs
   ): FollowEvent {
-
     return {
       toFollowId: newFollowEvent.toFollowId,
       followerId: newFollowEvent.followerId,
       follower_count: newFollowEvent.follower_count,
       date: new Date(),
       follower_name: newFollowEvent.follower_name,
-      following_count: newFollowEvent.following_count
-    }
-      
+      following_count: newFollowEvent.following_count,
+    };
+  }
 
-    
-    
-
-    
-  };
-
-    
-
-
-
-    
-    
-    
-
-
-    
-  
   @FieldResolver(() => [User])
   @Query(() => [User])
   async following(@Root() user: User): Promise<User[] | undefined> {
@@ -202,7 +170,7 @@ export class FollowResolver {
 
   @Mutation(() => Boolean)
   async unfollowUser(
-    @Arg('users') { userId, toUnfollow }: FollowInput,
+    @Arg("users") { userId, toUnfollow }: FollowInput,
     @PubSub() pubSub: PubSubEngine
   ): Promise<Boolean> {
     let user = await User.findOne(toUnfollow);
@@ -223,15 +191,12 @@ export class FollowResolver {
               dateString: Date.now().toString(),
               followerId: userId,
               follower_name: unfollower.name(unfollower),
-              event_type: 'unfollow',
+              event_type: "unfollow",
               follower_count: updatedUser.follower_count,
               following_count: unfollower.following_count,
             };
 
-            
-
             pubSub.publish(Topic.FollowEvent, payload);
-          
 
             return true;
           }
