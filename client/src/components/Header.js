@@ -1,5 +1,6 @@
 import React, { useEffect , useState } from "react";
 import PropTypes from "prop-types";
+import  gql  from 'graphql-tag';
 import { useQuery, useMutation } from "@apollo/react-hooks";
 import { makeStyles, fade } from "@material-ui/core/styles";
 import {
@@ -12,7 +13,7 @@ import {
 } from "@material-ui/core";
 import SearchIcon from "@material-ui/icons/Search";
 import AccountCircle from "@material-ui/icons/AccountCircle";
-import { Link as RouterLink } from "react-router-dom";
+import { Link as RouterLink, useHistory } from "react-router-dom";
 import { Notifications } from './Notifications';
 
 const useStyles = makeStyles((theme) => ({

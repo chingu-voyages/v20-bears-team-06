@@ -16,8 +16,8 @@ export class ToFollowerNotification extends BaseEntity{
     isToFollower: boolean;
 
     @CreateDateColumn({type:'date'})
-    @Field(() => Date)
-    created_on: Date;
+    @Field()
+    created_on: string;
 
     @Field({nullable:true})
     @Column({nullable:true})

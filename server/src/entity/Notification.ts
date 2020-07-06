@@ -15,8 +15,8 @@ export class Notification extends BaseEntity{
     isNotification: boolean;
 
     @CreateDateColumn({type:'date'})
-    @Field(() => Date)
-    created_on: Date;
+    @Field()
+    created_on: string;
 
     @Field()
     @Column({nullable:true})

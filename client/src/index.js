@@ -17,7 +17,7 @@ const graphqlUrl =
 
 const wsUrl =
   process.env.NODE_ENV === "development"
-    ? "wss://localhost:4000/subscriptions"
+    ? "ws://localhost:4000/subscriptions"
     : "wss://chingu-bears-06.herokuapp.com/subscriptions";
 
 const httpLink = new HttpLink({
