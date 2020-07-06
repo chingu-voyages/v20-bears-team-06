@@ -1,5 +1,3 @@
-
-
 import {
   Resolver,
   Query,
@@ -24,16 +22,6 @@ class GetUserArgs {
 export class UserResolver {
   @Query(() => User)
   async user(@Args() { userId }: GetUserArgs): Promise<User | undefined> {
-    
-
-
-
-
-   
-
-    
-
-
     return User.findOne(userId) || undefined;
   }
 
@@ -55,7 +43,7 @@ export class UserResolver {
 
   @Mutation(() => User)
   async editUser(
-    @Arg('edit')
+    @Arg("edit")
     { school, department, position, userId, about_me, location }: EditUserInput
   ): Promise<User | undefined> {
     try {
