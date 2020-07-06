@@ -11,8 +11,7 @@ export class Notification extends BaseEntity{
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Field({defaultValue:true})
-    isNotification: boolean;
+   
 
     @CreateDateColumn({type:'date'})
     @Field()

@@ -95,7 +95,7 @@ export class ContentFileResolver {
             let owners = await fileNotification.owners;
             const toFollowerPayload: AddToFollowerPayload= new AddToFollowerPayload();
             toFollowerPayload.ownerIds = owners.map(el=>el.id);
-            pubSub.publish(Topic.NewToFollowerNotification, toFollowerPayload);
+            pubSub.publish(Topic.NewNotification, toFollowerPayload);
             };
 
             

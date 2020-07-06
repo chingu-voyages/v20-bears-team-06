@@ -14,7 +14,7 @@ import {
 import SearchIcon from "@material-ui/icons/Search";
 import AccountCircle from "@material-ui/icons/AccountCircle";
 import { Link as RouterLink, useHistory } from "react-router-dom";
-import { Notifications } from './Notifications';
+import { NotificationsPopover } from './mui_components/NotificationsPopover';
 
 const useStyles = makeStyles((theme) => ({
   grow: {
@@ -117,7 +117,7 @@ export default function Header({ setLoggedIn, isLoggedIn, client, meId, setMeId 
   const renderUser = (
     
     <div className="accountIcons">
-      <Notifications meId={meId} />
+      <NotificationsPopover meId={meId} />
       <IconButton
         aria-label="account of current user"
         component={RouterLink}

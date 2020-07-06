@@ -12,16 +12,18 @@ export abstract class NotificationObject {
     @Field(() => ID, {nullable:true})
     fromUserId: number;
 
-    @Field(() => ID, {nullable:true})
-    userId: number;
+    
 
     @Field()
     message: string;
 
     @Field(() => ID)
-    notificationId: number;
+    id: number;
 
-    @Field(() => Date, {defaultValue:Date.now()})
-    date: Date;
+    @Field()
+    created_on: string;
+
+    @Field()
+    fromUserName: string;
 
 }

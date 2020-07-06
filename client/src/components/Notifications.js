@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
-import { useSubscription } from '@apollo/react-hooks';
-import { FOLLOWER_SUB, NOTIFICATIONS_FROM_FOLLOWING, NOTIFICATIONS } from '../graphql/Subscriptions';
+import React, { useState, useEffect } from 'react';
+import { useSubscription, useQuery } from '@apollo/react-hooks';
+import { NOTIFICATIONS } from '../graphql/Subscriptions';
+import { NOTIFICATION_QUERY } from '../graphql/Queries';
 import { IconButton } from '@material-ui/core';
 import { SvgIcon } from '@material-ui/core';
 import { Badge } from '@material-ui/core';
@@ -14,56 +15,53 @@ const useStyles = makeStyles((theme)=>({
     }
 }))
 
-const useFollowing = async (meId) => {
-    const response = await useSubscription(NOTIFICATIONS_FROM_FOLLOWING,{
-        variables:{userId:meId}
+const useNotes = (meId) => {
+    const {data, loading} = useSubscription(NOTIFICATIONS,{
+        variables:{userId:meId},
+        shouldResubscribe: true
     });
 
-    console.log(response);
-}
-
-const useNotification =  (meId) => {
-    const { data, loading, error } = useSubscription(NOTIFICATIONS,{
-        variables: {userId:meId}
-    });
-
-    if (!loading&&data){
-        console.log(data);
+    if (!loading&&data.notificationSub){
+        console.log(data.notificationSub)
         return data.notificationSub;
     }
+
 }
 
-const useNotificationSubs = (meId)=> {
-    const notes = useNotification(meId);
-    const fromFollowing = useFollowing(meId);
+const useNoteQuery = (meId) => {
+    const { data, loading } = useQuery(NOTIFICATION_QUERY, {
+        variables: {userId: meId}
+    });
 
-    if (notes&&fromFollowing){
-        return notes.concat(fromFollowing);
+    if (!loading&&data.newNotifications){
+        return data.newNotifications;
 
     }
-
-    return [];
-    
 }
 
-export const Notifications = ({meId}) => {
+
+
+
+
+
+export const Notifications = (props) => {
+    const [notifications, setNotifications] = useState([]);
+    let notes = useNotes(props.meId);
+    let qNotes = useNoteQuery(props.meId);
+    notes = notes?notes:qNotes;
+    const classes = useStyles();
 
     
-   const newNotifications = useNotificationSubs(meId);
+    console.log(props);
 
-   console.log(newNotifications)
 
-   const [notificationCount, setNotificationCount] = useState(newNotifications.length);
-   const [notificaitons, setNotifications ] = useState(newNotifications);
-
-    const classes = useStyles();
 
     
     return (
         <IconButton>
-            <Badge className={classes.icon} badgeContent={notificationCount}>
+            <Badge className={classes.icon} badgeContent={(notes&&notes.length)||null}>
                 <SvgIcon className={classes.icon} >
-                    <NotifcationsIcon/>
+                    <NotifcationsIcon {...props.trigger}/>
                 </SvgIcon>
             </Badge>
         </IconButton>

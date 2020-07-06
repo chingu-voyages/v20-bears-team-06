@@ -144,7 +144,7 @@ export class FollowResolver {
     
 
     if (success){
-    pubSub.publish(Topic.AddNotification, addNotification)
+    pubSub.publish(Topic.NewNotification, addNotification)
     };
     pubSub.publish(Topic.FollowEvent, payload);
     return [one, two];

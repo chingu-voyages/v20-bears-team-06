@@ -12,23 +12,11 @@ export const FOLLOWER_SUB = gql`
     }
 `;
 
-export const NOTIFICATIONS_FROM_FOLLOWING = gql`
-    subscription toFollowerSub($userId: ID!) {
-        toFollowerSub(userId: $userId){
-            id
-            created_on
-            type
-            message
-            fromUserName
-            fromUserId
-            url
-        }
-    }
-`;
+
 
 export const NOTIFICATIONS = gql`
-    subscription notificationSub($userId: ID!) {
-        notificationSub(userId: $userId){
+    subscription notificationsSub($userId: ID!) {
+        notificationsSub(userId: $userId){
             id
             created_on
             type

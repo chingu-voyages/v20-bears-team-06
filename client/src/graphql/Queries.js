@@ -9,6 +9,19 @@ export const GET_ME = gql`
   }
 `;
 
+export const NOTIFICATION_QUERY = gql`
+  query newNotifications($userId: ID!){
+    newNotifications(userId: $userId){
+      type
+      message
+      fromUserName
+      fromUserId
+      id
+      url
+    }
+  }
+`;
+
 export const SEARCH_USERS = gql`
   query searchUsers($searchTerm: String!) {
     users(searchTerm: $searchTerm) {

@@ -2,13 +2,13 @@ import { Topic } from './../../types/Topic';
 import { ToFollowerNotification } from './../../entity/ToFollowerNotification';
 import { Notification } from './../../entity/Notification';
 import {
-  
   AddNotificationPayload,
   AddToFollowerPayload,
 } from './types/NotificationPayloads';
 import { User } from '../../entity/User';
 
 import {
+  Query,
   Resolver,
   Subscription,
   Root,
@@ -18,6 +18,7 @@ import {
   Field,
   Mutation,
 } from 'type-graphql';
+import { NotificationObject } from './types/NotificationObject';
 
 @ArgsType()
 export class SetSeenArgs {
@@ -65,7 +66,7 @@ export class NotificationsResolver {
     return false;
   }
 
-  @Subscription(() => [ToFollowerNotification], {
+  /*@Subscription(() => [ToFollowerNotification], {
     topics: Topic.NewToFollowerNotification,
     filter: ({ payload, args }) => {
       let id = Number(args.userId);
@@ -84,8 +85,8 @@ export class NotificationsResolver {
   @Subscription(() => [Notification], {
     topics: Topic.AddNotification,
     filter: ({ payload, args }) => {
-      return payload.userId === args.userId
-    }
+      return payload.userId === args.userId;
+    },
   })
   async notificationSub(
     @Args() { userId }: NotificationSubArgs,
@@ -93,5 +94,71 @@ export class NotificationsResolver {
   ): Promise<Notification[] | []> {
     const notifications = await User.getNewNotifications(userId);
     return notifications;
+  }*/
+  @Query(() => [NotificationObject])
+  async newNotifications(@Args() {userId}: NotificationSubArgs){
+    const result:NotificationObject[] = [];
+    let followingNotifications = await User.getNewFollowerNotifications(userId);
+    let notifications = await User.getNewNotifications(userId);
+    if (followingNotifications){
+      followingNotifications.forEach(note=>{
+        let obj: NotificationObject = {
+        ...note
+
+        };
+        result.push(obj);
+      })
+    }
+
+    if (notifications){
+      notifications.forEach(note=>{
+        let obj: NotificationObject = {
+          ...note
+        }
+        result.push(obj);
+      });
+     
+    }
+
+    return result;
+
+  }
+
+  @Subscription(() => [NotificationObject], {
+    topics: Topic.NewNotification,
+    filter: ( {payload, args }) => {
+      if (payload.hasOwnProperty('ownerIds')){
+        let id = Number(args.userId);
+        return payload.ownerIds.includes(id);
+      }
+      return payload.userId === args.userId;
+    }
+  })
+  async notificationsSub(@Args() {userId}:NotificationSubArgs,
+  @Root() payload:any):Promise<NotificationObject[]|[]>{
+    const result:NotificationObject[] = [];
+    let followingNotifications = await User.getNewFollowerNotifications(userId);
+    let notifications = await User.getNewNotifications(userId);
+    if (followingNotifications){
+      followingNotifications.forEach(note=>{
+        let obj: NotificationObject = {
+        ...note
+
+        };
+        result.push(obj);
+      })
+    }
+
+    if (notifications){
+      notifications.forEach(note=>{
+        let obj: NotificationObject = {
+          ...note
+        }
+        result.push(obj);
+      });
+     
+    }
+
+    return result;
   }
 }

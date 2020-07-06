@@ -12,8 +12,6 @@ export class ToFollowerNotification extends BaseEntity{
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Field({defaultValue:true})
-    isToFollower: boolean;
 
     @CreateDateColumn({type:'date'})
     @Field()
