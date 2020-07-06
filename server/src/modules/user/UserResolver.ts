@@ -1,3 +1,5 @@
+
+
 import {
   Resolver,
   Query,
@@ -7,9 +9,10 @@ import {
   Args,
   Mutation,
   Arg,
-} from 'type-graphql';
-import { User } from '../../entity/User';
-import { EditUserInput } from '../edit/EditUserInput';
+} from "type-graphql";
+import { User } from "../../entity/User";
+import { EditUserInput } from "../edit/EditUserInput";
+import { Like } from "typeorm";
 
 @ArgsType()
 class GetUserArgs {
@@ -21,13 +24,39 @@ class GetUserArgs {
 export class UserResolver {
   @Query(() => User)
   async user(@Args() { userId }: GetUserArgs): Promise<User | undefined> {
+    
+
+
+
+
+   
+
+    
+
+
     return User.findOne(userId) || undefined;
+  }
+
+  @Query(() => [User])
+  async users(
+    @Arg("searchTerm") searchTerm: string
+  ): Promise<User[] | undefined> {
+    return User.find({
+      where: [
+        { firstName: Like(`%${searchTerm}%`) },
+        { lastName: Like(`%${searchTerm}%`) },
+        { school: Like(`%${searchTerm}%`) },
+        { department: Like(`%${searchTerm}%`) },
+        { position: Like(`%${searchTerm}%`) },
+        { location: Like(`%${searchTerm}%`) },
+      ],
+    });
   }
 
   @Mutation(() => User)
   async editUser(
     @Arg('edit')
-    { school, department, position, userId, about_me, location}: EditUserInput
+    { school, department, position, userId, about_me, location }: EditUserInput
   ): Promise<User | undefined> {
     try {
       let user = await User.findOne(userId);
@@ -49,12 +78,4 @@ export class UserResolver {
       return undefined;
     }
   }
-
-  
-
-
-
-
-
-  
 }

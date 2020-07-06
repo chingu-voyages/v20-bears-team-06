@@ -1,5 +1,6 @@
-import React, { useEffect } from "react";
+import React, { useEffect , useState } from "react";
 import PropTypes from "prop-types";
+import  gql  from 'graphql-tag';
 import { useQuery, useMutation } from "@apollo/react-hooks";
 import { makeStyles, fade } from "@material-ui/core/styles";
 import {
@@ -12,9 +13,8 @@ import {
 } from "@material-ui/core";
 import SearchIcon from "@material-ui/icons/Search";
 import AccountCircle from "@material-ui/icons/AccountCircle";
-import { Link as RouterLink } from "react-router-dom";
-import { GET_ME } from "../graphql/Queries";
-import { LOGOUT } from "../graphql/Mutations";
+import { Link as RouterLink, useHistory } from "react-router-dom";
+import { NotificationsPopover } from './mui_components/NotificationsPopover';
 
 const useStyles = makeStyles((theme) => ({
   grow: {
@@ -73,28 +73,56 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Header({ setLoggedIn, isLoggedIn, client }) {
+const GET_ME = gql`
+  {
+    me {
+      id
+      name
+    }
+  }
+`;
+
+const LOGOUT = gql`
+  mutation {
+    logout
+  }
+`;
+
+export default function Header({ setLoggedIn, isLoggedIn, client, meId, setMeId }) {
   const classes = useStyles();
   const [logout] = useMutation(LOGOUT);
   const { data, refetch } = useQuery(GET_ME);
+  let history = useHistory();
 
   useEffect(() => {
+    if (isLoggedIn) return;
     if (isLoggedIn !== (data && data.me)) {
       refetch();
     }
     if (data && data.me) {
       setLoggedIn(true);
+      setMeId(data.me.id);
     } else {
       setLoggedIn(false);
     }
   });
 
+  function search(terms) {
+    console.log("search values is", terms);
+    history.push("/search", { searchTerm: terms });
+  }
+
+  console.log("data is ", JSON.stringify(data));
+  console.log("is logged in? ", isLoggedIn);
+
   const renderUser = (
-    <div className={classes.accountIcons}>
+    
+    <div className="accountIcons">
+      {isLoggedIn&&<NotificationsPopover meId={meId} />}
       <IconButton
         aria-label="account of current user"
         component={RouterLink}
-        to={`${isLoggedIn ? "/profile/" + data.me.id : "/"}`}
+        to={`${data && data.me ? "/profile/" + data.me.id : "/"}`}
         color="inherit"
       >
         <AccountCircle />
@@ -139,9 +167,9 @@ export default function Header({ setLoggedIn, isLoggedIn, client }) {
       </Button>
     </div>
   );
-
   return (
     <div className={classes.grow}>
+
       <AppBar position="static">
         <Toolbar className={classes.toolbar}>
           <Typography
@@ -165,6 +193,9 @@ export default function Header({ setLoggedIn, isLoggedIn, client }) {
                 input: classes.inputInput,
               }}
               inputProps={{ "aria-label": "search" }}
+              onKeyUp={(event) => {
+                if (event.key == "Enter") search(event.target.value);
+              }}
             />
           </div>
           <div className={classes.grow} />
@@ -174,8 +205,3 @@ export default function Header({ setLoggedIn, isLoggedIn, client }) {
     </div>
   );
 }
-
-Header.propTypes = {
-  sections: PropTypes.array,
-  title: PropTypes.string,
-};

@@ -6,5 +6,5 @@ export class SignedS3Payload {
   signedRequest: string;
 
   @Field({ nullable: true })
-  url: string;
+  key: string;
 }

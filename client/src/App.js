@@ -10,13 +10,15 @@ import { ProfilePage } from "./pages/ProfilePage";
 import EditPage from "./pages/EditPage";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
-import { useSubscription } from '@apollo/react-hooks';
-import { FOLLOWER_SUB } from './graphql/Subscriptions';
+import { useSubscription } from "@apollo/react-hooks";
+import { FOLLOWER_SUB } from "./graphql/Subscriptions";
 import { UploadExample } from "./components/UploadExample";
+import SearchResultsPage from "./pages/SearchResultsPage";
 import "./App.scss";
 
 export default function App({ client }) {
   const [isLoggedIn, setLoggedIn] = useState(false);
+  const [meId, setMeId] = useState(null);
   let theme = createMuiTheme({
     typography: {
       body2: {
@@ -35,6 +37,8 @@ export default function App({ client }) {
           setLoggedIn={setLoggedIn}
           isLoggedIn={isLoggedIn}
           client={client}
+          meId = {meId}
+          setMeId = {setMeId}
         />
         <Switch>
           {/* <ThemeProvider theme={theme}> */}
@@ -63,6 +67,7 @@ export default function App({ client }) {
             )}
           />
           <Route exact path="/upload" component={UploadExample} />
+          <Route exact path="/search" component={SearchResultsPage} />
           <Route exact path="/" component={Home} />
           {/* </ThemeProvider> */}
         </Switch>

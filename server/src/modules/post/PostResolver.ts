@@ -1,10 +1,10 @@
-import { Resolver, Arg, Mutation, Query, ID } from 'type-graphql';
-import { Repository } from 'typeorm';
-import { InjectRepository } from 'typeorm-typedi-extensions';
+import { Resolver, Arg, Mutation, Query, ID } from "type-graphql";
+import { Repository, Like } from "typeorm";
+import { InjectRepository } from "typeorm-typedi-extensions";
 
-import { User } from '../../entity/User';
-import { Post } from '../../entity/Post';
-import { CreatePostInput } from './CreatePostInput';
+import { User } from "../../entity/User";
+import { Post } from "../../entity/Post";
+import { CreatePostInput } from "./CreatePostInput";
 
 @Resolver(Post)
 export class PostResolver {
@@ -13,23 +13,35 @@ export class PostResolver {
   ) {}
 
   @Query(() => Post, { nullable: true })
-  post(@Arg('postId', () => ID) postId: string) {
+  post(@Arg("postId", () => ID) postId: string) {
     return this.postRepository.findOne(postId);
   }
 
-  
+  @Query(() => [Post], { nullable: true })
+  async posts(
+    @Arg("searchTerm") searchTerm: string
+  ): Promise<Post[] | undefined> {
+    return this.postRepository.find({
+      where: [
+        { text: Like(`%${searchTerm}%`) },
+        { author: Like(`%${searchTerm}%`) },
+      ],
+    });
+  }
 
   @Mutation(() => Post)
   async addPost(
-    @Arg('post') { userId, text }: CreatePostInput
+    @Arg("post") { userId, text }: CreatePostInput
   ): Promise<Post | undefined> {
     try {
       const user = await User.findOne(userId);
-      const post = await this.postRepository.create({
-        text: text,
-        author : user,
-        userId: userId
-      }).save();
+      const post = await this.postRepository
+        .create({
+          text: text,
+          author: user,
+          userId: userId,
+        })
+        .save();
 
       return post;
     } catch (err) {
@@ -39,11 +51,9 @@ export class PostResolver {
   }
 
   @Mutation(() => Post)
-  async likePost(
-    @Arg('postId') postId: string
-  ) : Promise<Post | undefined> {
+  async likePost(@Arg("postId") postId: string): Promise<Post | undefined> {
     let post = await Post.findOne(postId);
-    if (!post){
+    if (!post) {
       return undefined;
     }
 
@@ -55,14 +65,10 @@ export class PostResolver {
 
     let updatedPost = await Post.findOne(postId);
 
-   if (!updatedPost){
-     return undefined;
-   }
+    if (!updatedPost) {
+      return undefined;
+    }
 
-   return updatedPost;
-
+    return updatedPost;
   }
 }
-
-
-                             

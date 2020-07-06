@@ -1,4 +1,7 @@
 import { Int, ID, InterfaceType, Field } from 'type-graphql';
+import { SignedS3Payload } from '../entity/SignedS3Payload';
+
+
 
 
 
@@ -26,6 +29,43 @@ export abstract class FollowEventPayload {
     follower_name: string;
 
 }
+
+
+
+
+
+
+
+
+
+@InterfaceType()
+export abstract class FilePayload extends SignedS3Payload {
+    @Field(() => ID, {nullable:true})
+    userId: number;
+
+    @Field({nullable: true})
+    filetype: string;
+
+    @Field({nullable: true})
+    filename: string;
+
+    
+
+    
+
+}
+
+@InterfaceType()
+export abstract class FilesPayload {
+    userId: number;
+}
+
+
+
+
+
+
+
 
 
 

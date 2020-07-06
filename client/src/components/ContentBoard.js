@@ -23,6 +23,7 @@ import { useQuery, useMutation } from '@apollo/react-hooks';
 import { FOLLOW_USER_MUTATION, UNFOLLOW_USER_MUTATION } from '../graphql/Mutations';
 import { GET_ME, FOLLOWER_IDS } from '../graphql/Queries';
 import { FollowerCount } from './FollowerCount';
+import { ContentDisplay } from './ContentDisplay';
 
 
 
@@ -72,10 +73,14 @@ const useStyles = makeStyles((theme) => ({
   
  },
  contentToolbar : {
-   borderColor: theme.palette.primary.light,
+   backgroundColor: theme.palette.primary.light,
    borderWidth: '1px',
-   borderStyle : 'solid'
+   borderStyle : 'solid',
+   borderColor: 'white'
    
+ },
+ toolbarText: {
+   color: 'white'
  }
 }));
 
@@ -201,13 +206,15 @@ export const ContentBoard = (props) => {
       <Grid item container direction='row' xs={12} md={8}> 
         <Grid item xs={12}>
           <Card className={classes.contentCard}>
-            <Toolbar className={classes.contentToolbar} variant='dense' color='primary'>
+            <Toolbar className={classes.contentToolbar}  variant='dense' >
             <IconButton>
-                <AccountCircleIcon color='primary' />
+                <AccountCircleIcon className={classes.toolbarText} />
               </IconButton>
-              <Typography variant='h6' color='primary'>{profile&&profile.name}'s Content</Typography>
+              <Typography variant='h6' className={classes.toolbarText}>{profile&&profile.name}'s Content</Typography>
+              
               
             </Toolbar>
+            <ContentDisplay userId={userId}/>
 
           </Card>
 

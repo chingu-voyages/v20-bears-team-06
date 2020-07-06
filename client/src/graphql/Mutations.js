@@ -1,4 +1,4 @@
-import { gql } from "apollo-boost";
+import { gql } from 'apollo-boost';
 
 export const LOGIN_MUTATION = gql`
   mutation LoginMutation($email: String!, $password: String!) {
@@ -111,10 +111,16 @@ export const UNFOLLOW_USER_MUTATION = gql`
 `;
 
 export const S3_SIGN_MUTATION = gql`
-  mutation SignS3($filename: String!, $filetype: String!) {
-    signS3(filename: $filename, filetype: $filetype) {
-      url
+  mutation SignS3($filename: String!, $filetype: String!, $meId: number!) {
+    signS3(filename: $filename, filetype: $filetype, meId: $meId) {
+      key
       signedRequest
     }
+  }
+`;
+
+export const SET_SEEN_MUTATION = gql `
+  mutation setSeen($notificationIds: [ID!]!){
+    setSeen(notificationIds: $notificationIds)
   }
 `;
