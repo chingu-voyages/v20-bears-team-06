@@ -99,3 +99,19 @@ export const FOLLOWER_IDS = gql`
     }
   }
 `;
+
+export const GET_FILES = gql`
+  query files($userId: ID!){
+    files(userId: $userId){
+      id
+      filetype
+      filename
+      date
+      ownerId
+      url
+      download_count
+      likes
+    }
+  }
+
+`
