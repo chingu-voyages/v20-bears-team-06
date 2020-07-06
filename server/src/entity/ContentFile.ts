@@ -2,7 +2,7 @@ import { Lazy } from './../utils/Lazy';
 import { User } from './User';
 import { Specialty } from './Specialty';
 import { ObjectType, Field, ID, Int } from 'type-graphql';
-import { Entity, BaseEntity, Column, ManyToOne, PrimaryGeneratedColumn, ManyToMany, RelationId, JoinColumn } from 'typeorm';
+import { Entity, BaseEntity, Column, ManyToOne, PrimaryGeneratedColumn, ManyToMany, RelationId, JoinColumn, CreateDateColumn } from 'typeorm';
 
 @ObjectType()
 @Entity()
@@ -12,9 +12,9 @@ export class ContentFile extends BaseEntity{
     @Field(() => ID)
     id: number;
 
-    @Column({default:new Date().toString()})
-    @Field({defaultValue:new Date().toString()})
-    date:string;
+    @CreateDateColumn({type:'timestamp'})
+    @Field(() => Date)
+    date: Date;
 
 
     @ManyToOne(()=>User, user=> user.uploads, {lazy:true, cascade:true})

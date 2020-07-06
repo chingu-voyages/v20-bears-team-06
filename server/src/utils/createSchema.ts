@@ -1,4 +1,4 @@
-import { NotificationsResolver } from './../modules/notifications/NotificationsResolver';
+import { NotificationsResolver } from './../modules/notifications/NotificationsResolvers';
 import { ContentFileResolver } from './../modules/contentfile/ContentFileResolver';
 import { CreateUserResolver } from '../modules/user/CreateUser';
 import { RegisterResolver } from '../modules/user/Register';

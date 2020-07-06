@@ -1,10 +1,13 @@
-import { NotificationType, NotificationString } from './../../types/NotificationEnums';
+import { ToFollowerNotification } from './../../entity/ToFollowerNotification';
+import { AddToFollowerPayload } from './../notifications/types/NotificationPayloads';
+import { NotificationType } from '../notifications/types/NotificationType';
+import { NotificationMessage } from '../notifications/types/NotificationMessage';
 
 import { Topic } from './../../types/Topic';
 import { ContentFile } from './../../entity/ContentFile';
 import { Resolver, Query, Mutation, Args, Arg, ArgsType, ID, Field, Subscription, ResolverFilterData, Root, PubSub, PubSubEngine } from 'type-graphql';
 import { User } from '../../entity/User';
-import { FilesPayload, NotificationPayload } from '../../types/Payloads';
+import { FilesPayload } from '../../types/Payloads';
 
 @ArgsType()
 export class NewFileArgs {
@@ -12,13 +15,16 @@ export class NewFileArgs {
     userId: number;
 
     @Field({nullable:true})
-    url: string;
+    userUrl: string;
 
     @Field({nullable:true})
     filetype: string;
 
     @Field({nullable:true})
     filename: string;
+
+    @Field({nullable:true})
+    contentUrl: string;
 
 
 }
@@ -27,6 +33,11 @@ export class NewFileArgs {
 export class FilesArgs{
     @Field(() => ID)
     userId: number;
+}
+
+@ArgsType()
+export class AddNewToFollowerArgs{
+    
 }
 
 
@@ -49,26 +60,53 @@ export class ContentFileResolver {
 
     @Mutation(() => ContentFile)
     async newFile(
-        @Args() {userId, filename, filetype, url }: NewFileArgs,
+        @Args() {userId, filename, filetype, contentUrl}: NewFileArgs,
         @PubSub() pubSub: PubSubEngine
     ): Promise<ContentFile|null>{
+        
+        
 
-        let file = await User.addNewFile({userId, filename, filetype, url});
-        await User.addNewNotification({
-            userId,
-            type : NotificationType.FollowingUpload,
-            fromUserId: userId,
-            message: NotificationString.FollowingUpload
+        let file = await User.addNewFile({
+            userId: userId,
+            userUrl: `/profile/${userId}`,
+            contentUrl,
+            filename,
+            filetype
+
         });
+
+        
+        const fileNotification = await User.addNotification({
+            type: NotificationType.FollowingUpload,
+            message: NotificationMessage.FollowingUpload,
+            url: `/profile/${userId}`,
+            toFollowers: true,
+            userId: userId,
+            fromUserId: userId,
+            fromUserName: await User.getName(userId)
+
+        });
+       
         const payload: FilesPayload = {
             userId: userId
         };
-        const notificationPayload: NotificationPayload = new NotificationPayload(userId);
-        pubSub.publish(Topic.NewFile,payload);
-        pubSub.publish(Topic.NewNotification, notificationPayload);
-        return file;
+
+        if (fileNotification instanceof ToFollowerNotification){
+            let owners = await fileNotification.owners;
+            const toFollowerPayload: AddToFollowerPayload= new AddToFollowerPayload();
+            toFollowerPayload.ownerIds = owners.map(el=>el.id);
+            pubSub.publish(Topic.NewToFollowerNotification, toFollowerPayload);
+            };
+
+            
         
+        
+        pubSub.publish(Topic.NewFile,payload);
+        return file || null; 
     }
+
+        
+    
 
     @Subscription(() => [ContentFile], {nullable:true,
         topics: Topic.NewFile,

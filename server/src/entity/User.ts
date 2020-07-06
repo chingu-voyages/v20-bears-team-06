@@ -1,3 +1,5 @@
+import { AddNotificationArgs } from '../modules/user/field_resolvers/FollowResolver';
+import { ToFollowerNotification } from './ToFollowerNotification';
 import { Notification } from './Notification';
 import { ContentFile } from './ContentFile';
 import {
@@ -11,11 +13,10 @@ import {
   RelationCount,
   RelationId
 } from 'typeorm';
-import { ObjectType, Field, ID, Root , ArgsType, Args } from 'type-graphql';
+import { ObjectType, Field, ID, Root , ArgsType, Args , Arg} from 'type-graphql';
 import { Post } from './Post';
 import { Specialty } from './Specialty';
 import { Lazy } from '../utils/Lazy';
-import { NewFileArgs } from './../modules/contentfile/ContentFileResolver';
 
 @ArgsType()
 export class NewNotificationArgs{
@@ -33,6 +34,31 @@ export class NewNotificationArgs{
 
     
 }
+
+@ArgsType()
+export class GetIdsArgs{
+  @Field(() => ID)
+  userId: number;
+}
+
+@ArgsType()
+export class AddNewFileArgs{
+  @Field(() => ID)
+  userId: number;
+
+  @Field()
+  userUrl: string;
+
+  @Field()
+  contentUrl: string;
+
+  @Field()
+  filetype: string;
+
+  @Field()
+  filename: string;
+}
+
 
 
 @ObjectType()
@@ -89,12 +115,6 @@ export class User extends BaseEntity {
     return `${parent.department} ${parent.position}`;
   }
 
-
- 
-
-
-
-
   @OneToMany(() => ContentFile, file => file.owner, {lazy:true})
   @Field(() => [ContentFile])
   uploads: Lazy<ContentFile[]>;
@@ -103,24 +123,36 @@ export class User extends BaseEntity {
   @Field()
   upload_count: number;
 
-  @OneToMany(() => Notification, notification => notification.user, {lazy:true})
-  @Field(() => [Notification])
-  notifications: Lazy<Notification[]>;
+  
 
   @RelationId((user:User)=>user.uploads)
   @Field(() => [ID!])
   uploadIds: [number];
 
-  @RelationId((user:User)=>user.notifications)
-  @Field(() => [ID!])
-  notificationsId: [number]
-
+  
 
 
 
   @OneToMany(() => Post, (post) => post.author, { lazy: true, cascade: true })
   @Field(() => [Post])
   posts: Lazy<Post[]>;
+
+  @OneToMany(() => Notification, (notification) => notification.owner, {lazy:true, cascade:true})
+  @Field(() => [Notification])
+  notifications: Lazy<Notification[]>;
+
+  @Field(() => [ID])
+  @RelationId((user:User)=> user.notifications)
+  notificationIds: number[];
+  
+
+  @ManyToMany(() => ToFollowerNotification, fromFollowerNotificaton => fromFollowerNotificaton.owners, {lazy:true})
+  @Field(() => [ToFollowerNotification])
+  notifications_fromFollowers: Lazy<ToFollowerNotification[]>;
+
+  @Field(() => [ID])
+  @RelationId((user:User)=> user.notifications_fromFollowers)
+  notification_fromFollowersIds: number[];
 
 
   @OneToMany(() => Specialty, (specialty) => specialty.users, {
@@ -139,7 +171,12 @@ export class User extends BaseEntity {
   @Field(() => [User])
   followers: Lazy<User[]>;
 
+  @RelationId((user:User) => user.followers)
+  @Field(() => [ID])
+  followerIds: number[];
+
   @ManyToMany(() => User, (user) => user.followers, { lazy: true })
+  @Field(() => [User])
   following: Lazy<User[]>;
 
   @RelationCount((user: User) => user.followers)
@@ -150,45 +187,122 @@ export class User extends BaseEntity {
   @Field()
   following_count: number;
 
-
-  static async addNewFile({ userId, url, filetype, filename }: NewFileArgs)
-  : Promise<ContentFile|null>
-  {
+  static async getName(
+    @Arg('userId') userId:number
+  ): Promise<string|"">{
     let user = await this.findOne(userId);
-    const file = await ContentFile.create({
-      url,
+    if(!user) return "";
+    return `${user.firstName} ${user.lastName}`;
+  }
+
+  static async addNotification(
+    @Args() {userId, message, type, fromUserId, url, fromUserName, toFollowers }: AddNotificationArgs
+  ):Promise<ToFollowerNotification|Notification|undefined>{
+
+    if (toFollowers===true){
+      let user = await this.findOne(userId,{relations:['followers']})
+      if (!user) return;
+      let followers = await user.followers;
+      let notification =ToFollowerNotification.create({
+        message,
+        type,
+        fromUserId,
+        url,
+        fromUserName,
+        owners: followers
+      }).save();
+
+      
+  
+
+
+      if (notification){
+        return notification;
+      }
+      
+    }else if(toFollowers===false){
+      let user = await this.findOne(userId);
+      if(!user) return;
+      let notification = await Notification.create({
+        message,
+        type,
+        fromUserId,
+        url,
+        fromUserName,
+        owner: user
+      }).save();
+
+      if (notification){
+        return notification;
+      }
+    }
+    return;
+  };
+
+  static async addNewFile(
+    @Args() {userId, userUrl, contentUrl, filetype, filename }: AddNewFileArgs
+  ): Promise<ContentFile|undefined>{
+    let user = await this.findOne(userId);
+    if (!user) return;
+    let uploads = await user.uploads;
+    if(!uploads) return;
+    let newFile = await ContentFile.create({
+      owner: user,
+      url: contentUrl,
       filetype,
-      filename,
-      owner: user
+      filename
 
     }).save();
 
+    uploads = uploads.concat([newFile]);
+    user.uploads = uploads;
+    await user.save();
+    if (user&&newFile){
+      return newFile;
+    }
+    return;
+  };
 
-    if (file) return file;
-    return null;
-    
-
+  static async getNewFollowerNotifications(@Arg('userId') userId:number){
+   let user = await this.findOne(userId);
+   if (user){
+     console.log(user);
+     let notifications = (await user.notifications_fromFollowers).filter(el=>el.seen===false);
+     if (notifications) return notifications;
+   }
+   return[];
   }
 
-  static async addNewNotification(@Args() {userId, type, message, fromUserId }: NewNotificationArgs):
-  Promise<Notification|null>{
-        let user = await this.findOne(userId);
-        let fromUser = await this.findOne(fromUserId);
-        const name = fromUser?.name(fromUser)
-        let notification = await Notification.create({
-          user: user,
-          fromUserId,
-          message,
-          type,
-          url: `/profile/${fromUserId}`,
-          fromUserName: name
+  static async getNewNotifications(@Arg('userId') userId:number){
+    let user = await this.findOne(userId);
+    if (user){
+      let notifications = (await user.notifications).filter(el=>el.seen===false);
+      if (notifications) return notifications;
+    }
+    return[];
+   }
 
 
-        }).save();
-
-        return notification||null;
-
-
-  }
+  
 
 }
+
+ 
+
+
+
+
+
+  
+
+
+  
+
+
+ 
+
+  
+
+
+
+

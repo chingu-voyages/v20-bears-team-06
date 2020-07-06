@@ -1,50 +1,49 @@
+import { Lazy } from '../utils/Lazy';
 import { User } from './User';
 import { ObjectType, Field, ID } from "type-graphql";
-import { BaseEntity, Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, ManyToOne, JoinColumn, RelationId } from "typeorm";
+import { CreateDateColumn, BaseEntity, Entity, Column, PrimaryGeneratedColumn, ManyToMany, JoinTable, RelationId } from "typeorm";
 
 
 @ObjectType()
 @Entity()
-export class Notification extends BaseEntity{
+export class ToFollowerNotification extends BaseEntity{
     
     @Field(() => ID)
     @PrimaryGeneratedColumn()
     id: number;
 
     @Field({defaultValue:true})
-    isNotification: boolean;
+    isToFollower: boolean;
 
     @CreateDateColumn({type:'date'})
     @Field(() => Date)
     created_on: Date;
 
-    @Field()
+    @Field({nullable:true})
     @Column({nullable:true})
     type: string;
 
-    @ManyToOne(() => User, {lazy:true})
-    @JoinColumn()
-    @Field(() => User)
-    owner: User;
+    @ManyToMany(() => User, user => user.notifications_fromFollowers, {lazy:true, onUpdate:'CASCADE'})
+    @JoinTable()
+    owners: Lazy<User[]>;
 
-    @Field(() => ID, {nullable:true})
-    @Column({nullable:true})
-    @RelationId((notification:Notification) => notification.owner)
-    ownerId: number;
+
+    @RelationId((ToFollowerNotification:ToFollowerNotification)=> ToFollowerNotification.owners)
+    ownerIds: number[];
 
     @Field({defaultValue:false})
     @Column({default:false})
     seen: boolean;
 
-    @Field(() => ID)
+    @Field(() => ID, {nullable:true})
     @Column({nullable:true})
     fromUserId: number;
-
 
     @Field({nullable:true})
     @Column({nullable:true})
     url: string;
 
+    
     @Field({nullable:true})
     @Column({nullable:true})
     fromUserName: string;
@@ -53,9 +52,5 @@ export class Notification extends BaseEntity{
     @Column({nullable:true})
     message: string;
 
-   
-
-
-
-
+    
 }

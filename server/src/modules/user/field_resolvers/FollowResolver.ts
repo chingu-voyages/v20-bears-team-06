@@ -1,4 +1,6 @@
-import { NotificationString, NotificationType } from './../../../types/NotificationEnums';
+import { NotificationMessage } from './../../notifications/types/NotificationMessage';
+import { NotificationPayload, AddNotificationPayload } from '../../notifications/types/NotificationPayloads';
+import { NotificationType } from './../../notifications/types/NotificationType';
 import {
   Field,
   ID,
@@ -13,14 +15,13 @@ import {
   PubSub,
   PubSubEngine,
   Subscription,
-  Args,
+  Args
 } from 'type-graphql';
 import { FollowInput } from './FollowInput';
 import { User } from '../../../entity/User';
 import { Topic } from '../../../types/Topic';
 import { FollowEventPayload } from '../../../types/Payloads';
 import { FollowEvent } from '../../../types/FollowEvent';
-import { NotificationPayload } from '../../../types/Payloads';
 
 @ArgsType()
 class FollowEventArgs {
@@ -28,7 +29,33 @@ class FollowEventArgs {
   userId: number;
 }
 
-@Resolver(User)
+@ArgsType()
+export class AddNotificationArgs{
+  @Field(() => ID)
+  userId: number;
+
+  @Field(() => ID)
+  fromUserId: number;
+
+  @Field()
+  type:string;
+
+  @Field()
+  message:string;
+
+  @Field()
+  fromUserName: string;
+
+  @Field()
+  url: string;
+
+  @Field({defaultValue:false})
+  toFollowers: boolean;
+
+}
+
+
+@Resolver(()=>User)
 export class FollowResolver {
   @Mutation(() => [User])
   async followUser(
@@ -79,20 +106,47 @@ export class FollowResolver {
       following_count: one.following_count,
     };
 
-    await User.addNewNotification({
+    let addNotification: AddNotificationPayload = {
       userId: toFollow,
+      fromUserId: userId,
+      fromUserName: one.name(one),
       type: NotificationType.Follow,
-      message: NotificationType.Follow,
-      fromUserId: userId
-    });
+      message: NotificationMessage.Follow,
+      url: `/profile/${userId}`,
+      toFollowers: false
+    };
 
-    const notificationPayload: NotificationPayload = new NotificationPayload(toFollow);
+
+    let addArgs: AddNotificationArgs = {
+      userId: toFollow,
+      fromUserId: userId,
+      url: `/profile/${userId}`,
+      type: NotificationType.Follow,
+      message: NotificationMessage.Follow,
+      fromUserName: await User.getName(userId),
+      toFollowers: false
+    };
+
+    let success;
+    if (addArgs){
+      success = await User.addNotification(addArgs)
+    }
+
+
+
+    
+
+    
+
+    
 
     
     
 
+    if (success){
+    pubSub.publish(Topic.AddNotification, addNotification)
+    };
     pubSub.publish(Topic.FollowEvent, payload);
-    pubSub.publish(Topic.NewNotification, notificationPayload);
     return [one, two];
   }
 
