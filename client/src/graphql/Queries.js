@@ -10,8 +10,8 @@ export const GET_ME = gql`
 `;
 
 export const NOTIFICATION_QUERY = gql`
-  query newNotifications($userId: ID!){
-    newNotifications(userId: $userId){
+  query newNotifications($userId: ID!) {
+    newNotifications(userId: $userId) {
       type
       message
       fromUserName
@@ -37,12 +37,21 @@ export const SEARCH_USERS = gql`
 
 export const SEARCH_POSTS = gql`
   query searchPosts($searchTerm: String) {
-    users(searchTerm: $searchTerm) {
+    posts(searchTerm: $searchTerm) {
       id
-      name
-      school
-      location
-      department
+      text
+      author
+    }
+  }
+`;
+
+export const SEARCH_FILES = gql`
+  query searchFiles($searchTerm: String) {
+    searchFiles(searchTerm: $searchTerm) {
+      id
+      userId
+      filename
+      filetype
     }
   }
 `;
