@@ -5,18 +5,20 @@ import ListItemAvatar from "@material-ui/core/ListItemAvatar";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import Avatar from "@material-ui/core/Avatar";
 import { useMutation, useQuery } from "@apollo/react-hooks";
+import Divider from "@material-ui/core/Divider";
 
 import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
 import ListItemText from "@material-ui/core/ListItemText";
 import { SEARCH_USERS, SEARCH_POSTS } from "../graphql/Queries";
 import FolderIcon from "@material-ui/icons/Folder";
-import DeleteIcon from "@material-ui/icons/Delete";
+import ArrowForwardIosIcon from "@material-ui/icons/ArrowForwardIos";
 import { Grid, Typography, ListItem, IconButton } from "@material-ui/core";
-
+import { Link as RouterLink, useHistory } from "react-router-dom";
+import AccountCircleIcon from "@material-ui/icons/AccountCircle";
 const useStyles = makeStyles((theme) => ({
   root: {
     width: "100%",
-    maxWidth: "36ch",
+    maxWidth: "800px",
     backgroundColor: theme.palette.background.paper,
   },
   inline: {
@@ -24,13 +26,67 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function generate(results, element) {
+function generateTeacherResults(results, element) {
   return results.map((value) =>
-    React.cloneElement(element, {
-      key: value.id,
-    })
+    React.cloneElement(
+      <ListItem>
+        <ListItemAvatar>
+          <AccountCircleIcon />
+        </ListItemAvatar>
+        <ListItemText
+          primary={value.name}
+          secondary={
+            value.position && value.school
+              ? `${value.position} at ${value.school}`
+              : "new user at teachers app"
+          }
+        />
+        <ListItemSecondaryAction>
+          <IconButton
+            edge="end"
+            aria-label="arrowforward"
+            component={RouterLink}
+            to={`${"/profile/" + value.id}`}
+          >
+            <ArrowForwardIosIcon />
+          </IconButton>
+        </ListItemSecondaryAction>
+      </ListItem>,
+      {
+        key: value.id,
+      }
+    )
   );
 }
+
+function generatePostResults(results, element) {
+  return results.map((value) =>
+    React.cloneElement(
+      <ListItem>
+        <ListItemAvatar>
+          <Avatar>
+            <FolderIcon />
+          </Avatar>
+        </ListItemAvatar>
+        <ListItemText primary={value.author} secondary={value.text} />
+        <ListItemSecondaryAction>
+          <IconButton
+            edge="end"
+            aria-label="arrowforward"
+            component={RouterLink}
+            to={`${"/posts/" + value.id}`}
+          >
+            <ArrowForwardIosIcon />
+          </IconButton>
+        </ListItemSecondaryAction>
+      </ListItem>,
+      {
+        key: value.id,
+      }
+    )
+  );
+}
+
 export default function SearchResults({ searchTerm }) {
   const classes = useStyles();
   const [dense, setDense] = React.useState(false);
@@ -41,44 +97,22 @@ export default function SearchResults({ searchTerm }) {
     },
   });
   const { postResults, postRefetch } = useQuery(SEARCH_POSTS);
-  console.log("search results component", JSON.stringify(searchTerm));
-  console.log(
-    "search terms are: ",
-    data,
-    " or error",
-    error,
-    " or loading ",
-    loading
-  );
+
+  if (loading) {
+    return <div>...loading</div>;
+  }
   return data ? (
     <div className={classes.root}>
-      <Grid item xs={12} md={6}>
-        <Typography variant="h6" className={classes.title}>
-          Avatar with text and icon
-        </Typography>
-        <div className={classes.demo}>
-          <List dense={dense}>
-            {generate(
-              data.users,
-              <ListItem>
-                <ListItemAvatar>
-                  <Avatar>
-                    <FolderIcon />
-                  </Avatar>
-                </ListItemAvatar>
-                <ListItemText
-                  primary="Single-line item"
-                  secondary={secondary ? "Secondary text" : null}
-                />
-                <ListItemSecondaryAction>
-                  <IconButton edge="end" aria-label="delete">
-                    <DeleteIcon />
-                  </IconButton>
-                </ListItemSecondaryAction>
-              </ListItem>
-            )}
-          </List>
-        </div>
+      <Grid container spacing={2}>
+        <Grid item xs={12} md={6}>
+          <Typography variant="h6" className={classes.title}>
+            Teachers
+          </Typography>
+          <Divider />
+          <div className={classes.demo}>
+            <List dense={dense}>{generateTeacherResults(data.users)}</List>
+          </div>
+        </Grid>
       </Grid>
     </div>
   ) : (

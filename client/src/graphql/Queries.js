@@ -17,6 +17,7 @@ export const SEARCH_USERS = gql`
       school
       location
       department
+      position
     }
   }
 `;
