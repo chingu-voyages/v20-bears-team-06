@@ -9,7 +9,7 @@ import {
   // Arg,
   // Ctx,
 } from "type-graphql";
-import { SignedS3Payload } from "../../entity/SignedS3Payload";
+import { SignedS3Payload } from "../../types/SignedS3Payload";
 import aws from "aws-sdk";
 
 @ArgsType()
@@ -52,8 +52,8 @@ export class SignS3Resolver {
     await User.addNewFile({
       userId: meId,
       signedRequest: returnObject.signedRequest,
-      filetype: filetype,
-      filename: filename,
+      filetype,
+      filename,
       key: returnObject.key,
     });
 

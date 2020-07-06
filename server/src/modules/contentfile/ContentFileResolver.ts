@@ -22,6 +22,7 @@ import {
 } from "type-graphql";
 import { User } from "../../entity/User";
 import { FilesPayload } from "../../types/Payloads";
+import { Like } from "typeorm";
 
 @ArgsType()
 export class NewFileArgs {
@@ -68,6 +69,15 @@ export class ContentFileResolver {
     }
 
     return [];
+  }
+
+  @Query(() => [ContentFile])
+  async searchFiles(
+    @Arg("searchTerm") searchTerm: string
+  ): Promise<ContentFile[] | undefined> {
+    return ContentFile.find({
+      where: [{ filename: Like(`%${searchTerm}%`) }],
+    });
   }
 
   @Mutation(() => ContentFile)

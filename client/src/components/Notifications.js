@@ -20,6 +20,10 @@ const useStyles = makeStyles((theme)=>({
 
 
 
+  if (!loading && data && data.newNotifications) {
+    return data.newNotifications;
+  }
+};
 
 export const Notifications = (props) => {
     

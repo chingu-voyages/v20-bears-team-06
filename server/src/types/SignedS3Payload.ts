@@ -2,7 +2,7 @@ import { ObjectType, Field } from "type-graphql";
 
 @ObjectType()
 export class SignedS3Payload {
-  @Field({ nullable: true })
+  @Field()
   signedRequest: string;
 
   @Field({ nullable: true })
