@@ -18,6 +18,7 @@ import { SpecialtiesResolver } from '../modules/user/field_resolvers/Specialties
 import { SignS3Resolver } from '../modules/uploads/S3Signed';
 import { Container } from 'typedi';
 import { pubSub } from '../redis';
+import { FollowerDataResolver } from '../modules/followerdata/FollowerDataResolver';
 
 
 
@@ -40,7 +41,8 @@ export const createSchema = () =>
       UserResolver,
       SignS3Resolver,
       ContentFileResolver,
-      NotificationsResolver
+      NotificationsResolver,
+      FollowerDataResolver
     ],
     authChecker: ({ context: { req } }) => {
       return !!req.session.userId;

@@ -4,7 +4,6 @@ import {
   PrimaryGeneratedColumn,
   Column,
   BaseEntity,
-  ManyToOne,
   ManyToMany,
   JoinTable,
 } from 'typeorm';
@@ -28,8 +27,10 @@ export class Specialty extends BaseEntity {
   @Field(() => String)
   subtitle: string;
 
-  @Field(() => User)
-  @ManyToOne(() => User, { lazy: true })
+  
+  
+  @ManyToMany(() => User, user=> user.specialties, { lazy: true, onUpdate:'CASCADE' })
+  @JoinTable()
   users: Lazy<User[]>;
 
   @ManyToMany(() => ContentFile, file => file.categories, {lazy:true})

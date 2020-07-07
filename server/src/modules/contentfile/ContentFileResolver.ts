@@ -15,7 +15,7 @@ export class NewFileArgs {
     userId: number;
 
     @Field({nullable:true})
-    userUrl: string;
+    signedRequest: string;
 
     @Field({nullable:true})
     filetype: string;
@@ -24,7 +24,8 @@ export class NewFileArgs {
     filename: string;
 
     @Field({nullable:true})
-    contentUrl: string;
+    key: string;
+
 
 
 }
@@ -60,18 +61,18 @@ export class ContentFileResolver {
 
     @Mutation(() => ContentFile)
     async newFile(
-        @Args() {userId, filename, filetype, contentUrl}: NewFileArgs,
+        @Args() {userId, filename, filetype, signedRequest, key}: NewFileArgs,
         @PubSub() pubSub: PubSubEngine
     ): Promise<ContentFile|null>{
         
         
 
         let file = await User.addNewFile({
-            userId: userId,
-            userUrl: `/profile/${userId}`,
-            contentUrl,
+            userId,
+            signedRequest,
             filename,
-            filetype
+            filetype,
+            key
 
         });
 
@@ -123,7 +124,7 @@ export class ContentFileResolver {
         .where('file.ownerId = :userId',{userId})
         .getMany();
 
-        console.log(typeof files);
+        
         return files || [];
     }
     

@@ -3,6 +3,7 @@ import {Redirect} from 'react-router-dom';
 import { Formik, Form, Field } from 'formik';
 import { useMutation } from '@apollo/react-hooks';
 import { ADD_USER_SPEC, EDIT_PROFILE_MUTATION } from '../graphql/Mutations';
+import { formatFileName, uploadToS3 } from '../components/UploadExample';
 import {
   Avatar,
   Button,
@@ -20,10 +21,11 @@ import { TextInputField } from './fields/TextInputField';
 import { TextAreaField } from './fields/TextAreaField';
 import { ProfileContext } from '../pages/ProfilePage';
 import * as Yup from 'yup';
+import { DropZoneField } from './mui_components/DropzoneArea';
 
 const useStyles = makeStyles((theme) => ({
   paper: {
-    marginTop: theme.spacing(8),
+    marginTop: theme.spacing(4),
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
@@ -71,7 +73,7 @@ const EditForm = (props) => {
         <CssBaseline />
         <div className={classes.paper}>
           
-          <Typography variant='h3' component='h1' color='primary' gutterBottom>
+          <Typography variant='h4' component='h1' color='primary' gutterBottom>
             Edit Profile
           </Typography>
           <Formik
@@ -80,25 +82,34 @@ const EditForm = (props) => {
               department: profile.department,
               position: profile.position,
               aboutMe: profile.about_me,
-              location : profile.location
+              location : profile.location,
+              file : []
             }}
             validateOnBlur={false}
             validateOnChange={false}
             validationSchema={Yup.object({
               school: Yup.string()
                 .min(3)
-                .max(60, 'School name must be between 3-60 characters'),
-              department: Yup.string()
+                .max(60, 'School name must be between 3-60 characters').nullable(),
+              department: Yup.string().nullable()
                 .min(3)
                 .max(60, 'department name must be between 3-60 characters'),
-              position: Yup.string()
+              position: Yup.string().nullable()
                 .min(3)
                 .max(60, 'position must be between 3-60 characters'),
-              aboutMe: Yup.string()
+              aboutMe: Yup.string().nullable()
                 .min(1)
                 .max(5000, 'School name must be between 1-5000 characters'),
+                file: Yup.array().nullable()
             })}
             onSubmit={(values, { setSubmitting, setFieldError }) => {
+              let type, name;
+              if (values.file[0]){
+                let file = values.file[0].file;
+                type = file.type;
+                name = file.name
+
+              }
               setTimeout(async () => {
                 try {
                   const response = await edit({
@@ -114,12 +125,27 @@ const EditForm = (props) => {
                       about_me: values.aboutMe
                         ? values.aboutMe
                         : profile.about_me,
+                      location: values.location
+                      ?values.location
+                      :profile.location,
+                      filetype: type?
+                      type
+                      :null,
+                      filename: name
+                      ?formatFileName(name)
+                      :null
+                
                     },
                   });
                   console.log(response);
-                  if (response && response.data && !response.data.user) {
+                  if (response && response.data && !response.data.editUser) {
                     setFieldError('invalid field data');
                     return;
+                  }
+                  if (response && response.data &&response.data.editUser.s3){
+                    const s3 = response.data.editUser.s3;
+                    const s3response = await uploadToS3(values.file[0].file, s3.signedRequest);
+                    console.log(s3response);
                   }
 
                   
@@ -189,6 +215,15 @@ const EditForm = (props) => {
                 id="aboutMe"
                 placeholder = {profile.about_me||null}
                 as={TextAreaField}
+              />
+              <Field variant="outlined"
+              margin='normal'
+          
+              name='file'
+              label="Update Profile Picture"
+              type="file"
+              id='file'
+              as={DropZoneField}
               />
               <Button
                 fullWidth

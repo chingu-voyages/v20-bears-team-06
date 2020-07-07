@@ -5,6 +5,7 @@ import { Specialty } from '../../entity/Specialty';
 import { User } from '../../entity/User';
 import { SpecialtyInput } from '../specialty/SpecialtyInput';
 
+
 @Resolver(Specialty)
 export class SpecialtyResolver {
   constructor(
@@ -42,26 +43,12 @@ export class SpecialtyResolver {
   async addUserSpecialty(
     @Arg('data')
     { title, subtitle, userId }: SpecialtyInput
-  ): Promise<User | undefined> {
-    let spec = await Specialty.findOne({ where: { title, subtitle } });
-    if (!spec) {
-      spec = await Specialty.create({
-        title: title,
-        subtitle: subtitle,
-      }).save();
-    }
-    let user = await User.findOne(userId);
-    if (!user) return undefined;
-    if (spec && user) {
-      (await user.specialties).push(spec);
-      user = await user.save();
-      if (!user) {
-        return undefined;
-      }
-
+  ): Promise<User|Error> {
+    
+    let user = await User.addSpecialty({title,subtitle,userId});
+    if (user){
       return user;
     }
-
-    return undefined;
+    return new Error('user not found');
   }
 }

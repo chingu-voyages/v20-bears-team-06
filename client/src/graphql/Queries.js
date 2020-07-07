@@ -56,6 +56,7 @@ export const GET_PROFILE = gql`
       position
       employment
       follower_count
+      profilePic_url
       about_me
       followers {
         id
@@ -98,9 +99,10 @@ export const GET_FILES = gql`
       filename
       date
       ownerId
-      url
+      signedRequest
       download_count
       likes
+      key
     }
   }
 

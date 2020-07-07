@@ -16,6 +16,8 @@ export class ContentFile extends BaseEntity{
     @Field(() => Date)
     date: Date;
 
+    
+
 
     @ManyToOne(()=>User, user=> user.uploads, {lazy:true, cascade:true})
     @JoinColumn()
@@ -38,9 +40,7 @@ export class ContentFile extends BaseEntity{
     @Field()
     filename: string;
 
-    @Column()
-    @Field()
-    url: string;
+    
 
     @Column({nullable:true})
     @Field({nullable:true})
