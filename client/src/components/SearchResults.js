@@ -6,7 +6,7 @@ import ListItemIcon from "@material-ui/core/ListItemIcon";
 import Avatar from "@material-ui/core/Avatar";
 import { useMutation, useQuery } from "@apollo/react-hooks";
 import Divider from "@material-ui/core/Divider";
-
+import GetAppIcon from "@material-ui/icons/GetApp";
 import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
 import ListItemText from "@material-ui/core/ListItemText";
 import { SEARCH_USERS, SEARCH_POSTS, SEARCH_FILES } from "../graphql/Queries";
@@ -15,6 +15,8 @@ import ArrowForwardIosIcon from "@material-ui/icons/ArrowForwardIos";
 import { Grid, Typography, ListItem, IconButton } from "@material-ui/core";
 import { Link as RouterLink, useHistory } from "react-router-dom";
 import AccountCircleIcon from "@material-ui/icons/AccountCircle";
+import aws from "aws-sdk";
+
 const useStyles = makeStyles((theme) => ({
   root: {
     width: "100%",
@@ -26,6 +28,17 @@ const useStyles = makeStyles((theme) => ({
     display: "inline",
   },
 }));
+
+function downloadFileHandler(key) {
+  const s3 = new aws.S3({
+    region: "us-west-1",
+    signatureVersion: "v4",
+  });
+  s3.getObject({
+    Bucket: process.env.S3_BUCKET,
+    Key: "uploads/20200629-02amb-chingucli-1.png",
+  });
+}
 
 function generateTeacherResults(results, element) {
   return results.map((value) =>
@@ -75,7 +88,7 @@ function generatePostResults(results, element) {
             edge="end"
             aria-label="arrowforward"
             component={RouterLink}
-            to={`${"/posts/" + value.id}`}
+            to={`${"/profile/" + value.userId}`}
           >
             <ArrowForwardIosIcon />
           </IconButton>
@@ -99,11 +112,12 @@ function generateFileResults(results, element) {
         </ListItemAvatar>
         <ListItemText primary="primary text" secondary="secondary text" />
         <ListItemSecondaryAction>
+          <GetAppIcon onClick={() => downloadFileHandler(value.key)} />
           <IconButton
             edge="end"
             aria-label="arrowforward"
             component={RouterLink}
-            to={`${"/posts/" + value.id}`}
+            to={`${"/profile/" + value.userId}`}
           >
             <ArrowForwardIosIcon />
           </IconButton>
