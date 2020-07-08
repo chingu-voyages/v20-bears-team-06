@@ -1,62 +1,72 @@
-import { ToFollowerNotification } from './../../entity/ToFollowerNotification';
-import { AddToFollowerPayload } from './../notifications/types/NotificationPayloads';
-import { NotificationType } from '../notifications/types/NotificationType';
-import { NotificationMessage } from '../notifications/types/NotificationMessage';
+import { ToFollowerNotification } from "./../../entity/ToFollowerNotification";
+import { AddToFollowerPayload } from "./../notifications/types/NotificationPayloads";
+import { NotificationType } from "../notifications/types/NotificationType";
+import { NotificationMessage } from "../notifications/types/NotificationMessage";
 
-import { Topic } from './../../types/Topic';
-import { ContentFile } from './../../entity/ContentFile';
-import { Resolver, Query, Mutation, Args, Arg, ArgsType, ID, Field, Subscription, ResolverFilterData, Root, PubSub, PubSubEngine } from 'type-graphql';
-import { User } from '../../entity/User';
-import { FilesPayload } from '../../types/Payloads';
+import { Topic } from "./../../types/Topic";
+import { ContentFile } from "./../../entity/ContentFile";
+import {
+  Resolver,
+  Query,
+  Mutation,
+  Args,
+  Arg,
+  ArgsType,
+  ID,
+  Field,
+  Subscription,
+  ResolverFilterData,
+  //   Root,
+  PubSub,
+  PubSubEngine,
+} from "type-graphql";
+import { User } from "../../entity/User";
+import { FilesPayload } from "../../types/Payloads";
+import { Like } from "typeorm";
 
 @ArgsType()
 export class NewFileArgs {
-    @Field(() => ID)
-    userId: number;
+  @Field(() => ID)
+  userId: number;
 
     @Field({nullable:true})
     signedRequest: string;
 
-    @Field({nullable:true})
-    filetype: string;
+  @Field({ nullable: true })
+  filetype: string;
 
-    @Field({nullable:true})
-    filename: string;
+  @Field({ nullable: true })
+  filename: string;
 
     @Field({nullable:true})
     key: string;
 
 
+  @Field({ nullable: true })
+  key: string;
 
+  @Field({ nullable: true })
+  signedRequest: string;
 }
 
 @ArgsType()
-export class FilesArgs{
-    @Field(() => ID)
-    userId: number;
+export class FilesArgs {
+  @Field(() => ID)
+  userId: number;
 }
 
 @ArgsType()
-export class AddNewToFollowerArgs{
-    
-}
-
+export class AddNewToFollowerArgs {}
 
 @Resolver()
 export class ContentFileResolver {
-
-    @Query(() => [ContentFile])
-    async files(
-        @Arg('userId', () => ID) userId: number
-    ): Promise<ContentFile[]|[]>{
-
-        let user = await User.findOne(userId,{relations:['uploads']});
-        if(user){
-            return user.uploads?user.uploads:[];
-        }
-
-        return [];
-
+  @Query(() => [ContentFile])
+  async files(
+    @Arg("userId", () => ID) userId: number
+  ): Promise<ContentFile[] | []> {
+    let user = await User.findOne(userId, { relations: ["uploads"] });
+    if (user) {
+      return user.uploads ? user.uploads : [];
     }
 
     @Mutation(() => ContentFile)
