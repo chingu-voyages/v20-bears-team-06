@@ -1,9 +1,8 @@
-import { pubSub } from './../../redis';
-import { User } from './../../entity/User';
-import { ArgsType, ID, Args, Resolver, Field, Mutation } from 'type-graphql';
-import { ContentFileResolver } from '../contentfile/ContentFileResolver';
-import { SignedS3Payload } from '../../entity/SignedS3Payload';
-import aws from 'aws-sdk';
+import { pubSub } from "./../../redis";
+import { ArgsType, ID, Args, Resolver, Field, Mutation } from "type-graphql";
+import { ContentFileResolver } from "../contentfile/ContentFileResolver";
+import { SignedS3Payload } from "../../types/SignedS3Payload";
+import aws from "aws-sdk";
 
 @ArgsType()
 export class S3Args {
@@ -16,21 +15,18 @@ export class S3Args {
   @Field({ nullable: true })
   filename: string;
 
-  @Field({nullable:true, defaultValue:false})
+  @Field({ nullable: true, defaultValue: false })
   isProfilePic: Boolean;
 }
 
-
-
 const contentResolver = new ContentFileResolver();
 const addFile = contentResolver.newFile;
-
 
 @Resolver()
 export class SignS3Resolver {
   @Mutation(() => SignedS3Payload, { nullable: true })
   async signS3(
-    @Args() {filename, filetype, meId, isProfilePic }: S3Args
+    @Args() { filename, filetype, meId, isProfilePic }: S3Args
   ): Promise<SignedS3Payload | null> {
     const s3Bucket = process.env.S3_BUCKET_NAME || "chingu-bears-06";
 
@@ -51,14 +47,17 @@ export class SignS3Resolver {
     returnObject.signedRequest = s3.getSignedUrl("putObject", s3Params);
     returnObject.key = filename;
 
-    if (isProfilePic!==true){
-    let newFile = await addFile({
-      userId: meId,
-      filename,
-      filetype,
-      ...returnObject
-    }, pubSub);
-  };
+    if (isProfilePic !== true) {
+      await addFile(
+        {
+          userId: meId,
+          filename,
+          filetype,
+          ...returnObject,
+        },
+        pubSub
+      );
+    }
 
     return returnObject;
   }

@@ -1,20 +1,18 @@
-import { User } from './../entity/User';
-import { Int, ID, InterfaceType, ObjectType, Field } from 'type-graphql';
-import { SignedS3Payload } from '../entity/SignedS3Payload';
-
+import { User } from "./../entity/User";
+import { Int, ID, InterfaceType, ObjectType, Field } from "type-graphql";
+import { SignedS3Payload } from "../types/SignedS3Payload";
 
 @ObjectType()
-export abstract class EditUserPayload{
-    @Field(() => User, {nullable:true})
-    user: User;
+export abstract class EditUserPayload {
+  @Field(() => User, { nullable: true })
+  user: User;
 
-    @Field(() => Boolean, {nullable:true})
-    success: boolean;
+  @Field(() => Boolean, { nullable: true })
+  success: boolean;
 
-    @Field(() =>SignedS3Payload, {nullable:true})
-    s3: SignedS3Payload;
+  @Field(() => SignedS3Payload, { nullable: true })
+  s3: SignedS3Payload;
 }
-
 
 @InterfaceType()
 export abstract class FollowEventPayload {
