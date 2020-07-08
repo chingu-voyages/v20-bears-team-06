@@ -2,6 +2,9 @@ import { AddNotificationArgs } from "../modules/user/field_resolvers/FollowResol
 import { ToFollowerNotification } from "./ToFollowerNotification";
 import { Notification } from "./Notification";
 import { ContentFile } from "./ContentFile";
+import { awsImageEndpoint } from "../modules/constants/awsImageEndpoint";
+import { FollowerData } from "../modules/followerdata/FollowerDataTypes";
+
 import {
   Entity,
   PrimaryGeneratedColumn,
@@ -17,6 +20,8 @@ import { ObjectType, Field, ID, Root, ArgsType, Args, Arg } from "type-graphql";
 import { Post } from "./Post";
 import { Specialty } from "./Specialty";
 import { Lazy } from "../utils/Lazy";
+import { SignS3Resolver } from "../modules/uploads/S3Signed";
+import { format } from "path";
 
 @ArgsType()
 export class NewNotificationArgs {
@@ -57,6 +62,33 @@ export class AddNewFileArgs {
   filename: string;
 }
 
+@ArgsType()
+export class ProfilePicArgs {
+  @Field(() => ID)
+  userId: number;
+
+  @Field()
+  filename: string;
+
+  @Field()
+  filetype: string;
+}
+
+@ArgsType()
+export class AddSpecialtyArgs {
+  @Field(() => ID)
+  userId: number;
+
+  @Field()
+  title: string;
+
+  @Field()
+  subtitle: string;
+}
+
+const s3Resolver = new SignS3Resolver();
+const signS3 = s3Resolver.signS3;
+
 @ObjectType()
 @Entity()
 export class User extends BaseEntity {
@@ -86,29 +118,33 @@ export class User extends BaseEntity {
   @Column("bool", { default: false })
   confirmed: boolean;
 
-  @Column({ default: "" })
-  @Field(() => String!)
+  @Column({ nullable: true })
+  @Field({ nullable: true })
   school: string;
 
-  @Column({ default: "" })
-  @Field(() => String!)
+  @Column({ nullable: true })
+  @Field({ nullable: true })
   department: string;
 
-  @Column({ default: "" })
-  @Field(() => String!)
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  profilePic_url: string;
+
+  @Column({ nullable: true })
+  @Field({ nullable: true })
   position: string;
 
-  @Column({ default: "" })
-  @Field(() => String!)
+  @Column({ nullable: true })
+  @Field({ nullable: true })
   about_me: string;
 
-  @Column({ default: "" })
-  @Field(() => String!)
+  @Column({ nullable: true })
+  @Field({ nullable: true })
   location: string;
 
   @Field({ complexity: 3 })
   employment(@Root() parent: User): string {
-    return `${parent.department} ${parent.position}`;
+    return `${parent.department || ""} ${parent.position || ""}` || "";
   }
 
   @OneToMany(() => ContentFile, (file) => file.owner, { lazy: true })
@@ -150,9 +186,8 @@ export class User extends BaseEntity {
   @RelationId((user: User) => user.notifications_fromFollowers)
   notification_fromFollowersIds: number[];
 
-  @OneToMany(() => Specialty, (specialty) => specialty.users, {
+  @ManyToMany(() => Specialty, (specialty) => specialty.users, {
     lazy: true,
-    cascade: true,
   })
   @Field(() => [Specialty])
   specialties: Lazy<Specialty[]>;
@@ -279,5 +314,80 @@ export class User extends BaseEntity {
       if (notifications) return notifications;
     }
     return [];
+  }
+
+  static async updateProfilePic(
+    @Args() { userId, filetype, filename }: ProfilePicArgs
+  ) {
+    let user = await this.findOne(userId);
+    if (!user) return;
+
+    let requestObject = await signS3({
+      meId: userId,
+      filename,
+      filetype,
+      isProfilePic: true,
+    });
+
+    if (requestObject) {
+      user.profilePic_url = `${awsImageEndpoint}${requestObject.key}`;
+    }
+
+    await user.save();
+    return requestObject;
+  }
+
+  static async addSpecialty(
+    @Args() { userId, title, subtitle }: AddSpecialtyArgs
+  ): Promise<User | undefined> {
+    let user = await this.findOne(userId);
+    if (!user) return;
+    let specialties = await user.specialties;
+    if (!specialties) return;
+
+    let existingSpecialty = await Specialty.createQueryBuilder("specialty")
+      .where("specialty.title = :title", { title })
+      .andWhere("specialty.subtitle = :subtitle", { subtitle })
+      .getOne();
+
+    if (!existingSpecialty) {
+      const newSpecialty = await Specialty.create({
+        subtitle,
+        title,
+      });
+      if (!newSpecialty) return;
+      (await newSpecialty.users).push(user);
+      await newSpecialty.save();
+      (await user.specialties).push(newSpecialty);
+      await user.save();
+    } else if (existingSpecialty) {
+      (await existingSpecialty.users).push(user);
+      await existingSpecialty.save();
+      (await user.specialties).push(existingSpecialty);
+      await user.save();
+    }
+
+    let updatedUser = await this.findOne(userId);
+
+    return updatedUser;
+  }
+
+  static async getFollowerData(@Arg("userId") userId: number) {
+    let followers = await this.createQueryBuilder("user")
+      .relation("followers")
+      .of(userId)
+      .loadMany();
+
+    const result = followers.map((el) => {
+      let followerData: FollowerData = {
+        ...el,
+      };
+
+      return followerData;
+    });
+
+    console.log(result);
+
+    return result;
   }
 }
