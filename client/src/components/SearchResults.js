@@ -36,7 +36,7 @@ function downloadFileHandler(key) {
   });
   s3.getObject({
     Bucket: process.env.S3_BUCKET,
-    Key: "uploads/20200629-02amb-chingucli-1.png",
+    Key: key || "uploads/20200629-02amb-chingucli-1.png",
   });
 }
 
