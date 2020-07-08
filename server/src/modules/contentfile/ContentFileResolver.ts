@@ -30,16 +30,10 @@ export class NewFileArgs {
   userId: number;
 
   @Field({ nullable: true })
-  userUrl: string;
-
-  @Field({ nullable: true })
   filetype: string;
 
   @Field({ nullable: true })
   filename: string;
-
-  @Field({ nullable: true })
-  contentUrl: string;
 
   @Field({ nullable: true })
   key: string;
