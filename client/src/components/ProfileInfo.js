@@ -72,7 +72,7 @@ const ProfileInfo = () => {
 
   let { url } = useRouteMatch();
 
-  let { userid } = useParams();
+  let { userId } = useParams();
 
   const classes = useStyles();
 
@@ -102,7 +102,7 @@ const ProfileInfo = () => {
           <CardMedia>
             <Avatar
               className={classes.avatar}
-              src={profile && profile.image}
+              src={profile && profile.profilePic_url}
             ></Avatar>
           </CardMedia>
           <Grid
@@ -136,7 +136,7 @@ const ProfileInfo = () => {
             {profile && profile.location}
           </Typography>
           <Typography align="center" variant="subtitle1">
-            {profile && profile.employment}
+            {(profile && profile.employment)||''}
           </Typography>
           <Typography align="center" variant="subtitle1">
             {profile && profile.school}

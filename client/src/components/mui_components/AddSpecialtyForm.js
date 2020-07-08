@@ -43,8 +43,8 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export const AddSpecialtyForm = (props) => {
-  let { userid } = useParams();
-  console.log(userid);
+  let { userId } = useParams();
+  console.log(userId);
 
   const [spec] = useMutation(ADD_USER_SPEC);
 
@@ -78,7 +78,7 @@ export const AddSpecialtyForm = (props) => {
               try {
                 const response = await spec({
                   variables: {
-                    userId: userid,
+                    userId,
                     title: values.specialty,
                     subtitle: values.focusIn,
                   },
