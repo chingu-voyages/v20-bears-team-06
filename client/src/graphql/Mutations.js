@@ -44,25 +44,36 @@ export const EDIT_PROFILE_MUTATION = gql`
     $position: String
     $about_me: String
     $location: String
-  ) {
-    editUser(
-      edit: {
-        userId: $userId
-        school: $school
-        department: $department
-        position: $position
-        about_me: $about_me
-        location: $location
+    $filename: String
+    $filetype: String
+  ){
+    editUser(edit:{
+      userId: $userId
+      school: $school
+      department: $department
+      position: $position
+      about_me: $about_me
+      location: $location
+      filename: $filename
+      filetype: $filetype
+    }){
+      user{
+        id
+        school
+        department
+        position
+        about_me
+        location
+        profilePic_url
       }
-    ) {
-      id
-      school
-      department
-      position
-      about_me
-      location
+      s3{
+        signedRequest
+        key
+      }
+      success
     }
   }
+  
 `;
 
 export const ADD_USER_SPEC = gql`

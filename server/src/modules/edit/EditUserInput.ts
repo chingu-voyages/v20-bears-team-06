@@ -26,6 +26,12 @@ export class EditUserInput {
   @Length(1, 2000, { message: 'location must be between 1-50' })
   location: string;
 
+  @Field({nullable: true})
+  filename: string;
+
+  @Field({nullable:true})
+  filetype: string;
+
  
 
 

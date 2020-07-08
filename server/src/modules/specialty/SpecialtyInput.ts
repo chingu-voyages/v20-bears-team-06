@@ -10,7 +10,7 @@ export class SpecialtyInput{
     subtitle: string;
 
     @Field(() => ID, {nullable:true})
-    userId: string;
+    userId:number;
 
     @Field(() => ID, {nullable: true})
     postToAdd: string;

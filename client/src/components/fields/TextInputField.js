@@ -9,6 +9,7 @@ export const TextInputField = ({ label, placeholder, type, ...props }) => {
   return (
     <div className="text-input-field">
       <TextField
+        size='small'
         placeholder={placeholder}
         label={label}
         type={type}
