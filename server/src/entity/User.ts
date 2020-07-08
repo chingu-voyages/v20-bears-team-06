@@ -1,10 +1,9 @@
-
-import { AddNotificationArgs } from '../modules/user/field_resolvers/FollowResolver';
-import { ToFollowerNotification } from './ToFollowerNotification';
-import { Notification } from './Notification';
-import { ContentFile } from './ContentFile';
-import { awsImageEndpoint } from '../modules/constants/awsImageEndpoint';
-import { FollowerData } from '../modules/followerdata/FollowerDataTypes';
+import { AddNotificationArgs } from "../modules/user/field_resolvers/FollowResolver";
+import { ToFollowerNotification } from "./ToFollowerNotification";
+import { Notification } from "./Notification";
+import { ContentFile } from "./ContentFile";
+import { awsImageEndpoint } from "../modules/constants/awsImageEndpoint";
+import { FollowerData } from "../modules/followerdata/FollowerDataTypes";
 
 import {
   Entity,
@@ -15,16 +14,13 @@ import {
   ManyToMany,
   JoinTable,
   RelationCount,
-  RelationId
-} from 'typeorm';
-import { ObjectType, Field, ID, Root , ArgsType, Args , Arg} from 'type-graphql';
-import { Post } from './Post';
-import { Specialty } from './Specialty';
-import { Lazy } from '../utils/Lazy';
-import { SignS3Resolver } from '../modules/uploads/S3Signed';
-import { FollowerData } from 'src/modules/followerdata/FollowerDataTypes';
-import { format } from 'path';
-
+  RelationId,
+} from "typeorm";
+import { ObjectType, Field, ID, Root, ArgsType, Args, Arg } from "type-graphql";
+import { Post } from "./Post";
+import { Specialty } from "./Specialty";
+import { Lazy } from "../utils/Lazy";
+import { SignS3Resolver } from "../modules/uploads/S3Signed";
 
 @ArgsType()
 export class NewNotificationArgs {
@@ -66,9 +62,8 @@ export class AddNewFileArgs {
 }
 
 @ArgsType()
-export class ProfilePicArgs{
-  
-  @Field(()=>ID)
+export class ProfilePicArgs {
+  @Field(() => ID)
   userId: number;
 
   @Field()
@@ -79,7 +74,7 @@ export class ProfilePicArgs{
 }
 
 @ArgsType()
-export class AddSpecialtyArgs{
+export class AddSpecialtyArgs {
   @Field(() => ID)
   userId: number;
 
@@ -89,7 +84,6 @@ export class AddSpecialtyArgs{
   @Field()
   subtitle: string;
 }
-
 
 const s3Resolver = new SignS3Resolver();
 const signS3 = s3Resolver.signS3;
@@ -123,34 +117,33 @@ export class User extends BaseEntity {
   @Column("bool", { default: false })
   confirmed: boolean;
 
-  @Column({nullable:true})
-  @Field({nullable:true})
+  @Column({ nullable: true })
+  @Field({ nullable: true })
   school: string;
 
-  @Column({nullable:true})
-  @Field({nullable:true})
+  @Column({ nullable: true })
+  @Field({ nullable: true })
   department: string;
 
- @Column({nullable:true})
- @Field({nullable:true})
- profilePic_url: string;
+  @Column({ nullable: true })
+  @Field({ nullable: true })
+  profilePic_url: string;
 
-
-  @Column({nullable:true})
-  @Field({nullable:true})
+  @Column({ nullable: true })
+  @Field({ nullable: true })
   position: string;
 
-  @Column({nullable:true})
-  @Field({nullable: true})
+  @Column({ nullable: true })
+  @Field({ nullable: true })
   about_me: string;
 
-  @Column({nullable:true})
-  @Field({nullable:true})
+  @Column({ nullable: true })
+  @Field({ nullable: true })
   location: string;
 
   @Field()
   employment(@Root() parent: User): string {
-    return `${parent.department||""} ${parent.position||""}`|| '';
+    return `${parent.department || ""} ${parent.position || ""}` || "";
   }
 
   @OneToMany(() => ContentFile, (file) => file.owner, { lazy: true })
@@ -193,7 +186,7 @@ export class User extends BaseEntity {
   notification_fromFollowersIds: number[];
 
   @ManyToMany(() => Specialty, (specialty) => specialty.users, {
-    lazy: true
+    lazy: true,
   })
   @Field(() => [Specialty])
   specialties: Lazy<Specialty[]>;
@@ -308,97 +301,83 @@ export class User extends BaseEntity {
       );
       if (notifications) return notifications;
     }
-    return[];
-   }
+    return [];
+  }
 
+  static async updateProfilePic(
+    @Args() { userId, filetype, filename }: ProfilePicArgs
+  ) {
+    let user = await this.findOne(userId);
+    if (!user) return;
 
-   static async updateProfilePic(@Args(){ userId, filetype, filename}:ProfilePicArgs){
+    let requestObject = await signS3({
+      meId: userId,
+      filename,
+      filetype,
+      isProfilePic: true,
+    });
 
-      let user = await this.findOne(userId);
-      if(!user) return;
+    if (requestObject) {
+      user.profilePic_url = `${awsImageEndpoint}${requestObject.key}`;
+    }
 
-      let requestObject = await signS3({
-        meId : userId,
-        filename,
-        filetype,
-        isProfilePic:true}
-      );
+    await user.save();
+    return requestObject;
+  }
 
-      if (requestObject){
-        user.profilePic_url = `${awsImageEndpoint}${requestObject.key}`;
-      };
+  static async addSpecialty(
+    @Args() { userId, title, subtitle }: AddSpecialtyArgs
+  ): Promise<User | undefined> {
+    let user = await this.findOne(userId);
+    if (!user) return;
+    let specialties = await user.specialties;
+    if (!specialties) return;
 
-      await user.save();
-      return requestObject;
-   };
-
-   static async addSpecialty(@Args() {userId, title, subtitle }: AddSpecialtyArgs)
-   :Promise<User|undefined>{
-
-      let user = await this.findOne(userId);
-      if (!user) return;
-      let specialties = await user.specialties;
-      if (!specialties) return;
-
-      let existingSpecialty = await Specialty.createQueryBuilder('specialty')
-      .where('specialty.title = :title', {title})
-      .andWhere('specialty.subtitle = :subtitle', {subtitle})
+    let existingSpecialty = await Specialty.createQueryBuilder("specialty")
+      .where("specialty.title = :title", { title })
+      .andWhere("specialty.subtitle = :subtitle", { subtitle })
       .getOne();
 
-      if (!existingSpecialty){
-        const newSpecialty = await Specialty.create({
-          subtitle,
-          title
-        });
-        if(!newSpecialty) return;
-        (await newSpecialty.users).push(user);
-        await newSpecialty.save();
-        (await user.specialties).push(newSpecialty);
-        await user.save();
-      }else if (existingSpecialty){
-        (await existingSpecialty.users).push(user);
-        await existingSpecialty.save();
-        (await user.specialties).push(existingSpecialty);
-        await user.save();
-      }
+    if (!existingSpecialty) {
+      const newSpecialty = await Specialty.create({
+        subtitle,
+        title,
+      });
+      if (!newSpecialty) return;
+      (await newSpecialty.users).push(user);
+      await newSpecialty.save();
+      (await user.specialties).push(newSpecialty);
+      await user.save();
+    } else if (existingSpecialty) {
+      (await existingSpecialty.users).push(user);
+      await existingSpecialty.save();
+      (await user.specialties).push(existingSpecialty);
+      await user.save();
+    }
 
+    let updatedUser = await this.findOne(userId);
 
-      let updatedUser = await this.findOne(userId);
+    return updatedUser;
+  }
 
-      return updatedUser;
+  static async getFollowerData(@Arg("userId") userId: number) {
+    let followers = await this.createQueryBuilder("user")
+      .relation("followers")
+      .of(userId)
+      .loadMany();
 
-
-   }
-
-   static async getFollowerData(
-     @Arg('userId') userId:number
-   ){
-     
-    let followers = await this.createQueryBuilder('user')
-    .relation('followers')
-    .of(userId)
-    .loadMany();
-
-    const result = followers.map(el=>{
-
-      let followerData:FollowerData = {
-        ...el
+    const result = followers.map((el) => {
+      let followerData: FollowerData = {
+        ...el,
       };
 
       return followerData;
-
     });
-
 
     console.log(result);
 
-
-     
-
-     
-
-     return result;
-   }
+    return result;
+  }
 
   static async getNewNotifications(@Arg("userId") userId: number) {
     let user = await this.findOne(userId);
