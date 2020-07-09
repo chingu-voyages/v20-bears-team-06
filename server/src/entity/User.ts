@@ -21,7 +21,6 @@ import { Post } from './Post';
 import { Specialty } from './Specialty';
 import { Lazy } from '../utils/Lazy';
 import { SignS3Resolver } from '../modules/uploads/S3Signed';
-import { FollowerData } from 'src/modules/followerdata/FollowerDataTypes';
 import { format } from 'path';
 
 
@@ -308,6 +307,18 @@ export class User extends BaseEntity {
       if (notifications) return notifications;
     }
     return[];
+   }
+
+
+   static async getNewNotifications(@Arg("userId") userId:number) {
+     let user = await this.findOne(userId);
+     if (user) {
+       let notifications = (await user.notifications).filter(
+         (el) => el.seen=== false
+       );
+       if (notifications) return notifications;
+       else return [];
+     }else return [];
    }
 
 

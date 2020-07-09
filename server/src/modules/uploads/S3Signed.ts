@@ -1,8 +1,16 @@
-import { SignedS3Payload } from './../../entity/SignedS3Payload';
+import { ContentFile } from './../../entity/ContentFile';
+import { SignedS3Payload } from './../../types/SignedS3Payload';
 import { pubSub } from './../../redis';
-import { ArgsType, ID, Args, Resolver, Field, Mutation, Arg, InterfaceType, ObjectType, InputType } from 'type-graphql';
+import { ArgsType, ID, Args, Resolver, Field, Mutation, Arg, InterfaceType, ObjectType, InputType, Query} from 'type-graphql';
 import { ContentFileResolver } from '../contentfile/ContentFileResolver';
 import aws from 'aws-sdk';
+
+
+@ArgsType()
+  export class DownloadS3Args{
+    @Field(() => ID)
+    fileId: number;
+  };
 
 
 @ArgsType()
@@ -69,6 +77,40 @@ export class SignS3Resolver {
   };
 
     return returnObject;
+  }
+
+  @Mutation(() => SignedS3Payload)
+  async s3download(@Args() {fileId}:DownloadS3Args):
+  Promise<SignedS3Payload|null>{
+    
+    const s3Bucket = process.env.S3_BUCKET_NAME || "chingu-bears-06";
+
+    const s3 = new aws.S3({
+      region: "us-west-1",
+      signatureVersion: "v4",
+    });
+
+    let file = await ContentFile.findOne(fileId);
+    if (!file) return null;
+
+    const s3Params ={
+      Bucket: s3Bucket,
+      Key: file.key,
+      Expires : 60,
+      ResponseContentDisposition: `attachment; filename="${file.filename}"`
+    };
+
+    const returnObject:SignedS3Payload ={
+      signedRequest: s3.getSignedUrl('getObject', s3Params),
+      key: s3Params.Key
+    }
+
+
+    return returnObject;
+
+    
+
+
   }
 
  

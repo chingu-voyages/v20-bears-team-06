@@ -10,7 +10,9 @@ import CloudDownloadIcon from '@material-ui/icons/CloudDownload';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import DeleteIcon from '@material-ui/icons/Delete';
 import {IconBadge} from './IconBadge';
-
+import { downloadFromS3 } from '../utils/downloadFromS3';
+import { useMutation } from '@apollo/react-hooks';
+import { GET_SIGNED_DOWNLOAD } from '../graphql/Mutations';
 
 const isApp = new RegExp('^application','gi');
 const isImage = new RegExp('^image','gi');
@@ -73,16 +75,41 @@ const useStyles = makeStyles((theme)=>({
 
 
 export const FileCard= ({file}) => {
+
+    const [signDownload] = useMutation(GET_SIGNED_DOWNLOAD);
     const classes = useStyles();
     let titleString = (file&&file.filename)||"";
     titleString = titleString.length>20?titleString.slice(0,17)+"...":titleString;
-    const title = (<Typography variant='caption2' color='primary'>
+    const title = <Typography variant='caption2' color='primary'>
         {titleString}
-    </Typography>)
-    console.log(file)
+    </Typography>;
+
+    
+
+    const fileId = file.id;
+
+    async function handleDownloadClick(){
+        let signedRequest;
+        let serverResponse = await signDownload({
+            variables: {fileId}
+        });
+        console.log(serverResponse);
+        if (serverResponse&&serverResponse.data){
+            let { data } = serverResponse;
+            if (data.s3download){
+                signedRequest = data.s3download.signedRequest;
+            }
+            if (signedRequest){
+                let s3response = await downloadFromS3(signedRequest);
+                console.log(s3response);
+            }
+        }
+
+        
+    }
     return (
         <Card variant='outlined' className={classes.card}>
-            <CardActionArea className={classes.cardContent}>
+            <CardActionArea className={classes.cardContent} onClick={handleDownloadClick}>
             <CardHeader className={classes.cardHeader} size='small' align='center'  title={title} />
             <CardContent align='center'>
             <FileCardIcon align='center' filetype={file&&file.filetype} />

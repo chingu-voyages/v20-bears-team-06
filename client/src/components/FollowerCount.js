@@ -11,17 +11,11 @@ export const FollowerCount = (props) => {
     
     const { userId } = useParams();
     
-    const { data } = useSubscription(FOLLOWER_SUB,{
-        variables: {
-            userId: userId
-        }
-    });
+    
 
     let followerCount = currentCount || null;
 
-    if (data&&data.newFollowEvents){
-        followerCount = data.newFollowEvents.follower_count;
-    }
+    
     
     return (
         <Typography variant='h4' color='primary' align='center'>

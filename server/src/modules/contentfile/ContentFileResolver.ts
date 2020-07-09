@@ -6,6 +6,7 @@ import { NotificationMessage } from "../notifications/types/NotificationMessage"
 import { Topic } from "./../../types/Topic";
 import { ContentFile } from "./../../entity/ContentFile";
 import {
+  Root,
   Resolver,
   Query,
   Mutation,
@@ -40,13 +41,6 @@ export class NewFileArgs {
 
     @Field({nullable:true})
     key: string;
-
-
-  @Field({ nullable: true })
-  key: string;
-
-  @Field({ nullable: true })
-  signedRequest: string;
 }
 
 @ArgsType()
@@ -68,6 +62,8 @@ export class ContentFileResolver {
     if (user) {
       return user.uploads ? user.uploads : [];
     }
+    return [];
+  }
 
     @Mutation(() => ContentFile)
     async newFile(

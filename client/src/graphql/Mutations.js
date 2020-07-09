@@ -153,3 +153,12 @@ export const NEW_UPLOAD_MUTATION = gql`
     }
   }
 `;
+
+export const GET_SIGNED_DOWNLOAD = gql`
+    mutation s3download($fileId: ID!){
+        s3download(fileId: $fileId){
+          signedRequest
+          key
+        }      
+    }
+`;

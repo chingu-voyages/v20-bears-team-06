@@ -49,7 +49,7 @@ export const FileUploadDialog = ({ setUpdate, meId, iconColor, ...props }) => {
     
   
   
-  async function handleFileSubmit(meId){
+  async function handleFileSubmit(meId,event){
     fileObjects.forEach(async fileObject=>{
       let filename, filetype;
       let signedRequest, key;
@@ -78,7 +78,7 @@ export const FileUploadDialog = ({ setUpdate, meId, iconColor, ...props }) => {
             if (s3response && s3response.status){
               let { status } = s3response;
               if (status===200){
-                setUpdate(true);
+                console.log(event)
               }
             }
           }
@@ -122,9 +122,9 @@ export const FileUploadDialog = ({ setUpdate, meId, iconColor, ...props }) => {
         onDelete={deleteFileObj => {
           console.log('onDelete', deleteFileObj);
         }}
-        onSave={() => {
+        onSave={(event) => {
           console.log('onSave', fileObjects);
-          handleFileSubmit(meId,fileObjects);
+          handleFileSubmit(meId,event);
           setOpen(false);
          
         }}

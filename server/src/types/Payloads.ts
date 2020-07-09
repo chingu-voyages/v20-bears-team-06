@@ -1,7 +1,7 @@
+import { SignedS3Payload } from './SignedS3Payload';
 import { ContentFile } from './../entity/ContentFile';
 import { User } from './../entity/User';
 import { Int, ID, InterfaceType, ObjectType, Field } from 'type-graphql';
-import { SignedS3Payload } from '../entity/SignedS3Payload';
 
 
 @ObjectType()

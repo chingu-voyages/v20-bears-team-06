@@ -95,7 +95,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export const ContentBoard = (props) => {
-  const [update, setUpdate ] = useState(false);
+  
   const theme = useTheme();
   const classes = useStyles(theme);
 
@@ -198,11 +198,11 @@ export const ContentBoard = (props) => {
               </Grid>
               <Grid className={classes.fab} item>
                 { isOwnProfile &&
-              <FileUploadDialog setUpdate={setUpdate} meId={meId} iconColor={classes.fab.color} size='small' /> }
+              <FileUploadDialog meId={meId} iconColor={classes.fab.color} size='small' /> }
               </Grid>
               </Grid>
             </Toolbar>
-            <ContentDisplay update={update} className={classes.mobileCards} userId={userId}/>
+            <ContentDisplay  className={classes.mobileCards} userId={userId}/>
             
 
           </Card>
