@@ -41,6 +41,7 @@ export const SEARCH_POSTS = gql`
       id
       text
       author
+      userId
     }
   }
 `;
@@ -52,6 +53,7 @@ export const SEARCH_FILES = gql`
       userId
       filename
       filetype
+      key
     }
   }
 `;
@@ -102,8 +104,8 @@ export const FOLLOWER_IDS = gql`
 `;
 
 export const GET_FILES = gql`
-  query files($userId: ID!){
-    files(userId: $userId){
+  query files($userId: ID!) {
+    files(userId: $userId) {
       id
       filetype
       filename
@@ -115,5 +117,4 @@ export const GET_FILES = gql`
       key
     }
   }
-
-`
+`;

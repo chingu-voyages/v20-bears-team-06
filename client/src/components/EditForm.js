@@ -1,9 +1,9 @@
-import React, { useContext, useState } from 'react';
-import {Redirect} from 'react-router-dom';
-import { Formik, Form, Field } from 'formik';
-import { useMutation } from '@apollo/react-hooks';
-import { ADD_USER_SPEC, EDIT_PROFILE_MUTATION } from '../graphql/Mutations';
-import { formatFileName, uploadToS3 } from '../components/UploadExample';
+import React, { useContext, useState } from "react";
+import { Redirect } from "react-router-dom";
+import { Formik, Form, Field } from "formik";
+import { useMutation } from "@apollo/react-hooks";
+import { ADD_USER_SPEC, EDIT_PROFILE_MUTATION } from "../graphql/Mutations";
+import { formatFileName, uploadToS3 } from "../components/UploadExample";
 import {
   Avatar,
   Button,
@@ -16,26 +16,26 @@ import {
   Paper,
   Typography,
   TextField,
-} from '@material-ui/core';
-import { TextInputField } from './fields/TextInputField';
-import { TextAreaField } from './fields/TextAreaField';
-import { ProfileContext } from '../pages/ProfilePage';
-import * as Yup from 'yup';
-import { DropZoneField } from './mui_components/DropzoneArea';
+} from "@material-ui/core";
+import { TextInputField } from "./fields/TextInputField";
+import { TextAreaField } from "./fields/TextAreaField";
+import { ProfileContext } from "../pages/ProfilePage";
+import * as Yup from "yup";
+import { DropZoneField } from "./mui_components/DropzoneArea";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
     marginTop: theme.spacing(4),
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
   },
   avatar: {
     margin: theme.spacing(1),
     backgroundColor: theme.palette.secondary.main,
   },
   form: {
-    width: '100%', // Fix IE 11 issue.
+    width: "100%", // Fix IE 11 issue.
     marginTop: theme.spacing(1),
   },
   submit: {
@@ -47,33 +47,21 @@ const EditForm = (props) => {
   const [edit] = useMutation(EDIT_PROFILE_MUTATION);
   let isOwnProfile = props.isOwnProfile || null;
   const profile = props.profile || null;
-  
-
-  
- 
-  
-
-  
-  
-
 
   const { id } = profile;
 
-  console.log(profile)
+  console.log(profile);
 
   const theme = useTheme();
 
   const classes = useStyles(theme);
-
-  
 
   if (isOwnProfile) {
     return (
       <Container component="main" maxWidth="xs">
         <CssBaseline />
         <div className={classes.paper}>
-          
-          <Typography variant='h4' component='h1' color='primary' gutterBottom>
+          <Typography variant="h4" component="h1" color="primary" gutterBottom>
             Edit Profile
           </Typography>
           <Formik
@@ -82,39 +70,42 @@ const EditForm = (props) => {
               department: profile.department,
               position: profile.position,
               aboutMe: profile.about_me,
-              location : profile.location,
-              file : []
+              location: profile.location,
+              file: [],
             }}
             validateOnBlur={false}
             validateOnChange={false}
             validationSchema={Yup.object({
               school: Yup.string()
                 .min(3)
-                .max(60, 'School name must be between 3-60 characters').nullable(),
-              department: Yup.string().nullable()
+                .max(60, "School name must be between 3-60 characters")
+                .nullable(),
+              department: Yup.string()
+                .nullable()
                 .min(3)
-                .max(60, 'department name must be between 3-60 characters'),
-              position: Yup.string().nullable()
+                .max(60, "department name must be between 3-60 characters"),
+              position: Yup.string()
+                .nullable()
                 .min(3)
-                .max(60, 'position must be between 3-60 characters'),
-              aboutMe: Yup.string().nullable()
+                .max(60, "position must be between 3-60 characters"),
+              aboutMe: Yup.string()
+                .nullable()
                 .min(1)
-                .max(5000, 'School name must be between 1-5000 characters'),
-                file: Yup.array().nullable()
+                .max(5000, "School name must be between 1-5000 characters"),
+              file: Yup.array().nullable(),
             })}
             onSubmit={(values, { setSubmitting, setFieldError }) => {
               let type, name;
-              if (values.file[0]){
+              if (values.file[0]) {
                 let file = values.file[0].file;
                 type = file.type;
-                name = file.name
-
+                name = file.name;
               }
               setTimeout(async () => {
                 try {
                   const response = await edit({
                     variables: {
-                      userId : profile.id,
+                      userId: profile.id,
                       school: values.school ? values.school : profile.school,
                       department: values.department
                         ? values.department
@@ -126,43 +117,39 @@ const EditForm = (props) => {
                         ? values.aboutMe
                         : profile.about_me,
                       location: values.location
-                      ?values.location
-                      :profile.location,
-                      filetype: type?
-                      type
-                      :null,
-                      filename: name
-                      ?formatFileName(name)
-                      :null
-                
+                        ? values.location
+                        : profile.location,
+                      filetype: type ? type : null,
+                      filename: name ? formatFileName(name) : null,
                     },
                   });
                   console.log(response);
                   if (response && response.data && !response.data.editUser) {
-                    setFieldError('invalid field data');
+                    setFieldError("invalid field data");
                     return;
                   }
-                  if (response && response.data &&response.data.editUser.s3){
+                  if (response && response.data && response.data.editUser.s3) {
                     const s3 = response.data.editUser.s3;
-                    const s3response = await uploadToS3(values.file[0].file, s3.signedRequest);
+                    const s3response = await uploadToS3(
+                      values.file[0].file,
+                      s3.signedRequest
+                    );
                     console.log(s3response);
                   }
-
-                  
                 } catch (e) {
-                  console.log('error with edit', e);
+                  console.log("error with edit", e);
                 }
 
                 setSubmitting(false);
               }, 400);
             }}
-          > 
+          >
             <Form className={classes.form} noValidate>
               <Field
-                label='Update School'
-                name='school'
-                type='text'
-                placeholder = {profile.school||'enter school name'}
+                label="Update School"
+                name="school"
+                type="text"
+                placeholder={profile.school || "enter school name"}
                 variant="outlined"
                 autoFocus
                 fullWidth
@@ -177,53 +164,50 @@ const EditForm = (props) => {
                 label="Department"
                 type="text"
                 id="department"
-                placeholder = {profile.school||null}
+                placeholder={profile.school || null}
                 as={TextInputField}
               />
               <Field
                 variant="outlined"
                 margin="normal"
-      
                 fullWidth
                 name="position"
                 label="Position"
                 type="text"
                 id="position"
-                placeholder={profile.position||null}
+                placeholder={profile.position || null}
                 as={TextInputField}
               />
               <Field
                 variant="outlined"
                 margin="normal"
-      
                 fullWidth
                 name="location"
                 label="Location"
                 type="text"
                 id="location"
-                placeholder={profile.location||null}
+                placeholder={profile.location || null}
                 as={TextInputField}
               />
               <Field
                 variant="outlined"
                 margin="normal"
-                
                 fullWidth
                 name="aboutMe"
                 label="About Me"
                 type="text"
                 id="aboutMe"
-                placeholder = {profile.about_me||null}
+                placeholder={profile.about_me || null}
                 as={TextAreaField}
               />
-              <Field variant="outlined"
-              margin='normal'
-          
-              name='file'
-              label="Update Profile Picture"
-              type="file"
-              id='file'
-              as={DropZoneField}
+              <Field
+                variant="outlined"
+                margin="normal"
+                name="file"
+                label="Update Profile Picture"
+                type="file"
+                id="file"
+                as={DropZoneField}
               />
               <Button
                 fullWidth
@@ -234,11 +218,9 @@ const EditForm = (props) => {
               >
                 Submit
               </Button>
-              
             </Form>
           </Formik>
         </div>
-        
       </Container>
     );
   } else {
