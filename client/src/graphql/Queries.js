@@ -66,6 +66,14 @@ export const GET_PROFILE = gql`
         title
         subtitle
       }
+      followers{
+        id
+        profilePic_url
+        department
+        firstName
+        lastName
+        school
+      }
     }
   }
 `;
@@ -106,4 +114,8 @@ export const GET_FILES = gql`
     }
   }
 
-`
+`;
+
+
+
+

@@ -122,7 +122,7 @@ export const UNFOLLOW_USER_MUTATION = gql`
 `;
 
 export const S3_SIGN_MUTATION = gql`
-  mutation SignS3($filename: String!, $filetype: String!, $meId: number!) {
+  mutation SignS3($filename: String!, $filetype: String!, $meId: ID!) {
     signS3(filename: $filename, filetype: $filetype, meId: $meId) {
       key
       signedRequest
@@ -130,8 +130,26 @@ export const S3_SIGN_MUTATION = gql`
   }
 `;
 
+
 export const SET_SEEN_MUTATION = gql `
   mutation setSeen($notificationIds: [ID!]!){
     setSeen(notificationIds: $notificationIds)
+  }
+`;
+
+
+export const NEW_UPLOAD_MUTATION = gql`
+  mutation newFileUpload($meId: ID!, $filetype: String!, $filename: String!){
+    newFileUpload(meId: $meId filetype:$filetype filename:$filename){
+      id
+      filetype
+      filename
+      date
+      ownerId
+      signedRequest
+      download_count
+      likes
+      key     
+    }
   }
 `;

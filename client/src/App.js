@@ -29,7 +29,7 @@ export default function App({ client }) {
       },
     },
   });
-  theme = responsiveFontSizes(theme, 6);
+  theme = responsiveFontSizes(theme, 7);
   return (
     <Router>
       <div id="App">

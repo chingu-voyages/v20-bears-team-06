@@ -17,6 +17,7 @@ import AddCircleIcon from '@material-ui/icons/AddCircle';
 import AddSpecialtyPopover from './mui_components/AddSpecialtyPopover.js';
 
 const useStyles = makeStyles((theme) => ({
+  
   mainCard: {
     [theme.breakpoints.up('md')]: {
       height: '84vh',

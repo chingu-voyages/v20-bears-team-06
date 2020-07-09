@@ -5,15 +5,18 @@ import VideoLabelIcon from '@material-ui/icons/VideoLabel';
 import GridOnIcon from '@material-ui/icons/GridOn';
 import NoteIcon from '@material-ui/icons/Note';
 import SlideshowIcon from '@material-ui/icons/Slideshow';
+import ImageIcon from '@material-ui/icons/Image';
 import CloudDownloadIcon from '@material-ui/icons/CloudDownload';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import DeleteIcon from '@material-ui/icons/Delete';
 import {IconBadge} from './IconBadge';
-const textFiles = ['txt','doc','docx','gdoc'];
-const videoFiles = ['mp4','mov','avi'];
-const spreadsheetFiles = ['csv','xls','xlsx','gsheet'];
-const documentFiles = ['pdf','ppt','gslides'];
-const audioFiles = ['mp3','wav','flac'];
+
+
+const isApp = new RegExp('^application','gi');
+const isImage = new RegExp('^image','gi');
+const isAudio = new RegExp('^audio','gi');
+const isVideo = new RegExp('^video','gi');
+const isText = new RegExp('^text','gi');
 
 
 const FileGridItem = () => (
@@ -21,28 +24,47 @@ const FileGridItem = () => (
 )
 
 const FileCardIcon = ({filetype}) =>{
-    if(filetype){
-    if (videoFiles.includes(filetype)){
-        return <VideoLabelIcon color='primary' fontSize='small' />
-    }else if (spreadsheetFiles.includes(filetype)){
-        return <GridOnIcon color='primary' fontSize='small' />
-    }else if (documentFiles.includes(filetype)){
-        return <SlideshowIcon color='primary' fontSize='small' />
-    }else if (audioFiles.includes(filetype)){
-        return <MicIcon color='primary' fontSize='small'/>
-    }else {
-        
-            return <NoteIcon color='primary' fontSize='small' />
+    if (isApp.test(filetype)){
+        return <SlideshowIcon color="primary" />
     }
-}
+
+    if (isImage.test(filetype)){
+        return <ImageIcon color="primary" />
+    }
+
+    if (isText.test(filetype)){
+        return <NoteIcon color="primary" />
+    }
+
+    if (isAudio.test(filetype)){
+        return <MicIcon color="primary" />
+    }
+
+    if (isVideo.test(filetype)){
+        return <VideoLabelIcon color="primary" />
+    }
+
+    return <NoteIcon color="primary" />
 }
 
 const useStyles = makeStyles((theme)=>({
     card: {
         '& i':{
-            fontSize: theme.spacing(5)
+            fontSize: theme.spacing(4)
         },
-        padding: theme.spacing(2)
+        [theme.breakpoints.up('xs')]:{
+            maxHeight: '35vh'
+        },
+        [theme.breakpoints.up('md')]:{
+            maxHeight: theme.spacing(20)
+        }
+    },
+    cardContent: {
+        height: '80%',
+        padding: '0px'
+    },
+    cardHeader : {
+        padding: theme.spacing(1)
     },
     bottomBar: {
         paddingTop: theme.spacing(2)
@@ -52,13 +74,18 @@ const useStyles = makeStyles((theme)=>({
 
 export const FileCard= ({file}) => {
     const classes = useStyles();
+    let titleString = (file&&file.filename)||"";
+    titleString = titleString.length>20?titleString.slice(0,17)+"...":titleString;
+    const title = (<Typography variant='caption2' color='primary'>
+        {titleString}
+    </Typography>)
     console.log(file)
     return (
         <Card variant='outlined' className={classes.card}>
-            <CardActionArea>
-            <CardHeader avatar={<FileCardIcon align='center' filetype={file&&file.filetype} />} title={file&&file.filename} />
-            <CardContent>
-                <Typography variant='body1' color="primary">{file&&file.filename}</Typography>
+            <CardActionArea className={classes.cardContent}>
+            <CardHeader className={classes.cardHeader} size='small' align='center'  title={title} />
+            <CardContent align='center'>
+            <FileCardIcon align='center' filetype={file&&file.filetype} />
             </CardContent>
             <Divider />
            
