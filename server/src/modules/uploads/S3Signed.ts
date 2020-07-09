@@ -1,9 +1,9 @@
+import { SignedS3Payload } from './../../entity/SignedS3Payload';
 import { pubSub } from './../../redis';
-import { User } from './../../entity/User';
-import { ArgsType, ID, Args, Resolver, Field, Mutation, Arg } from 'type-graphql';
+import { ArgsType, ID, Args, Resolver, Field, Mutation, Arg, InterfaceType, ObjectType, InputType } from 'type-graphql';
 import { ContentFileResolver } from '../contentfile/ContentFileResolver';
-import { SignedS3Payload } from '../../entity/SignedS3Payload';
 import aws from 'aws-sdk';
+
 
 @ArgsType()
   export class S3Args{
@@ -23,13 +23,21 @@ import aws from 'aws-sdk';
 
 
 
+
+
+
+
+
+
+
+
 const contentResolver = new ContentFileResolver();
 const addFile = contentResolver.newFile;
 
 
 @Resolver()
 export class SignS3Resolver {
-  @Mutation(() => SignedS3Payload, { nullable: true })
+  @Mutation(() => SignedS3Payload)
   async signS3(
     @Args() {filename, filetype, meId, isProfilePic }: S3Args
     
@@ -66,4 +74,6 @@ export class SignS3Resolver {
 
     return returnObject;
   }
+
+ 
 }

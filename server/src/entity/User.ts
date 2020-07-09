@@ -4,7 +4,6 @@ import { ToFollowerNotification } from './ToFollowerNotification';
 import { Notification } from './Notification';
 import { ContentFile } from './ContentFile';
 import { awsImageEndpoint } from '../modules/constants/awsImageEndpoint';
-import { FollowerData } from '../modules/followerdata/FollowerDataTypes';
 
 import {
   Entity,
@@ -381,40 +380,20 @@ export class User extends BaseEntity {
 
    }
 
-   static async getFollowerData(
-     @Arg('userId') userId:number
-   ){
-     
-    let followers = await this.createQueryBuilder('user')
-    .relation('followers')
-    .of(userId)
-    .loadMany();
-
-    const result = followers.map(el=>{
-
-      let followerData:FollowerData = {
-        ...el
-      };
-
-      return followerData;
-
-    });
-
-
-    console.log(result);
+   
 
 
      
 
      
 
-     return result;
+   
    }
 
 
   
 
-}
+
 
  
 
