@@ -24,6 +24,7 @@
     "formik": "^2.1.4",
     "graphql": "^15.1.0",
     "js-cookie": "^2.2.1",
+    "js-file-download": "^0.4.12",
     "material-ui-dropzone": "^3.3.0",
     "material-ui-popup-state": "^1.5.4",
     "moment": "^2.27.0",
