@@ -1,5 +1,3 @@
-
-
 import {
   Resolver,
   Query,
@@ -25,16 +23,6 @@ class GetUserArgs {
 export class UserResolver {
   @Query(() => User)
   async user(@Args() { userId }: GetUserArgs): Promise<User | undefined> {
-    
-
-
-
-
-   
-
-    
-
-
     return User.findOne(userId) || undefined;
   }
 

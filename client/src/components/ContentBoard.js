@@ -1,4 +1,4 @@
-import React , {useContext, useState} from 'react';
+import React, { useContext, useState } from "react";
 import {
   Grid,
   Paper,
@@ -30,13 +30,11 @@ import { FileUploadDialog } from './mui_components/FileUploadDialog';
 
 
 const useIsFollowing = (profile, meId) => {
-
-  if (profile&&meId){
-    let ids = profile.followers.map(el=>el.id);
+  if (profile && meId) {
+    let ids = profile.followers.map((el) => el.id);
     return ids.includes(meId);
   }
-
-}
+};
 
 const useStyles = makeStyles((theme) => ({
  root: {
@@ -96,73 +94,50 @@ const useStyles = makeStyles((theme) => ({
  },
 }));
 
-
-
 export const ContentBoard = (props) => {
   const [update, setUpdate ] = useState(false);
   const theme = useTheme();
   const classes = useStyles(theme);
 
-  
-
   let context = useContext(ProfileContext);
 
-  let {profile, isLoggedIn, isOwnProfile, meId } = context;
+  let { profile, isLoggedIn, isOwnProfile, meId } = context;
 
-  const following = useIsFollowing(profile,meId);
+  const following = useIsFollowing(profile, meId);
 
-  const [isFollowing,setIsFollowing] = useState(following);
-
-  
-
+  const [isFollowing, setIsFollowing] = useState(following);
 
   const { userId } = useParams();
 
   const [follow] = useMutation(FOLLOW_USER_MUTATION);
-  const [unfollow] = useMutation(UNFOLLOW_USER_MUTATION)
+  const [unfollow] = useMutation(UNFOLLOW_USER_MUTATION);
 
-  
-
-  
-
-  
-
-  
-
-
-  const followUser = async() => {
+  const followUser = async () => {
     const response = await follow({
-      variables:{
+      variables: {
         userId: meId || null,
-        toFollow: userId || null
-      }
+        toFollow: userId || null,
+      },
     });
 
-    console.log(response)
-    if (response){
+    console.log(response);
+    if (response) {
       setIsFollowing(!isFollowing);
     }
-    
-  }
+  };
 
- const unfollowUser = async () => {
-   const response = await unfollow({
-     variables:{
-       userId: meId || null,
-       toUnfollow: userId || null
-     }
-   });
+  const unfollowUser = async () => {
+    const response = await unfollow({
+      variables: {
+        userId: meId || null,
+        toUnfollow: userId || null,
+      },
+    });
 
-   if (response){
-     setIsFollowing(!isFollowing);
-   }
-
- } 
-
- 
-
-
-  
+    if (response) {
+      setIsFollowing(!isFollowing);
+    }
+  };
 
   return (
     <>
@@ -204,15 +179,11 @@ export const ContentBoard = (props) => {
               </Grid>
               </Grid>
               </Card>
-              </Grid>
-
+            </Grid>
+          </Grid>
         </Grid>
-        
-
-        </Grid>
-
       </Grid>
-      <Grid item container direction='row' xs={12} md={8}> 
+      <Grid item container direction="row" xs={12} md={8}>
         <Grid item xs={12}>
           <Card className={classes.contentCard}>
             <Toolbar className={classes.contentToolbar}  variant='dense' >
@@ -238,9 +209,7 @@ export const ContentBoard = (props) => {
           
 
         </Grid>
-
       </Grid>
-      </>
-    
+    </>
   );
 };

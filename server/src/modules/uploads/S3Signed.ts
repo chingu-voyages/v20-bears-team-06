@@ -6,15 +6,14 @@ import aws from 'aws-sdk';
 
 
 @ArgsType()
-  export class S3Args{
-
+export class S3Args {
   @Field(() => ID)
   meId: number;
 
-  @Field({nullable:true})
+  @Field({ nullable: true })
   filetype: string;
 
-  @Field({nullable:true})
+  @Field({ nullable: true })
   filename: string;
 
   @Field({nullable:true, defaultValue:false})
@@ -40,14 +39,12 @@ export class SignS3Resolver {
   @Mutation(() => SignedS3Payload)
   async signS3(
     @Args() {filename, filetype, meId, isProfilePic }: S3Args
-    
   ): Promise<SignedS3Payload | null> {
-    
-    const s3Bucket = process.env.S3_BUCKET_NAME || 'chingu-bears-06';
-    
+    const s3Bucket = process.env.S3_BUCKET_NAME || "chingu-bears-06";
+
     const s3 = new aws.S3({
-      region: 'us-west-1',
-      signatureVersion: 'v4',
+      region: "us-west-1",
+      signatureVersion: "v4",
     });
     console.log(s3Bucket);
     console.log(s3);
@@ -56,10 +53,10 @@ export class SignS3Resolver {
       Key: filename,
       Expires: 60,
       ContentType: filetype,
-      ACL: 'public-read',
+      ACL: "public-read",
     };
     let returnObject = new SignedS3Payload();
-    returnObject.signedRequest = s3.getSignedUrl('putObject', s3Params);
+    returnObject.signedRequest = s3.getSignedUrl("putObject", s3Params);
     returnObject.key = filename;
 
     if (isProfilePic!==true){
@@ -70,7 +67,6 @@ export class SignS3Resolver {
       ...returnObject
     }, pubSub);
   };
-    
 
     return returnObject;
   }
