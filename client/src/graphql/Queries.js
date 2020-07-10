@@ -5,6 +5,7 @@ export const GET_ME = gql`
     me {
       id
       name
+      firstName
     }
   }
 `;
@@ -31,6 +32,7 @@ export const SEARCH_USERS = gql`
       location
       department
       position
+      profilePic_url
     }
   }
 `;
@@ -40,7 +42,6 @@ export const SEARCH_POSTS = gql`
     posts(searchTerm: $searchTerm) {
       id
       text
-      author
       userId
     }
   }
@@ -50,7 +51,7 @@ export const SEARCH_FILES = gql`
   query searchFiles($searchTerm: String) {
     searchFiles(searchTerm: $searchTerm) {
       id
-      userId
+      ownerId
       filename
       filetype
       key

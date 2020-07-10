@@ -14,6 +14,7 @@ import { useSubscription } from "@apollo/react-hooks";
 import { FOLLOWER_SUB } from "./graphql/Subscriptions";
 import { UploadExample } from "./components/UploadExample";
 import SearchResultsPage from "./pages/SearchResultsPage";
+import HomePage from "./pages/HomePage";
 import "./App.scss";
 
 export default function App({ client }) {
@@ -37,8 +38,8 @@ export default function App({ client }) {
           setLoggedIn={setLoggedIn}
           isLoggedIn={isLoggedIn}
           client={client}
-          meId = {meId}
-          setMeId = {setMeId}
+          meId={meId}
+          setMeId={setMeId}
         />
         <Switch>
           {/* <ThemeProvider theme={theme}> */}
@@ -68,7 +69,13 @@ export default function App({ client }) {
           />
           <Route exact path="/upload" component={UploadExample} />
           <Route exact path="/search" component={SearchResultsPage} />
-          <Route exact path="/" component={Home} />
+          <Route
+            exact
+            path="/"
+            render={(props) => (
+              <HomePage {...props} isLoggedIn={isLoggedIn} meId={meId} />
+            )}
+          />
           {/* </ThemeProvider> */}
         </Switch>
       </div>
