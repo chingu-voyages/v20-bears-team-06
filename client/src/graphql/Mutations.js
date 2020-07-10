@@ -162,3 +162,26 @@ export const GET_SIGNED_DOWNLOAD = gql`
         }      
     }
 `;
+
+export const INCREMENT_DOWNLOAD_MUTATION = gql`
+    mutation incrementDownloadCount($fileId: ID!){
+      incrementDownloadCount(fileId: $fileId){
+        id
+        download_count
+        filetype
+        filename
+        id
+        filetype
+        filename
+        date
+        ownerId
+        signedRequest
+        download_count
+        likes
+        key     
+
+      }
+    }
+`;
+
+

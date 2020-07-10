@@ -97,7 +97,7 @@ export class SignS3Resolver {
       Bucket: s3Bucket,
       Key: file.key,
       Expires : 60,
-      ResponseContentDisposition: `attachment; filename="${file.filename}"`
+      ResponseContentDisposition: `attachment; filename="${file.key.split("/")[1]}"`
     };
 
     const returnObject:SignedS3Payload ={

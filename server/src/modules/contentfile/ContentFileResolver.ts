@@ -26,6 +26,12 @@ import { FilesPayload } from "../../types/Payloads";
 import { Like } from "typeorm";
 
 @ArgsType()
+export class IncDownloadArgs{
+  @Field(()=>ID)
+  fileId: number;
+}
+
+@ArgsType()
 export class NewFileArgs {
   @Field(() => ID)
   userId: number;
@@ -132,6 +138,24 @@ export class ContentFileResolver {
 
         
         return files || [];
+    }
+
+    @Mutation(() => ContentFile)
+    async incrementDownloadCount(@Args() {fileId}:IncDownloadArgs)
+    :Promise<ContentFile|Error>{
+      let file = await ContentFile.findOne(fileId);
+      if (!file) return new Error('file not found');
+      let count = file.download_count;
+      count++;
+      file.download_count = count;
+      await file.save();
+      let owner = await file.owner;
+      if(!owner) return new Error('owner of file not found');
+      await owner.save();
+      let updatedFile = await ContentFile.findOne(fileId);
+      if (!updatedFile) return new Error('file not found');
+      return updatedFile;
+
     }
     
 }

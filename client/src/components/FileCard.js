@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import { Grid, Card, CardActionArea, CardContent, Typography, Icon, SvgIcon, makeStyles, CardHeader, Divider, AppBar } from '@material-ui/core';
 import MicIcon from '@material-ui/icons/Mic';
 import VideoLabelIcon from '@material-ui/icons/VideoLabel';
@@ -10,9 +10,9 @@ import CloudDownloadIcon from '@material-ui/icons/CloudDownload';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import DeleteIcon from '@material-ui/icons/Delete';
 import {IconBadge} from './IconBadge';
-import { downloadFromS3 } from '../utils/downloadFromS3';
-import { useMutation } from '@apollo/react-hooks';
-import { GET_SIGNED_DOWNLOAD } from '../graphql/Mutations';
+import { filetypeDownloadHandler } from '../utils/filetypeDownloadHandler';
+import EditIcon from '@material-ui/icons/Edit';
+
 
 const isApp = new RegExp('^application','gi');
 const isImage = new RegExp('^image','gi');
@@ -74,9 +74,9 @@ const useStyles = makeStyles((theme)=>({
 }))
 
 
-export const FileCard= ({file}) => {
+export const FileCard= ({file, isOwnProfile, meId}) => {
 
-    const [signDownload] = useMutation(GET_SIGNED_DOWNLOAD);
+    const [key, setKey] = useState(file.key);
     const classes = useStyles();
     let titleString = (file&&file.filename)||"";
     titleString = titleString.length>20?titleString.slice(0,17)+"...":titleString;
@@ -87,29 +87,22 @@ export const FileCard= ({file}) => {
     
 
     const fileId = file.id;
+    const {filetype} = file;
 
-    async function handleDownloadClick(){
-        let signedRequest;
-        let serverResponse = await signDownload({
-            variables: {fileId}
-        });
-        console.log(serverResponse);
-        if (serverResponse&&serverResponse.data){
-            let { data } = serverResponse;
-            if (data.s3download){
-                signedRequest = data.s3download.signedRequest;
-            }
-            if (signedRequest){
-                let s3response = await downloadFromS3(signedRequest);
-                console.log(s3response);
-            }
+    const handleDownloadClick = () => {
+        if (key){
+            filetypeDownloadHandler(key,filetype,fileId);
         }
+    }
+    
+
+   
 
         
-    }
+    
     return (
         <Card variant='outlined' className={classes.card}>
-            <CardActionArea className={classes.cardContent} onClick={handleDownloadClick}>
+            <CardActionArea className={classes.cardContent} onClick={meId?handleDownloadClick:null}>
             <CardHeader className={classes.cardHeader} size='small' align='center'  title={title} />
             <CardContent align='center'>
             <FileCardIcon align='center' filetype={file&&file.filetype} />

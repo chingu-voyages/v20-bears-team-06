@@ -37,7 +37,7 @@ export const ContentDisplay=({userId, update})=>{
     return(
 
 <Grid className={classes.cardGrid} container xs={12} justify='flex-start'  direction='row' >
- <Query query={GET_FILES} pollInterval={500} variables={{userId:userId}}>
+ <Query query={GET_FILES} pollInterval={20000} variables={{userId:userId}}>
      {({data , loading, error}) => {
          
 
