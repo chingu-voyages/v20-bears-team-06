@@ -25,6 +25,7 @@ import { FollowerCount } from './FollowerCount';
 import { ContentDisplay } from './ContentDisplay';
 import { FollowerAvatarGroup } from './FollowerAvatarGroup';
 import { FileUploadDialog } from './mui_components/FileUploadDialog';
+import { BottomNavSwitch } from './mui_components/BottomNavSwitch';
 
 
 
@@ -104,6 +105,8 @@ export const ContentBoard = (props) => {
   let { profile, isLoggedIn, isOwnProfile, meId } = context;
 
   const following = useIsFollowing(profile, meId);
+
+  console.log(following);
 
   const [isFollowing, setIsFollowing] = useState(following);
 
@@ -186,7 +189,7 @@ export const ContentBoard = (props) => {
       <Grid item container direction="row" xs={12} md={8}>
         <Grid item xs={12}>
           <Card className={classes.contentCard}>
-            <Toolbar className={classes.contentToolbar}  variant='dense' >
+            <Toolbar className={classes.contentToolbar}  >
               <Grid container alignItems='center' xs={12}>
                 <Grid item>
             <IconButton>
@@ -204,7 +207,7 @@ export const ContentBoard = (props) => {
             </Toolbar>
             <ContentDisplay  className={classes.mobileCards} userId={userId}/>
             
-
+            
           </Card>
           
 

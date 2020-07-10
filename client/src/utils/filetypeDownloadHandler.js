@@ -1,7 +1,6 @@
 import axios from 'axios';
 import  AWS  from 'aws-sdk';
 import jsDownload from 'js-file-download';
-import { useMutation } from '@apollo/react-hooks';
 
 
 
@@ -12,7 +11,7 @@ const bucket = 'chingu-bears-06';
 
 
 export const filetypeDownloadHandler = (key,filetype,fileId) => {
-  
+  let success = false;
   const config = {
     region: "us-west-1",
     signatureVersion: "v4",
@@ -29,9 +28,11 @@ export const filetypeDownloadHandler = (key,filetype,fileId) => {
   },(err, data) => {
     if (err) console.log(err);
     console.log(data);
-    jsDownload(data.Body,`${key.split("/")[1]}`,filetype)
+    jsDownload(data.Body,`${key.split("/")[1]}`,filetype);
+    success = true;
 
   });
+  return success;
 };
 
 

@@ -8,6 +8,8 @@ import AddIcon from '@material-ui/icons/Add';
 import { uploadToS3 } from '../../utils/uploadToS3';
 import { formatFileName } from '../../utils/formatFileName';
 import { GET_FILES } from '../../graphql/Queries';
+import { Tooltip } from '@material-ui/core';
+import Fade from '@material-ui/core/Fade';
 
 const useStyles = makeStyles((theme) => ({
   button: {
@@ -98,6 +100,7 @@ export const FileUploadDialog = ({ setUpdate, meId, iconColor, ...props }) => {
 
   return (
     <div>
+      <Tooltip  TransitionComponent={Fade} TransitionProps={{ timeout: 600 }} title='Add'>
       <Fab
         className={classes.button}
         color="secondary.light"
@@ -106,7 +109,9 @@ export const FileUploadDialog = ({ setUpdate, meId, iconColor, ...props }) => {
         onClick={() => setOpen(true)}
       >
         <AddIcon />
+        
       </Fab>
+      </Tooltip>
         <DropzoneDialogBase
         acceptedFiles={[fileTypes]}
         fileObjects={fileObjects}

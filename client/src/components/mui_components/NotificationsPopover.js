@@ -26,17 +26,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const useNotes = (meId) => {
-  const { data, loading } = useSubscription(NOTIFICATIONS, {
-    variables: { userId: meId },
-    shouldResubscribe: true,
-  });
 
-  if (!loading && data.notificationSub) {
-    console.log(data.notificationSub);
-    return data.notificationSub;
-  }
-};
 
 const useNoteQuery = (meId) => {
   const { data, loading } = useQuery(NOTIFICATION_QUERY, {
@@ -52,11 +42,9 @@ export function NotificationsPopover({ meId }) {
   const classes = useStyles();
   const [setSeen] = useMutation(SET_SEEN_MUTATION);
   const history = useHistory();
-  let notes = useNotes(meId);
   let qNotes = useNoteQuery(meId);
-  notes = notes ? notes : qNotes;
 
-  let notifications = notes;
+  let notifications = qNotes;
 
   return (
     <PopupState variant="popover" popupId="demo-popup-popover">

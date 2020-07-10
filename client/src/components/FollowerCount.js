@@ -1,7 +1,5 @@
 import React from 'react';
-import { useSubscription } from '@apollo/react-hooks';
 import { useParams } from 'react-router-dom';
-import { FOLLOWER_SUB} from '../graphql/Subscriptions';
 import { Typography } from '@material-ui/core';
 
 
