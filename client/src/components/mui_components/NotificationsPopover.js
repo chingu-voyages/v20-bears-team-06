@@ -43,7 +43,7 @@ const useNoteQuery = (meId) => {
     variables: { userId: meId },
   });
 
-  if (!loading && data.newNotifications) {
+  if (!loading && data && data.newNotifications) {
     return data.newNotifications;
   }
 };
