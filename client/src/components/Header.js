@@ -1,6 +1,6 @@
-import React, { useEffect , useState } from "react";
+import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
-import  gql  from 'graphql-tag';
+import gql from "graphql-tag";
 import { useQuery, useMutation } from "@apollo/react-hooks";
 import { makeStyles, fade } from "@material-ui/core/styles";
 import {
@@ -14,7 +14,8 @@ import {
 import SearchIcon from "@material-ui/icons/Search";
 import AccountCircle from "@material-ui/icons/AccountCircle";
 import { Link as RouterLink, useHistory } from "react-router-dom";
-import { NotificationsPopover } from './mui_components/NotificationsPopover';
+import { NotificationsPopover } from "./mui_components/NotificationsPopover";
+import { GET_ME } from "../graphql/Queries";
 
 const useStyles = makeStyles((theme) => ({
   grow: {
@@ -27,7 +28,6 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     textAlign: "center",
   },
-
   title: {
     display: "none",
     [theme.breakpoints.up("sm")]: {
@@ -73,22 +73,19 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const GET_ME = gql`
-  {
-    me {
-      id
-      name
-    }
-  }
-`;
-
 const LOGOUT = gql`
   mutation {
     logout
   }
 `;
 
-export default function Header({ setLoggedIn, isLoggedIn, client, meId, setMeId }) {
+export default function Header({
+  setLoggedIn,
+  isLoggedIn,
+  client,
+  meId,
+  setMeId,
+}) {
   const classes = useStyles();
   const [logout] = useMutation(LOGOUT);
   const { data, refetch } = useQuery(GET_ME);
@@ -107,18 +104,17 @@ export default function Header({ setLoggedIn, isLoggedIn, client, meId, setMeId 
     }
   });
 
-  function search(terms) {
-    console.log("search values is", terms);
-    history.push("/search", { searchTerm: terms });
+  function search(searchTerm) {
+    console.log("search values is", searchTerm);
+    history.push("/search", { searchTerm });
   }
 
   console.log("data is ", JSON.stringify(data));
   console.log("is logged in? ", isLoggedIn);
 
   const renderUser = (
-    
     <div className="accountIcons">
-      {isLoggedIn&&<NotificationsPopover meId={meId} />}
+      {isLoggedIn && <NotificationsPopover meId={meId} />}
       <IconButton
         aria-label="account of current user"
         component={RouterLink}
@@ -167,9 +163,9 @@ export default function Header({ setLoggedIn, isLoggedIn, client, meId, setMeId 
       </Button>
     </div>
   );
+
   return (
     <div className={classes.grow}>
-
       <AppBar position="static">
         <Toolbar className={classes.toolbar}>
           <Typography
