@@ -1,25 +1,25 @@
-import React, { useState } from 'react';
-import Typography from '@material-ui/core/Typography';
-import Box from '@material-ui/core/Box';
-import Chip from '@material-ui/core/Chip';
-import Button from '@material-ui/core/Button';
-import Popover from '@material-ui/core/Popover';
-import AddCircleIcon from '@material-ui/icons/AddCircle';
-import { AddSpecialtyForm } from './AddSpecialtyForm';
-import { makeStyles } from '@material-ui/core';
-import Grid from '@material-ui/core/Grid';
-import PopupState, { bindTrigger, bindPopover } from 'material-ui-popup-state';
-import { Notifications } from '../Notifications';
-import { NotificationsList } from '../NotificationsList';
-import { useSubscription, useQuery, useMutation } from '@apollo/react-hooks';
-import { NOTIFICATIONS } from '../../graphql/Subscriptions';
-import { NOTIFICATION_QUERY } from '../../graphql/Queries';
-import { SET_SEEN_MUTATION } from '../../graphql/Mutations';
-import { useHistory } from 'react-router-dom';
+import React, { useState } from "react";
+import Typography from "@material-ui/core/Typography";
+import Box from "@material-ui/core/Box";
+import Chip from "@material-ui/core/Chip";
+import Button from "@material-ui/core/Button";
+import Popover from "@material-ui/core/Popover";
+import AddCircleIcon from "@material-ui/icons/AddCircle";
+import { AddSpecialtyForm } from "./AddSpecialtyForm";
+import { makeStyles } from "@material-ui/core";
+import Grid from "@material-ui/core/Grid";
+import PopupState, { bindTrigger, bindPopover } from "material-ui-popup-state";
+import { Notifications } from "../Notifications";
+import { NotificationsList } from "../NotificationsList";
+import { useSubscription, useQuery, useMutation } from "@apollo/react-hooks";
+import { NOTIFICATIONS } from "../../graphql/Subscriptions";
+import { NOTIFICATION_QUERY } from "../../graphql/Queries";
+import { SET_SEEN_MUTATION } from "../../graphql/Mutations";
+import { useHistory } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
   popoverDiv: {
-    display: 'inline-block',
+    display: "inline-block",
   },
   paper: {
     maxHeight: theme.spacing(50),
@@ -32,7 +32,7 @@ const useNotes = (meId) => {
     shouldResubscribe: true,
   });
 
-  if (!loading && data.notificationSub) {
+  if (!loading && data && data.notificationSub) {
     console.log(data.notificationSub);
     return data.notificationSub;
   }
@@ -70,18 +70,16 @@ export function NotificationsPopover({ meId }) {
           <Popover
             {...bindPopover(popupState)}
             anchorOrigin={{
-              vertical: 'bottom',
-              horizontal: 'center',
+              vertical: "bottom",
+              horizontal: "center",
             }}
             transformOrigin={{
-              vertical: 'top',
-              horizontal: 'center',
+              vertical: "top",
+              horizontal: "center",
             }}
             PaperProps={{
               className: classes.paper,
             }}
-            
-        
           >
             <NotificationsList
               history={history}

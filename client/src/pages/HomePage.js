@@ -103,7 +103,7 @@ export default function HomePage({ isLoggedIn }) {
   while (loading) {
     return "...loading";
   }
-  return { isLoggedIn } && data != undefined ? (
+  return { isLoggedIn } && data != undefined && data.me != null ? (
     <div>
       <Container maxWidth="md" align="center">
         <Typography
