@@ -1,9 +1,9 @@
-import React, { useContext, useState } from 'react';
-import { Redirect } from 'react-router-dom';
-import { Formik, Form, Field } from 'formik';
-import { useMutation } from '@apollo/react-hooks';
-import { ADD_USER_SPEC, EDIT_PROFILE_MUTATION } from '../graphql/Mutations';
-import { formatFileName, uploadToS3 } from '../components/UploadExample';
+import React, { useContext, useState } from "react";
+import { Redirect } from "react-router-dom";
+import { Formik, Form, Field } from "formik";
+import { useMutation } from "@apollo/react-hooks";
+import { ADD_USER_SPEC, EDIT_PROFILE_MUTATION } from "../graphql/Mutations";
+import { formatFileName, uploadToS3 } from "../components/UploadExample";
 import {
   Avatar,
   Button,
@@ -16,26 +16,26 @@ import {
   Paper,
   Typography,
   TextField,
-} from '@material-ui/core';
-import { TextInputField } from './fields/TextInputField';
-import { TextAreaField } from './fields/TextAreaField';
-import { ProfileContext } from '../pages/ProfilePage';
-import * as Yup from 'yup';
-import { DropZoneField } from './mui_components/DropzoneArea';
+} from "@material-ui/core";
+import { TextInputField } from "./fields/TextInputField";
+import { TextAreaField } from "./fields/TextAreaField";
+import { ProfileContext } from "../pages/ProfilePage";
+import * as Yup from "yup";
+import { DropZoneField } from "./mui_components/DropzoneArea";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
     marginTop: theme.spacing(4),
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
   },
   avatar: {
     margin: theme.spacing(1),
     backgroundColor: theme.palette.secondary.main,
   },
   form: {
-    width: '100%', // Fix IE 11 issue.
+    width: "100%", // Fix IE 11 issue.
     marginTop: theme.spacing(1),
   },
   submit: {
@@ -45,9 +45,12 @@ const useStyles = makeStyles((theme) => ({
 
 const EditForm = ({ profile, isOwnProfile }) => {
   const [edit] = useMutation(EDIT_PROFILE_MUTATION);
-  
+  let isOwnProfile = props.isOwnProfile || null;
+  const profile = props.profile || null;
 
-  
+  const { id } = profile;
+
+  console.log(profile);
 
   const theme = useTheme();
 
@@ -75,20 +78,20 @@ const EditForm = ({ profile, isOwnProfile }) => {
             validationSchema={Yup.object({
               school: Yup.string()
                 .min(3)
-                .max(60, 'School name must be between 3-60 characters')
+                .max(60, "School name must be between 3-60 characters")
                 .nullable(),
               department: Yup.string()
                 .nullable()
                 .min(3)
-                .max(60, 'department name must be between 3-60 characters'),
+                .max(60, "department name must be between 3-60 characters"),
               position: Yup.string()
                 .nullable()
                 .min(3)
-                .max(60, 'position must be between 3-60 characters'),
+                .max(60, "position must be between 3-60 characters"),
               aboutMe: Yup.string()
                 .nullable()
                 .min(1)
-                .max(5000, 'School name must be between 1-5000 characters'),
+                .max(5000, "School name must be between 1-5000 characters"),
               file: Yup.array().nullable(),
             })}
             onSubmit={(values, { setSubmitting, setFieldError }) => {
@@ -122,7 +125,7 @@ const EditForm = ({ profile, isOwnProfile }) => {
                   });
                   console.log(response);
                   if (response && response.data && !response.data.editUser) {
-                    setFieldError('invalid field data');
+                    setFieldError("invalid field data");
                     return;
                   }
                   if (response && response.data && response.data.editUser.s3) {
@@ -134,7 +137,7 @@ const EditForm = ({ profile, isOwnProfile }) => {
                     console.log(s3response);
                   }
                 } catch (e) {
-                  console.log('error with edit', e);
+                  console.log("error with edit", e);
                 }
 
                 setSubmitting(false);
@@ -146,7 +149,7 @@ const EditForm = ({ profile, isOwnProfile }) => {
                 label="Update School"
                 name="school"
                 type="text"
-                placeholder={profile.school || 'enter school name'}
+                placeholder={profile.school || "enter school name"}
                 variant="outlined"
                 autoFocus
                 fullWidth
