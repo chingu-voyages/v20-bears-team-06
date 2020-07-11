@@ -38,7 +38,7 @@ export const SEARCH_USERS = gql`
 `;
 
 export const SEARCH_POSTS = gql`
-  query searchPosts($searchTerm: String) {
+  query searchPosts($searchTerm: String!) {
     posts(searchTerm: $searchTerm) {
       id
       text
@@ -48,7 +48,7 @@ export const SEARCH_POSTS = gql`
 `;
 
 export const SEARCH_FILES = gql`
-  query searchFiles($searchTerm: String) {
+  query searchFiles($searchTerm: String!) {
     searchFiles(searchTerm: $searchTerm) {
       id
       ownerId
