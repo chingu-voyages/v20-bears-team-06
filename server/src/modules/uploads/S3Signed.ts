@@ -1,3 +1,4 @@
+import { ContentFile } from "./../../entity/ContentFile";
 import { pubSub } from "./../../redis";
 import { ArgsType, ID, Args, Resolver, Field, Mutation } from "type-graphql";
 import { ContentFileResolver } from "../contentfile/ContentFileResolver";

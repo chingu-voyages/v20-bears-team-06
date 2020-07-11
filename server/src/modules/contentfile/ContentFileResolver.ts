@@ -5,7 +5,6 @@ import { NotificationMessage } from "../notifications/types/NotificationMessage"
 import { Topic } from "./../../types/Topic";
 import { ContentFile } from "./../../entity/ContentFile";
 import {
-  Root,
   Resolver,
   Query,
   Mutation,
@@ -29,21 +28,6 @@ import { Like } from "typeorm";
 export class IncDownloadArgs {
   @Field(() => ID)
   fileId: number;
-}
-
-@ArgsType()
-class FileActionArgs {
-  @Field(() => ID)
-  userId: number;
-
-  @Field(() => ID)
-  fileId: number;
-
-  @Field(() => ID, { nullable: true })
-  ownerId: number;
-
-  @Field(() => String)
-  actionType: string;
 }
 
 @ArgsType()
