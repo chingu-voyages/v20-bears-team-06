@@ -45,12 +45,6 @@ const useStyles = makeStyles((theme) => ({
 
 const EditForm = ({ profile, isOwnProfile }) => {
   const [edit] = useMutation(EDIT_PROFILE_MUTATION);
-  let isOwnProfile = props.isOwnProfile || null;
-  const profile = props.profile || null;
-
-  const { id } = profile;
-
-  console.log(profile);
 
   const theme = useTheme();
 
