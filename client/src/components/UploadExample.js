@@ -30,9 +30,16 @@ export const uploadToS3 = async (file, signedRequest) => {
     headers: {
       'Content-Type': file.type,
       'x-amz-acl': 'public-read',
+      
     },
+    observe: 'events',
+    responseType: 'json',
   };
-  await axios.put(signedRequest, file, options);
+  axios.put(signedRequest, file, options)
+  .then(response=>{
+    console.log(response);
+  })
+  
 };
 
 export const UploadExample = () => {

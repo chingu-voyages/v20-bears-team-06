@@ -8,7 +8,16 @@ import { onError } from "apollo-link-error";
 import { InMemoryCache } from "apollo-cache-inmemory";
 import { getMainDefinition } from "apollo-utilities";
 import { ApolloProvider } from "@apollo/react-hooks";
+import { config } from 'dotenv';
+import AWS from 'aws-sdk';
 import App from "./App";
+
+config();
+
+
+
+
+
 
 const graphqlUrl =
   process.env.NODE_ENV === "development"

@@ -55,44 +55,42 @@ export class AddNotificationArgs {
 
 @Resolver(() => User)
 export class FollowResolver {
-  @Mutation(() => [User])
+  @Mutation(() => User)
   async followUser(
     @Arg("users") { userId, toFollow }: FollowInput,
     @PubSub() pubSub: PubSubEngine
-  ): Promise<User[] | undefined> {
+  ): Promise<User|undefined> {
     let one = await User.findOne(userId);
     let two = await User.findOne(toFollow);
     if (!one || !two) {
       return;
     }
 
-    let following = await one.following;
-    let followers = await two.following;
-
-    followers = followers.filter((el) => el.id === userId);
-    following = following.filter((el) => el.id === toFollow);
-
-    if (followers.length === 0) {
-      (await two.followers).push(one);
+    let oneFollowing = await one.following;
+    let twoFollowers = await two.followers;
+    if (oneFollowing){
+      oneFollowing.push(two);
+      one.following = oneFollowing;
+      await one.save();
     }
 
-    if (following.length === 0) {
-      (await one.following).push(two);
+    if (twoFollowers){
+      twoFollowers.push(one);
+      two.followers = twoFollowers;
+      await two.save();
     }
 
-    one = await one.save();
-    if (one) {
-      one = await User.findOne(userId);
-    }
 
-    two = await two.save();
-    if (two) {
-      two = await User.findOne(toFollow);
-    }
+    one = await User.findOne(userId);
+    two = await User.findOne(toFollow);
 
-    if (!one || !two) {
-      return;
-    }
+    if (!one) return;
+    if (!two) return;
+
+    
+
+    
+    
 
     let payload: FollowEventPayload = {
       toFollowId: toFollow,
@@ -133,7 +131,7 @@ export class FollowResolver {
       pubSub.publish(Topic.NewNotification, addNotification);
     }
     pubSub.publish(Topic.FollowEvent, payload);
-    return [one, two];
+    return two;
   }
 
   @Subscription(() => FollowEvent, {
@@ -168,11 +166,11 @@ export class FollowResolver {
     return follow_list || undefined;
   }
 
-  @Mutation(() => Boolean)
+  @Mutation(() => User)
   async unfollowUser(
     @Arg("users") { userId, toUnfollow }: FollowInput,
     @PubSub() pubSub: PubSubEngine
-  ): Promise<Boolean> {
+  ): Promise<User|undefined> {
     let user = await User.findOne(toUnfollow);
     let followers = await user?.followers;
     if (followers) {
@@ -198,12 +196,12 @@ export class FollowResolver {
 
             pubSub.publish(Topic.FollowEvent, payload);
 
-            return true;
+            return updatedUser;
           }
         }
       }
     }
 
-    return false;
+    return;
   }
 }

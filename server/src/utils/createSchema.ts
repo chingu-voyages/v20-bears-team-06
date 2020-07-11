@@ -1,3 +1,4 @@
+import { FileUploadResolver } from './../modules/uploads/FileUploadResolver';
 import { NotificationsResolver } from './../modules/notifications/NotificationsResolvers';
 import { ContentFileResolver } from './../modules/contentfile/ContentFileResolver';
 import { CreateUserResolver } from '../modules/user/CreateUser';
@@ -18,13 +19,13 @@ import { SpecialtiesResolver } from '../modules/user/field_resolvers/Specialties
 import { SignS3Resolver } from '../modules/uploads/S3Signed';
 import { Container } from 'typedi';
 import { pubSub } from '../redis';
-import { FollowerDataResolver } from '../modules/followerdata/FollowerDataResolver';
 
 
 
 export const createSchema = () =>
   buildSchema({
     resolvers: [
+      FileUploadResolver,
       ChangePasswordResolver,
       ConfirmUserResolver,
       PostResolver,
@@ -42,7 +43,6 @@ export const createSchema = () =>
       SignS3Resolver,
       ContentFileResolver,
       NotificationsResolver,
-      FollowerDataResolver
     ],
     authChecker: ({ context: { req } }) => {
       return !!req.session.userId;

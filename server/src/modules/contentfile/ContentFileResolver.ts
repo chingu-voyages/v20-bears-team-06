@@ -2,10 +2,10 @@ import { ToFollowerNotification } from "./../../entity/ToFollowerNotification";
 import { AddToFollowerPayload } from "./../notifications/types/NotificationPayloads";
 import { NotificationType } from "../notifications/types/NotificationType";
 import { NotificationMessage } from "../notifications/types/NotificationMessage";
-
 import { Topic } from "./../../types/Topic";
 import { ContentFile } from "./../../entity/ContentFile";
 import {
+  Root,
   Resolver,
   Query,
   Mutation,
@@ -19,10 +19,32 @@ import {
   //   Root,
   PubSub,
   PubSubEngine,
+  ObjectType,
 } from "type-graphql";
 import { User } from "../../entity/User";
 import { FilesPayload } from "../../types/Payloads";
 import { Like } from "typeorm";
+
+@ArgsType()
+export class IncDownloadArgs {
+  @Field(() => ID)
+  fileId: number;
+}
+
+@ArgsType()
+class FileActionArgs {
+  @Field(() => ID)
+  userId: number;
+
+  @Field(() => ID)
+  fileId: number;
+
+  @Field(() => ID, { nullable: true })
+  ownerId: number;
+
+  @Field(() => String)
+  actionType: string;
+}
 
 @ArgsType()
 export class NewFileArgs {
@@ -48,6 +70,18 @@ export class FilesArgs {
   userId: number;
 }
 
+@ObjectType()
+export class AllFilesPayload {
+  @Field(() => [ContentFile], { nullable: true })
+  uploads: ContentFile[];
+
+  @Field(() => [ContentFile], { nullable: true })
+  savedContent: ContentFile[];
+
+  @Field(() => [ContentFile], { nullable: true })
+  favoriteContent: ContentFile[];
+}
+
 @ArgsType()
 export class AddNewToFollowerArgs {}
 
@@ -61,7 +95,6 @@ export class ContentFileResolver {
     if (user) {
       return user.uploads ? user.uploads : [];
     }
-
     return [];
   }
 

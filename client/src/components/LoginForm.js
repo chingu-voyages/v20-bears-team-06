@@ -97,8 +97,10 @@ export const LoginForm = ({ isLoggedIn, setLoggedIn }) => {
                     );
                     return;
                   }
+                  if (response && response.data && response.data.login){
                   setLoggedIn(true);
                   returnHome();
+                  }
                 } catch (e) {
                   console.log('error with login', e);
                 }

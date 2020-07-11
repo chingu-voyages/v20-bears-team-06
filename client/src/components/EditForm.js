@@ -43,7 +43,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const EditForm = (props) => {
+const EditForm = ({ profile, isOwnProfile }) => {
   const [edit] = useMutation(EDIT_PROFILE_MUTATION);
   let isOwnProfile = props.isOwnProfile || null;
   const profile = props.profile || null;
@@ -224,13 +224,7 @@ const EditForm = (props) => {
       </Container>
     );
   } else {
-    return (
-      <Grid container xs={12} justify="center" alignItems="center">
-        <Grid item xs={6}>
-          <Button>go back</Button>
-        </Grid>
-      </Grid>
-    );
+    return null;
   }
 };
 
