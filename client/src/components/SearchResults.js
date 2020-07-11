@@ -41,47 +41,45 @@ function downloadFileHandler(key) {
 }
 
 function generateTeacherResults(results, element) {
-  if (results) {
-    return results.map((value) =>
-      React.cloneElement(
-        <ListItem>
-          <ListItemAvatar>
-            {value.profilePic_url ? (
-              <Avatar src={value.profilePic_url} />
-            ) : (
-              <AccountCircleIcon />
-            )}
-          </ListItemAvatar>
-          <ListItemText
-            primary={value.name}
-            secondary={
-              value.position && value.school
-                ? `${value.position} at ${value.school}`
-                : "new user at teachers app"
-            }
-          />
-          <ListItemSecondaryAction>
-            <IconButton
-              edge="end"
-              aria-label="arrowforward"
-              component={RouterLink}
-              to={`${"/profile/" + value.id}`}
-            >
-              <ArrowForwardIosIcon />
-            </IconButton>
-          </ListItemSecondaryAction>
-        </ListItem>,
-        {
-          key: value.id,
-        }
-      )
-    );
-  }
+  return results.map((value) =>
+    React.cloneElement(
+      <ListItem>
+        <ListItemAvatar>
+          {value.profilePic_url ? (
+            <Avatar src={value.profilePic_url} />
+          ) : (
+            <AccountCircleIcon />
+          )}
+        </ListItemAvatar>
+        <ListItemText
+          primary={value.name}
+          secondary={
+            value.position && value.school
+              ? `${value.position} at ${value.school}`
+              : "new user at teachers app"
+          }
+        />
+        <ListItemSecondaryAction>
+          <IconButton
+            edge="end"
+            aria-label="arrowforward"
+            component={RouterLink}
+            to={`${"/profile/" + value.id}`}
+          >
+            <ArrowForwardIosIcon />
+          </IconButton>
+        </ListItemSecondaryAction>
+      </ListItem>,
+      {
+        key: value.id,
+      }
+    )
+  );
 }
 
 function generatePostResults(results, element) {
-  if (results) {
-    return results.map((value) =>
+  if (results && results.searchPosts) {
+    return results.searchPosts.map((value) =>
       React.cloneElement(
         <ListItem>
           <ListItemAvatar>
@@ -109,8 +107,8 @@ function generatePostResults(results, element) {
   }
 }
 function generateFileResults(results, element) {
-  if (results) {
-    return results.map((value) =>
+  if (results && results.searchFiles) {
+    return results.searchFiles.map((value) =>
       React.cloneElement(
         <ListItem>
           <ListItemAvatar>
