@@ -121,12 +121,23 @@ export const GET_FILES = gql`
       download_count
       likes
       key
+      gradeLevel
+      favorite_count
+      save_count
+
     }
   }
 
 `;
 
-
+export const GET_FOLLOWING = gql`
+  query following($userId: ID!, $meId: ID!){
+    following(userId: $userId meId: $meId){
+      isFollowing
+      isOwnProfile
+    }
+  }
+`;
 
 
 

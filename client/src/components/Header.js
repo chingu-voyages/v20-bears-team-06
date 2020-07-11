@@ -88,7 +88,7 @@ const LOGOUT = gql`
   }
 `;
 
-export default function Header({ setLoggedIn, isLoggedIn, client, meId, setMeId }) {
+export default function Header({ setLoggedIn, isLoggedIn, client, setMeId }) {
   const classes = useStyles();
   const [logout] = useMutation(LOGOUT);
   const { data, refetch } = useQuery(GET_ME);
@@ -100,8 +100,8 @@ export default function Header({ setLoggedIn, isLoggedIn, client, meId, setMeId 
       refetch();
     }
     if (data && data.me) {
-      setLoggedIn(true);
       setMeId(data.me.id);
+      setLoggedIn(true);
     } else {
       setLoggedIn(false);
     }
@@ -118,7 +118,7 @@ export default function Header({ setLoggedIn, isLoggedIn, client, meId, setMeId 
   const renderUser = (
     
     <div className="accountIcons">
-      {isLoggedIn&&<NotificationsPopover meId={meId} />}
+      {data&&data.me&&isLoggedIn&&<NotificationsPopover meId={data.me.id} />}
       <IconButton
         aria-label="account of current user"
         component={RouterLink}

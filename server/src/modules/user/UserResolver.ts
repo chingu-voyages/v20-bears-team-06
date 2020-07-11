@@ -7,6 +7,7 @@ import {
   Args,
   Mutation,
   Arg,
+  ObjectType
 } from "type-graphql";
 import { User } from "../../entity/User";
 import { EditUserInput } from "../edit/EditUserInput";
@@ -18,6 +19,26 @@ class GetUserArgs {
   @Field(() => ID)
   userId: number;
 }
+
+@ArgsType()
+class FollowingArgs{
+  @Field(() => ID)
+  userId: number;
+
+  @Field(() => ID)
+  meId: number;
+}
+
+ @ObjectType()
+  export class FollowingPayload{
+    @Field({nullable:true})
+    isFollowing: boolean;
+
+    @Field({nullable:true})
+    isOwnProfile: boolean;
+
+  }
+
 
 @Resolver()
 export class UserResolver {
@@ -41,6 +62,28 @@ export class UserResolver {
       ],
     });
   }
+
+
+  @Query(() => FollowingPayload)
+  async following(@Args() {userId, meId}:FollowingArgs):
+  Promise<FollowingPayload|Error>{
+    const payload = new FollowingPayload();
+    let user = await User.findOne(userId,{relations:['followers']});
+    if(!user) return new Error('user not found');
+    let me = await User.findOne(meId);
+    if(!me) return new Error('user not found');
+    let userFollowers = user.followerIds;
+    if (userFollowers){
+      console.log(userFollowers) 
+      payload.isFollowing = userFollowers.includes(Number(meId));
+    }
+    payload.isOwnProfile = userId === meId;
+    return payload;
+
+  }
+
+
+  
 
   @Mutation(() => EditUserPayload)
   async editUser(

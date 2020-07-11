@@ -190,6 +190,22 @@ export class User extends BaseEntity {
   @RelationId((user: User) => user.notifications_fromFollowers)
   notification_fromFollowersIds: number[];
 
+  @ManyToMany(() => ContentFile, contentFile => contentFile.savedBy, {lazy:true})
+  @Field(() => [ContentFile])
+  savedContent: Lazy<ContentFile[]>;
+
+  @RelationId((user:User) => user.savedContent)
+  @Field(() => [ID])
+  savedContentIds: number[];
+
+  @ManyToMany(() => ContentFile, contentFile => contentFile.favoritedBy, {lazy:true})
+  @Field(() => [ContentFile])
+  favoriteContent: Lazy<ContentFile[]>;
+
+  @RelationId((user:User) => user.favoriteContent)
+  @Field(() => [ID])
+  favoriteContentIds: number[];
+
   @ManyToMany(() => Specialty, (specialty) => specialty.users, {
     lazy: true
   })

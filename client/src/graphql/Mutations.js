@@ -4,6 +4,7 @@ export const LOGIN_MUTATION = gql`
   mutation LoginMutation($email: String!, $password: String!) {
     login(email: $email, password: $password) {
       name
+      id
     }
   }
 `;
@@ -107,9 +108,28 @@ export const FOLLOW_USER_MUTATION = gql`
     followUser(users: { userId: $userId, toFollow: $toFollow }) {
       id
       name
+      school
+      department
+      position
+      employment
+      follower_count
+      profilePic_url
+      about_me
       followers {
         id
-        name
+      }
+      location
+      getSpecialties {
+        title
+        subtitle
+      }
+      followers{
+        id
+        profilePic_url
+        department
+        firstName
+        lastName
+        school
       }
     }
   }
@@ -117,7 +137,33 @@ export const FOLLOW_USER_MUTATION = gql`
 
 export const UNFOLLOW_USER_MUTATION = gql`
   mutation unfollowUser($userId: ID!, $toUnfollow: ID!) {
-    unfollowUser(users: { userId: $userId, toUnfollow: $toUnfollow })
+    unfollowUser(users: { userId: $userId, toUnfollow: $toUnfollow }){
+      id
+      name
+      school
+      department
+      position
+      employment
+      follower_count
+      profilePic_url
+      about_me
+      followers {
+        id
+      }
+      location
+      getSpecialties {
+        title
+        subtitle
+      }
+      followers{
+        id
+        profilePic_url
+        department
+        firstName
+        lastName
+        school
+      }
+    }
   }
 `;
 
@@ -181,6 +227,27 @@ export const INCREMENT_DOWNLOAD_MUTATION = gql`
         key     
 
       }
+    }
+`;
+
+export const FILE_ACTION_MUTATION = gql`
+    mutation fileAction($fileId: ID!, $userId: ID!, $actionType: String!){
+      fileAction(userId: $userId, fileId: $fileId, actionType: $actionType){
+      id
+      filetype
+      filename
+      date
+      ownerId
+      signedRequest
+      download_count
+      likes
+      key
+      gradeLevel
+      favorite_count
+      save_count
+
+      }
+
     }
 `;
 

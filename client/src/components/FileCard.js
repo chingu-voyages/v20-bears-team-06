@@ -27,6 +27,7 @@ import EditIcon from '@material-ui/icons/Edit';
 import { Tooltip } from '@material-ui/core';
 import Fade from '@material-ui/core/Fade';
 import SaveAltIcon from '@material-ui/icons/SaveAlt';
+import { FileDetailsDialog } from './mui_components/FileDetailsDialog';
 
 const isApp = new RegExp('^application', 'gi');
 const isImage = new RegExp('^image', 'gi');
@@ -98,6 +99,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export const FileCard = ({ file, isOwnProfile, meId, increment }) => {
+  console.log(file)
   const [key, setKey] = useState(file.key);
   const classes = useStyles();
   let titleString = (file && file.filename) || '';
@@ -146,17 +148,7 @@ export const FileCard = ({ file, isOwnProfile, meId, increment }) => {
   };
 
   return (
-    <Tooltip
-      arrow
-      placement='left-start'
-      classes={{
-        tooltipArrow: classes.tooltipArrow,
-        tooltip: classes.popper
-      }}
-      TransitionComponent={Fade}
-      TransitionProps={{ timeout: 250 }}
-      title={infoText}
-    >
+   
       <Card variant="outlined" className={classes.card}>
         <CardActionArea
           className={classes.cardContent}
@@ -190,14 +182,14 @@ export const FileCard = ({ file, isOwnProfile, meId, increment }) => {
           <Grid xs={4} align="center" item>
             <IconBadge
               children={<FavoriteIcon fontSize="small" color="primary" />}
-              count={file && file.likes}
+              count={file && file.favorite_count}
             />
           </Grid>
           <Grid xs={4} align="center" item>
-            <DeleteIcon fontSize="small" color="primary" />
+            <FileDetailsDialog file={file} meId={meId} />
           </Grid>
         </Grid>
       </Card>
-    </Tooltip>
+    
   );
 };

@@ -31,7 +31,7 @@ const useStyles = makeStyles(theme=>({
 }))
 
 
-export const ContentDisplay=({userId, update})=>{
+export const ContentDisplay=({userId, update, meId})=>{
     const [toRender, setToRender] = useState(update);
     const [increment] = useMutation(INCREMENT_DOWNLOAD_MUTATION); 
     const classes = useStyles();
@@ -51,7 +51,7 @@ export const ContentDisplay=({userId, update})=>{
              return(<>
                  {files.map((file,i)=>{
                      return (<Grid item xs={6} md={3} className={classes.gridCard}  key={file.id}>
-                        <FileCard increment={increment} history={history} file={file} key={`file_${file.id}`} />
+                        <FileCard meId={meId} increment={increment} history={history} file={file} key={`file_${file.id}`} />
                         </Grid>)
                  })}</>)
              

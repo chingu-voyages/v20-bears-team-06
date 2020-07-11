@@ -8,7 +8,6 @@ import {
   Button,
 } from '@material-ui/core';
 import { useParams } from 'react-router-dom';
-import { ProfileContext } from '../pages/ProfilePage';
 import Card from '@material-ui/core/Card';
 import CardActionArea from '@material-ui/core/CardActionArea';
 import CardActions from '@material-ui/core/CardActions';
@@ -20,7 +19,7 @@ import { useTheme, makeStyles } from '@material-ui/core/styles';
 import AccountCircleIcon  from '@material-ui/icons/AccountCircle';
 import { useQuery, useMutation } from '@apollo/react-hooks';
 import { FOLLOW_USER_MUTATION, UNFOLLOW_USER_MUTATION } from '../graphql/Mutations';
-import { GET_ME, FOLLOWER_IDS } from '../graphql/Queries';
+import { GET_ME, FOLLOWER_IDS, GET_PROFILE } from '../graphql/Queries';
 import { FollowerCount } from './FollowerCount';
 import { ContentDisplay } from './ContentDisplay';
 import { FollowerAvatarGroup } from './FollowerAvatarGroup';
@@ -95,25 +94,27 @@ const useStyles = makeStyles((theme) => ({
  },
 }));
 
-export const ContentBoard = (props) => {
+export const ContentBoard = ({profile, meId }) => {
+  let isOwnProfile, isLoggedIn, isFollowing, refetchQuery;
+  if (meId){
+    isLoggedIn = true;
+  }
+
+  if (profile&&meId){
+    isFollowing = profile.followers.map(el=>el.id).includes(meId);
+    isOwnProfile = profile.id === meId;
+  }
+
   
+
   const theme = useTheme();
   const classes = useStyles(theme);
-
-  let context = useContext(ProfileContext);
-
-  let { profile, isLoggedIn, isOwnProfile, meId } = context;
-
-  const following = useIsFollowing(profile, meId);
-
-  console.log(following);
-
-  const [isFollowing, setIsFollowing] = useState(following);
-
   const { userId } = useParams();
 
   const [follow] = useMutation(FOLLOW_USER_MUTATION);
   const [unfollow] = useMutation(UNFOLLOW_USER_MUTATION);
+
+  console.log(isOwnProfile, isLoggedIn, isFollowing);
 
   const followUser = async () => {
     const response = await follow({
@@ -123,10 +124,7 @@ export const ContentBoard = (props) => {
       },
     });
 
-    console.log(response);
-    if (response) {
-      setIsFollowing(!isFollowing);
-    }
+    
   };
 
   const unfollowUser = async () => {
@@ -137,9 +135,9 @@ export const ContentBoard = (props) => {
       },
     });
 
-    if (response) {
-      setIsFollowing(!isFollowing);
-    }
+    
+
+    
   };
 
   return (
@@ -205,7 +203,7 @@ export const ContentBoard = (props) => {
               </Grid>
               </Grid>
             </Toolbar>
-            <ContentDisplay  className={classes.mobileCards} userId={userId}/>
+            <ContentDisplay meId={meId}  className={classes.mobileCards} userId={userId}/>
             
             
           </Card>

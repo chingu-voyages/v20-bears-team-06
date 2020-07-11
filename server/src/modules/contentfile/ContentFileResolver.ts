@@ -2,7 +2,6 @@ import { ToFollowerNotification } from "./../../entity/ToFollowerNotification";
 import { AddToFollowerPayload } from "./../notifications/types/NotificationPayloads";
 import { NotificationType } from "../notifications/types/NotificationType";
 import { NotificationMessage } from "../notifications/types/NotificationMessage";
-
 import { Topic } from "./../../types/Topic";
 import { ContentFile } from "./../../entity/ContentFile";
 import {
@@ -29,6 +28,21 @@ import { Like } from "typeorm";
 export class IncDownloadArgs{
   @Field(()=>ID)
   fileId: number;
+}
+
+@ArgsType()
+class FileActionArgs{
+  @Field(() => ID)
+  userId: number;
+
+  @Field(() => ID)
+  fileId: number;
+
+  @Field(() => ID, {nullable:true})
+  ownerId: number;
+
+  @Field(()=>String)
+  actionType: string;
 }
 
 @ArgsType()
@@ -70,6 +84,9 @@ export class ContentFileResolver {
     }
     return [];
   }
+
+
+    
 
     @Mutation(() => ContentFile)
     async newFile(
@@ -118,6 +135,8 @@ export class ContentFileResolver {
         return file || null; 
     }
 
+    
+
         
     
 
@@ -156,6 +175,21 @@ export class ContentFileResolver {
       if (!updatedFile) return new Error('file not found');
       return updatedFile;
 
+    }
+
+    @Mutation(() => ContentFile)
+    async fileAction(@Args() {userId, fileId, actionType}:FileActionArgs)
+    :Promise<ContentFile|undefined>{
+      let file = await ContentFile.fileAction({
+        userId,
+        fileId,
+        actionType
+      });
+
+
+      if (file) return file;
+      return;
+      
     }
     
 }

@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { Link, useRouteMatch, useParams } from 'react-router-dom';
 import { Grid, Avatar, Container, Paper, Typography } from '@material-ui/core';
 import { useQuery, useMutation } from '@apollo/react-hooks';
@@ -66,10 +66,19 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const ProfileInfo = () => {
-  let context = useContext(ProfileContext);
+const ProfileInfo = ({meId, profile}) =>{
+let isFollowing, isOwnProfile;
+  if (profile && meId){
+    if (profile.id === meId){
+      isOwnProfile = true;
+    }
 
-  let { profile, isOwnProfile } = context || null;
+    if (profile.followers.map(el=>{
+      return el.id;
+    }).includes(meId)){
+      isFollowing = true;
+    }
+  }
 
   let { url } = useRouteMatch();
 
@@ -115,7 +124,7 @@ const ProfileInfo = () => {
             xs={12}
           >
             <Grid xs={12} item container justify="center" alignItems="center">
-              {isOwnProfile && (
+              {isOwnProfile!==undefined&&isOwnProfile?(
                 <Grid xs={5} item>
                   <Link to={`${url}/edit`} className={classes.routerLink}>
                     <Typography variant='subtitle1' color='secondary' align='center'>
@@ -124,7 +133,7 @@ const ProfileInfo = () => {
                   </Link>
                   </Grid>
                 
-              )}
+              ):null}
             </Grid>
           </Grid>
 
