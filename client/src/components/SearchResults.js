@@ -41,99 +41,103 @@ function downloadFileHandler(key) {
 }
 
 function generateTeacherResults(results, element) {
-  return results.map((value) =>
-    React.cloneElement(
-      <ListItem>
-        <ListItemAvatar>
-          {value.profilePic_url ? (
-            <Avatar src={value.profilePic_url} />
-          ) : (
-            <AccountCircleIcon />
-          )}
-        </ListItemAvatar>
-        <ListItemText
-          primary={value.name}
-          secondary={
-            value.position && value.school
-              ? `${value.position} at ${value.school}`
-              : "new user at teachers app"
-          }
-        />
-        <ListItemSecondaryAction>
-          <IconButton
-            edge="end"
-            aria-label="arrowforward"
-            component={RouterLink}
-            to={`${"/profile/" + value.id}`}
-          >
-            <ArrowForwardIosIcon />
-          </IconButton>
-        </ListItemSecondaryAction>
-      </ListItem>,
-      {
-        key: value.id,
-      }
-    )
-  );
+  if (results) {
+    return results.map((value) =>
+      React.cloneElement(
+        <ListItem>
+          <ListItemAvatar>
+            {value.profilePic_url ? (
+              <Avatar src={value.profilePic_url} />
+            ) : (
+              <AccountCircleIcon />
+            )}
+          </ListItemAvatar>
+          <ListItemText
+            primary={value.name}
+            secondary={
+              value.position && value.school
+                ? `${value.position} at ${value.school}`
+                : "new user at teachers app"
+            }
+          />
+          <ListItemSecondaryAction>
+            <IconButton
+              edge="end"
+              aria-label="arrowforward"
+              component={RouterLink}
+              to={`${"/profile/" + value.id}`}
+            >
+              <ArrowForwardIosIcon />
+            </IconButton>
+          </ListItemSecondaryAction>
+        </ListItem>,
+        {
+          key: value.id,
+        }
+      )
+    );
+  }
 }
 
 function generatePostResults(results, element) {
-  return results.map((value) =>
-    React.cloneElement(
-      <ListItem>
-        <ListItemAvatar>
-          <Avatar>
-            <FolderIcon />
-          </Avatar>
-        </ListItemAvatar>
-        <ListItemText primary={value.author} secondary={value.text} />
-        <ListItemSecondaryAction>
-          <IconButton
-            edge="end"
-            aria-label="arrowforward"
-            component={RouterLink}
-            to={`${"/profile/" + value.userId}`}
-          >
-            <ArrowForwardIosIcon />
-          </IconButton>
-        </ListItemSecondaryAction>
-      </ListItem>,
-      {
-        key: value.id,
-      }
-    )
-  );
+  if (results) {
+    return results.map((value) =>
+      React.cloneElement(
+        <ListItem>
+          <ListItemAvatar>
+            <Avatar>
+              <FolderIcon />
+            </Avatar>
+          </ListItemAvatar>
+          <ListItemText primary={value.author} secondary={value.text} />
+          <ListItemSecondaryAction>
+            <IconButton
+              edge="end"
+              aria-label="arrowforward"
+              component={RouterLink}
+              to={`${"/profile/" + value.userId}`}
+            >
+              <ArrowForwardIosIcon />
+            </IconButton>
+          </ListItemSecondaryAction>
+        </ListItem>,
+        {
+          key: value.id,
+        }
+      )
+    );
+  }
 }
-
 function generateFileResults(results, element) {
-  return results.map((value) =>
-    React.cloneElement(
-      <ListItem>
-        <ListItemAvatar>
-          <Avatar>
-            <FolderIcon />
-          </Avatar>
-        </ListItemAvatar>
-        <ListItemText primary="primary text" secondary="secondary text" />
-        <ListItemSecondaryAction>
-          <GetAppIcon onClick={() => downloadFileHandler(value.key)} />
-          <IconButton
-            edge="end"
-            aria-label="arrowforward"
-            component={RouterLink}
-            to={`${"/profile/" + value.userId}`}
-          >
-            <ArrowForwardIosIcon />
-          </IconButton>
-        </ListItemSecondaryAction>
-      </ListItem>,
-      {
-        key: value.id,
-      }
-    )
-  );
+  if (results) {
+    return results.map((value) =>
+      React.cloneElement(
+        <ListItem>
+          <ListItemAvatar>
+            <Avatar>
+              <FolderIcon />
+            </Avatar>
+          </ListItemAvatar>
+          <ListItemText primary="primary text" secondary="secondary text" />
+          <ListItemSecondaryAction>
+            <GetAppIcon onClick={() => downloadFileHandler(value.key)} />
+            <IconButton
+              edge="end"
+              aria-label="arrowforward"
+              component={RouterLink}
+              to={`${"/profile/" + value.userId}`}
+            >
+              <ArrowForwardIosIcon />
+            </IconButton>
+          </ListItemSecondaryAction>
+        </ListItem>,
+        {
+          key: value.id,
+        }
+      )
+    );
+  }
 }
-
 export default function SearchResults({ searchTerm }) {
   const classes = useStyles();
   const [dense, setDense] = React.useState(false);
