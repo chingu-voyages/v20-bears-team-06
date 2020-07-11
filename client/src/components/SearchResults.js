@@ -45,7 +45,11 @@ function generateTeacherResults(results, element) {
     React.cloneElement(
       <ListItem>
         <ListItemAvatar>
-          <AccountCircleIcon />
+          {value.profilePic_url ? (
+            <Avatar src={value.profilePic_url} />
+          ) : (
+            <AccountCircleIcon />
+          )}
         </ListItemAvatar>
         <ListItemText
           primary={value.name}
