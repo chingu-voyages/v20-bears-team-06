@@ -5,12 +5,14 @@ import { makeStyles } from '@material-ui/core';
 import { useMutation } from '@apollo/react-hooks';
 import EditIcon from '@material-ui/icons/Edit';
 import FavoriteIcon from '@material-ui/icons/Favorite';
-import SaveAltIcon from '@material-ui/icons/SaveAlt';
+import SaveIcon from '@material-ui/icons/Save';
 import CloseIcon from '@material-ui/icons/Close';
 import CloudDownloadIcon from '@material-ui/icons/CloudDownload';
 import ButtonGroup from '@material-ui/core/ButtonGroup';
+import DeleteIcon from '@material-ui/icons/Delete';
 import { FILE_ACTION_MUTATION } from '../../graphql/Mutations';
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
+import { useParams } from 'react-router-dom';
 
 const useStyles = makeStyles((theme)=>({
     button:{
@@ -20,9 +22,10 @@ const useStyles = makeStyles((theme)=>({
 }))
 
 
-export const FileDetailsDialog = ({file, meId}) => {
+export const FileDetailsDialog = ({file, meId, handleDownloadClick }) => {
     let me;
     const [open, setOpen] = useState(false);
+    const { userId } = useParams();
     const [fileAction] = useMutation(FILE_ACTION_MUTATION);
     const classes = useStyles();
     if (meId){
@@ -30,8 +33,12 @@ export const FileDetailsDialog = ({file, meId}) => {
         console.log(meId);
     }
 
+    
+
    
     const isOwner = file.ownerId === meId;
+    const isLoggedIn = meId?true:false;
+    const isOwnContent = userId === meId;
 
     let specialties = "";
     if (file&&file.specialties){
@@ -46,8 +53,10 @@ export const FileDetailsDialog = ({file, meId}) => {
     }
 
     const handleFileAction = async (event) =>{
-        console.log(event.currentTarget);
         const actionType = event.currentTarget.title;
+        if (actionType==='download'){
+            handleDownloadClick();
+        }
         const response = await fileAction({
             variables:{
                 userId: meId,
@@ -90,24 +99,31 @@ export const FileDetailsDialog = ({file, meId}) => {
                 </DialogContentText>
             </DialogContent>
             <DialogActions>
-                <ButtonGroup>
-          <Button onClick={()=>setOpen(false)} color="primary">
-            <CloseIcon />
-          </Button>
-          <Button onClick={handleFileAction} title='favorite' color="primary">
+                <ButtonGroup fullwidth variant='text'>
+         
+          <Button onClick={handleFileAction} title='favorite' color="secondary" disabled={!isLoggedIn}>
             <FavoriteIcon />
           </Button>
-          <Button color='primary' onClick={handleFileAction} title='save'>
-              <SaveAltIcon />
-          </Button>
-          <Button color='primary'>
+          {!isOwner &&
+          <Button color='primary' onClick={handleFileAction} title='save' disabled={!isLoggedIn}>
+              <SaveIcon />
+          </Button>}
+          <Button color='primary' title='download' onClick={handleFileAction} disabled={!isLoggedIn}>
               <CloudDownloadIcon />
           </Button>
-          {isOwner &&
+          {isOwner && 
           <Button color='primary'>
               <EditIcon />
           </Button>}
+          {isOwner &&<Button color='primary'>
+              <DeleteIcon />
+          </Button>
+          }
+          <Button onClick={()=>setOpen(false)} color="primary">
+            <CloseIcon />
+          </Button>
           </ButtonGroup>
+          
           </DialogActions>
         </Dialog>
         </div>

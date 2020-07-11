@@ -5,6 +5,7 @@ import {
   CardActionArea,
   CardContent,
   Typography,
+  Badge,
   Icon,
   SvgIcon,
   makeStyles,
@@ -95,7 +96,7 @@ const useStyles = makeStyles((theme) => ({
   },
   tooltipText: {
     backgroundColor: theme.palette.primary.light
-  }
+  },
 }));
 
 export const FileCard = ({ file, isOwnProfile, meId, increment }) => {
@@ -174,19 +175,19 @@ export const FileCard = ({ file, isOwnProfile, meId, increment }) => {
           alignItems="space-between"
         >
           <Grid xs={4} align="center" item>
-            <IconBadge
-              children={<CloudDownloadIcon fontSize="small" color="primary" />}
-              count={file && file.download_count}
-            />
+            <Typography color='primary' align='center' variant='caption2'>
+              <FavoriteIcon fontSize='inherit' />  {file&&file.favorite_count}
+            </Typography>
           </Grid>
           <Grid xs={4} align="center" item>
-            <IconBadge
-              children={<FavoriteIcon fontSize="small" color="primary" />}
-              count={file && file.favorite_count}
-            />
+          <Typography color='primary' align='center' variant='caption2'>
+              <CloudDownloadIcon fontSize='inherit' />  {file&&file.download_count}
+            </Typography>
+         
+            
           </Grid>
           <Grid xs={4} align="center" item>
-            <FileDetailsDialog file={file} meId={meId} />
+            <FileDetailsDialog file={file} meId={meId} handleDownloadClick={handleDownloadClick} />
           </Grid>
         </Grid>
       </Card>

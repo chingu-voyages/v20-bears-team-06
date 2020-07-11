@@ -4,7 +4,7 @@ import { Query, Subscription, Mutation } from '@apollo/react-components';
 import Card from '@material-ui/core/Card';
 import CardActionArea from '@material-ui/core/CardActionArea';
 import { Grid, Box, Container, makeStyles, List, ListItem, ListItemAvatar } from '@material-ui/core';
-import { GET_FILES } from '../graphql/Queries';
+import { GET_FILES, GET_SAVED_FILES, GET_ALL_FILES} from '../graphql/Queries';
 import { INCREMENT_DOWNLOAD_MUTATION } from '../graphql/Mutations';
 import { Link, useHistory, useParams } from 'react-router-dom';
 import { FileCard } from './FileCard';
@@ -31,34 +31,54 @@ const useStyles = makeStyles(theme=>({
 }))
 
 
-export const ContentDisplay=({userId, update, meId})=>{
+export const ContentDisplay=({userId, update, meId, toDisplay})=>{
     const [toRender, setToRender] = useState(update);
     const [increment] = useMutation(INCREMENT_DOWNLOAD_MUTATION); 
     const classes = useStyles();
     const history = useHistory();
+    
     return(
 
 <Grid className={classes.cardGrid} container xs={12} justify='flex-start'  direction='row' >
- <Query query={GET_FILES} pollInterval={500} variables={{userId:userId}}>
+ <Query query={GET_ALL_FILES} pollInterval={500} variables={{userId:userId}}>
      {({data , loading, error}) => {
          
 
          if(loading&&!data) {
              return 'loading...'
          }
-         if (!loading&&data&&data.files){
-             const {files} = data;
+        
+         if (!loading&&data&&data.getAllFiles){
+             const {getAllFiles} = data;
+             let files;
+             if (toDisplay==='user'){
+                 files = getAllFiles.uploads;
+             }
+
+             if (toDisplay==='saved'){
+                 files = getAllFiles.savedContent;
+             }
+
+             if (toDisplay==='favorite'){
+                 files = getAllFiles.favoriteContent;
+             }
              return(<>
                  {files.map((file,i)=>{
                      return (<Grid item xs={6} md={3} className={classes.gridCard}  key={file.id}>
                         <FileCard meId={meId} increment={increment} history={history} file={file} key={`file_${file.id}`} />
                         </Grid>)
                  })}</>)
+                
              
          }if (error){
              console.log(error);
              return null;
          }
+        
+
+        
+
+        
          
      }}
  </Query>

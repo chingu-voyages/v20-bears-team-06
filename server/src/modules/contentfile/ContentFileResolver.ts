@@ -19,6 +19,7 @@ import {
   //   Root,
   PubSub,
   PubSubEngine,
+  ObjectType
 } from "type-graphql";
 import { User } from "../../entity/User";
 import { FilesPayload } from "../../types/Payloads";
@@ -67,6 +68,20 @@ export class NewFileArgs {
 export class FilesArgs {
   @Field(() => ID)
   userId: number;
+}
+
+@ObjectType()
+export class AllFilesPayload{
+  @Field(() => [ContentFile],{nullable:true})
+  uploads: ContentFile[];
+
+  @Field(() => [ContentFile],{nullable:true})
+  savedContent: ContentFile[];
+
+  @Field(() => [ContentFile],{nullable:true})
+  favoriteContent: ContentFile[];
+
+  
 }
 
 @ArgsType()
@@ -177,9 +192,33 @@ export class ContentFileResolver {
 
     }
 
+
+    @Query(() => AllFilesPayload)
+    async getAllFiles(@Args() {userId}: FilesArgs)
+    :Promise<AllFilesPayload>
+    {
+      const payload = new AllFilesPayload();
+      let user = await User.findOne(userId,{relations:['uploads','savedContent','favoriteContent']});
+      if (user){
+        payload.uploads = await user.uploads;
+        payload.savedContent = await user.savedContent;
+        payload.favoriteContent = await user.favoriteContent;
+      }
+
+      return payload;
+
+    }
+
     @Mutation(() => ContentFile)
     async fileAction(@Args() {userId, fileId, actionType}:FileActionArgs)
-    :Promise<ContentFile|undefined>{
+    :Promise<ContentFile|Error|undefined>{
+
+      if(actionType==='download'){
+        let file = await this.incrementDownloadCount({fileId});
+        if (!file) return;
+        return file;
+      }
+
       let file = await ContentFile.fileAction({
         userId,
         fileId,
@@ -191,5 +230,28 @@ export class ContentFileResolver {
       return;
       
     }
+
+
+    @Query(() => [ContentFile])
+    async getFavoriteFiles(@Args() {userId}:FilesArgs)
+    :Promise<ContentFile[]|[]>{
+      let user = await User.findOne(userId);
+      let favoriteFiles = user?.favoriteContent;
+      if (favoriteFiles) return favoriteFiles;
+      return [];
+    }
+
+    @Query(() => [ContentFile])
+    async getSavedFiles(@Args() {userId} : FilesArgs)
+    :Promise<ContentFile[]|[]>{
+      let user = await User.findOne(userId);
+      let savedFiles = await user?.savedContent;
+      if (savedFiles){
+        return savedFiles;
+      }
+      return [];
+    }
+
+    
     
 }

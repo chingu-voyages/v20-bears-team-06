@@ -130,6 +130,59 @@ export const GET_FILES = gql`
 
 `;
 
+export const GET_ALL_FILES = gql`
+  query getAllFiles($userId: ID!){
+    getAllFiles(userId: $userId){
+      uploads{
+        id
+        filetype
+        filename
+        date
+        ownerId
+        signedRequest
+        download_count
+        likes
+        key
+        gradeLevel
+        favorite_count
+        save_count
+  
+      }
+      savedContent{
+        id
+        filetype
+        filename
+        date
+        ownerId
+        signedRequest
+        download_count
+        likes
+        key
+        gradeLevel
+        favorite_count
+        save_count
+  
+      }
+      favoriteContent{
+        id
+        filetype
+        filename
+        date
+        ownerId
+        signedRequest
+        download_count
+        likes
+        key
+        gradeLevel
+        favorite_count
+        save_count
+  
+      }
+    }
+  }
+
+`;
+
 export const GET_FOLLOWING = gql`
   query following($userId: ID!, $meId: ID!){
     following(userId: $userId meId: $meId){
@@ -138,6 +191,49 @@ export const GET_FOLLOWING = gql`
     }
   }
 `;
+
+export const GET_SAVED_FILES = gql`
+  query getSavedFiles($userId: ID!){
+    getSavedFiles(userId: $userId){
+      id
+      filetype
+      filename
+      date
+      ownerId
+      signedRequest
+      download_count
+      likes
+      key
+      gradeLevel
+      favorite_count
+      save_count
+
+    }
+  }
+`;
+
+export const GET_FAVORITE_FILES = gql`
+  query getFavoriteFiles($userId: ID!){
+    getFavoriteFiles(userId: $userId){
+      id
+      filetype
+      filename
+      date
+      ownerId
+      signedRequest
+      download_count
+      likes
+      key
+      gradeLevel
+      favorite_count
+      save_count
+
+    }
+  }
+`;
+
+
+
 
 
 

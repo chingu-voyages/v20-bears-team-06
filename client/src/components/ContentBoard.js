@@ -25,6 +25,7 @@ import { ContentDisplay } from './ContentDisplay';
 import { FollowerAvatarGroup } from './FollowerAvatarGroup';
 import { FileUploadDialog } from './mui_components/FileUploadDialog';
 import { BottomNavSwitch } from './mui_components/BottomNavSwitch';
+import { ButtonGroup } from '@material-ui/core';
 
 
 
@@ -92,9 +93,13 @@ const useStyles = makeStyles((theme) => ({
    marginRight: '2%',
    color: theme.palette.info.light
  },
+ buttonGroup: {
+   color: 'white'
+ }
 }));
 
 export const ContentBoard = ({profile, meId }) => {
+  const [toDisplay, setToDisplay ] = useState('saved');
   let isOwnProfile, isLoggedIn, isFollowing, refetchQuery;
   if (meId){
     isLoggedIn = true;
@@ -105,6 +110,11 @@ export const ContentBoard = ({profile, meId }) => {
     isOwnProfile = profile.id === meId;
   }
 
+
+  const handleContentSwitch = (event) => {
+    console.log(event.currentTarget.value)
+    setToDisplay(event.currentTarget.value);
+  }
   
 
   const theme = useTheme();
@@ -139,6 +149,15 @@ export const ContentBoard = ({profile, meId }) => {
 
     
   };
+
+  let contentSlug = null;
+  if (toDisplay==='saved'){
+    contentSlug= 'Saved';
+  }
+
+  if(toDisplay==='favorite'){
+    contentSlug= 'Favorite';
+  }
 
   return (
     <>
@@ -188,22 +207,40 @@ export const ContentBoard = ({profile, meId }) => {
         <Grid item xs={12}>
           <Card className={classes.contentCard}>
             <Toolbar className={classes.contentToolbar}  >
-              <Grid container alignItems='center' xs={12}>
+              
+              <Grid container direction='row' alignItems='center' xs={12}>
                 <Grid item>
             <IconButton>
                 <AccountCircleIcon className={classes.toolbarText} />
               </IconButton>
               </Grid>
               <Grid item>
-              <Typography variant='h6' className={classes.toolbarText}>{profile&&profile.name}'s Content</Typography>
+              <Typography variant='h6' className={classes.toolbarText}>{profile&&profile.name}'s {contentSlug} Content</Typography>
               </Grid>
+              <Grid item container direction='row' justify='center' alignItems='center'>
+             
+              <ButtonGroup align='center' fullwidth variant='text' color='primaryText' size='small'>
+                <Button onClick={handleContentSwitch}  value='user' className={classes.buttonGroup}>
+                  User
+                </Button>
+                <Button onClick={handleContentSwitch}  value='saved' className={classes.buttonGroup}>
+                  Saved
+                </Button>
+                <Button onClick={handleContentSwitch} value='favorite' className={classes.buttonGroup}>
+                  Favorite
+                </Button>
+              </ButtonGroup>
+  
+              </Grid>
+              
               <Grid className={classes.fab} item>
+                
                 { isOwnProfile &&
               <FileUploadDialog meId={meId} iconColor={classes.fab.color} size='small' /> }
               </Grid>
               </Grid>
             </Toolbar>
-            <ContentDisplay meId={meId}  className={classes.mobileCards} userId={userId}/>
+            <ContentDisplay meId={meId} toDisplay={toDisplay}  className={classes.mobileCards} userId={userId}/>
             
             
           </Card>

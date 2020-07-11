@@ -1,3 +1,4 @@
+import { IncDownloadArgs } from './../modules/contentfile/ContentFileResolver';
 import { JoinTable } from 'typeorm';
 import { Lazy } from './../utils/Lazy';
 import { User } from './User';
@@ -108,7 +109,7 @@ export class ContentFile extends BaseEntity{
     key: string;
 
     @Column({default:0})
-    @Field(() => Int, {defaultValue:0})
+    @Field(() => Int, {nullable:true})
     download_count: number;
 
     @Column({default:0})
@@ -176,6 +177,23 @@ export class ContentFile extends BaseEntity{
             }
         }
         return;
+
+        }
+
+        if (actionType='download'){
+            
+            let file = await this.findOne(fileId);
+            if(!file) return;
+            let count = file.download_count;
+            count++;
+            file.download_count = count;
+            await file.save();
+            let owner = await file.owner;
+            if (!owner) return;
+            await owner.save();
+            let updatedFile = this.findOne(fileId);
+            if (!updatedFile) return;
+            return updatedFile;
 
         }
 
