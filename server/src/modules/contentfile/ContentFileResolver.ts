@@ -51,8 +51,8 @@ export class NewFileArgs {
   @Field(() => ID)
   userId: number;
 
-    @Field({nullable:true})
-    signedRequest: string;
+  @Field({nullable:true})
+  signedRequest: string;
 
   @Field({ nullable: true })
   filetype: string;
@@ -60,8 +60,8 @@ export class NewFileArgs {
   @Field({ nullable: true })
   filename: string;
 
-    @Field({nullable:true})
-    key: string;
+  @Field({nullable:true})
+  key: string;
 }
 
 @ArgsType()

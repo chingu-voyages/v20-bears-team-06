@@ -153,7 +153,6 @@ export const FileCard = ({ file, isOwnProfile, meId, increment }) => {
       <Card variant="outlined" className={classes.card}>
         <CardActionArea
           className={classes.cardContent}
-          onClick={handleDownloadClick}
         >
           <CardHeader
             className={classes.cardHeader}

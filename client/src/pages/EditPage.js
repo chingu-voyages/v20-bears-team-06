@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import ProfileInfo from '../components/ProfileInfo';
 import { Container } from '@material-ui/core';
 import EditForm from '../components/EditForm';
@@ -12,9 +12,23 @@ import './profilepage.scss';
 import './editpage.scss';
 
 const EditPage = ({ meId }) => {
+  const { userId } = useParams();
+  let profile, isOwnProfile;
+  const { data, loading, error } = useQuery(GET_PROFILE,{
+    variables:{userId}
+  });
+
+  if (error){
+    console.log(error);
+  }
+
+  if (!loading && data && data.user){
+    profile = data.user;
+  }
+
   
-  const profile = useProfile();
-  let isOwnProfile;
+  
+  
 
   if (profile){
     isOwnProfile = meId === profile.id;
@@ -31,6 +45,7 @@ const EditPage = ({ meId }) => {
         success={success}
         profile={profile}
         isOwnProfile={isOwnProfile}
+        meId={meId}
       />
     </Container>
   );
