@@ -5,6 +5,7 @@ export const GET_ME = gql`
     me {
       id
       name
+      firstName
     }
   }
 `;
@@ -31,27 +32,29 @@ export const SEARCH_USERS = gql`
       location
       department
       position
+      profilePic_url
     }
   }
 `;
 
 export const SEARCH_POSTS = gql`
-  query searchPosts($searchTerm: String) {
+  query searchPosts($searchTerm: String!) {
     posts(searchTerm: $searchTerm) {
       id
       text
-      author
+      userId
     }
   }
 `;
 
 export const SEARCH_FILES = gql`
-  query searchFiles($searchTerm: String) {
+  query searchFiles($searchTerm: String!) {
     searchFiles(searchTerm: $searchTerm) {
       id
-      userId
+      ownerId
       filename
       filetype
+      key
     }
   }
 `;
@@ -76,7 +79,7 @@ export const GET_PROFILE = gql`
         title
         subtitle
       }
-      followers{
+      followers {
         id
         profilePic_url
         department
@@ -110,8 +113,8 @@ export const FOLLOWER_IDS = gql`
 `;
 
 export const GET_FILES = gql`
-  query files($userId: ID!){
-    files(userId: $userId){
+  query files($userId: ID!) {
+    files(userId: $userId) {
       id
       filetype
       filename
@@ -124,16 +127,14 @@ export const GET_FILES = gql`
       gradeLevel
       favorite_count
       save_count
-
     }
   }
-
 `;
 
 export const GET_ALL_FILES = gql`
-  query getAllFiles($userId: ID!){
-    getAllFiles(userId: $userId){
-      uploads{
+  query getAllFiles($userId: ID!) {
+    getAllFiles(userId: $userId) {
+      uploads {
         id
         filetype
         filename
@@ -146,9 +147,8 @@ export const GET_ALL_FILES = gql`
         gradeLevel
         favorite_count
         save_count
-  
       }
-      savedContent{
+      savedContent {
         id
         filetype
         filename
@@ -161,9 +161,8 @@ export const GET_ALL_FILES = gql`
         gradeLevel
         favorite_count
         save_count
-  
       }
-      favoriteContent{
+      favoriteContent {
         id
         filetype
         filename
@@ -176,16 +175,14 @@ export const GET_ALL_FILES = gql`
         gradeLevel
         favorite_count
         save_count
-  
       }
     }
   }
-
 `;
 
 export const GET_FOLLOWING = gql`
-  query following($userId: ID!, $meId: ID!){
-    following(userId: $userId meId: $meId){
+  query following($userId: ID!, $meId: ID!) {
+    following(userId: $userId, meId: $meId) {
       isFollowing
       isOwnProfile
     }
@@ -193,8 +190,8 @@ export const GET_FOLLOWING = gql`
 `;
 
 export const GET_SAVED_FILES = gql`
-  query getSavedFiles($userId: ID!){
-    getSavedFiles(userId: $userId){
+  query getSavedFiles($userId: ID!) {
+    getSavedFiles(userId: $userId) {
       id
       filetype
       filename
@@ -207,14 +204,13 @@ export const GET_SAVED_FILES = gql`
       gradeLevel
       favorite_count
       save_count
-
     }
   }
 `;
 
 export const GET_FAVORITE_FILES = gql`
-  query getFavoriteFiles($userId: ID!){
-    getFavoriteFiles(userId: $userId){
+  query getFavoriteFiles($userId: ID!) {
+    getFavoriteFiles(userId: $userId) {
       id
       filetype
       filename
@@ -227,14 +223,6 @@ export const GET_FAVORITE_FILES = gql`
       gradeLevel
       favorite_count
       save_count
-
     }
   }
 `;
-
-
-
-
-
-
-
