@@ -205,7 +205,7 @@ export default function SearchResults({ searchTerm }) {
       </Typography>
       <Divider />
       <div className={classes.demo}>
-        <List dense={dense}>{generateFileResults(fileData.files)}</List>
+        <List dense={dense}>{generateFileResults(fileData.searchFiles)}</List>
       </div>
     </div>
   ) : (
@@ -218,10 +218,6 @@ export default function SearchResults({ searchTerm }) {
         <Grid container spacing={2}>
           <Grid item xs={12}>
             {userResults}
-          </Grid>
-          <Divider />
-          <Grid item xs={12}>
-            {postResults}
           </Grid>
           <Divider />
           <Grid item xs={12}>
