@@ -11,7 +11,7 @@ import {
   useMediaQuery,
 } from "@material-ui/core";
 import { useTheme } from "@material-ui/core/styles";
-
+import { GET_ME_CACHE } from "../graphql/Queries";
 import SearchIcon from "@material-ui/icons/Search";
 import { Link as RouterLink, useHistory } from "react-router-dom";
 import { GET_ME } from "../graphql/Queries";
@@ -83,12 +83,10 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function HomePage({ isLoggedIn }) {
+export default function HomePage() {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.up("sm"));
   const classes = useStyles();
-  console.log("homepage: is logged in?", isLoggedIn);
-  const { data, loading, refetch } = useQuery(GET_ME);
   const searchFieldText = isMobile
     ? "Search..."
     : "Search for teachers and documents here...";
@@ -97,13 +95,11 @@ export default function HomePage({ isLoggedIn }) {
     history.push("/search", { searchTerm: terms });
   }
   let history = useHistory();
+  const { data: meData } = useQuery(GET_ME_CACHE);
+  const me = meData ? meData.me : null;
+  console.log(`homepage login ? ${me}`);
 
-  console.log(`is logged in ? ${isLoggedIn} AND is data? ${data}`);
-
-  while (loading) {
-    return "...loading";
-  }
-  return { isLoggedIn } && data != undefined && data.me != null ? (
+  return me ? (
     <div>
       <Container maxWidth="md" align="center">
         <Typography
@@ -112,7 +108,7 @@ export default function HomePage({ isLoggedIn }) {
           align="center"
           className={classes.welcomeText}
         >
-          {`Welcome ${data.me.firstName}!`}
+          {`Welcome ${me.firstName}!`}
         </Typography>
         <div className={classes.search}>
           <div className={classes.searchIcon}>
@@ -136,7 +132,7 @@ export default function HomePage({ isLoggedIn }) {
           variant="outlined"
           size="large"
           className={classes.profileButton}
-          to={`${data && data.me ? "/profile/" + data.me.id : "/"}`}
+          to={`/profile/${me.id}`}
         >
           View Your Profile, Connections, and Content
         </Button>

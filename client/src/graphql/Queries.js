@@ -10,6 +10,16 @@ export const GET_ME = gql`
   }
 `;
 
+export const GET_ME_CACHE = gql`
+  query GetMe {
+    me @client {
+      id
+      name
+      firstName
+    }
+  }
+`;
+
 export const NOTIFICATION_QUERY = gql`
   query newNotifications($userId: ID!) {
     newNotifications(userId: $userId) {
