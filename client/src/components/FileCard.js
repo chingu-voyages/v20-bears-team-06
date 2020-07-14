@@ -103,7 +103,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export const FileCard = ({ file, isOwnProfile, meId, increment }) => {
-  console.log(file)
+  
   const [key, setKey] = useState(file.key);
   const classes = useStyles();
   let titleString = (file && file.filename) || '';
@@ -115,7 +115,7 @@ export const FileCard = ({ file, isOwnProfile, meId, increment }) => {
     </Typography>
   );
 
-  const [delFile] = useMutation(DELETE_FILE);
+  
   const fileId = file.id;
   const { filetype } = file;
 
@@ -126,11 +126,7 @@ export const FileCard = ({ file, isOwnProfile, meId, increment }) => {
     }
   };
 
-  const handleDeleteClick = () => {
-      const { data, error, loading } = delFile({
-        variables:{fileId}
-      })
-  };
+  
 
   const name =
     file.filename.length > 18
@@ -196,7 +192,7 @@ export const FileCard = ({ file, isOwnProfile, meId, increment }) => {
             
           </Grid>
           <Grid xs={4} align="center" item>
-            <FileDetailsDialog delete={handleDeleteClick} file={file} meId={meId} handleDownloadClick={handleDownloadClick} />
+            <FileDetailsDialog file={file} meId={meId} handleDownloadClick={handleDownloadClick} />
           </Grid>
         </Grid>
       </Card>

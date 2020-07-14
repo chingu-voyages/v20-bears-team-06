@@ -10,9 +10,11 @@ import CloseIcon from '@material-ui/icons/Close';
 import CloudDownloadIcon from '@material-ui/icons/CloudDownload';
 import ButtonGroup from '@material-ui/core/ButtonGroup';
 import DeleteIcon from '@material-ui/icons/Delete';
-import { FILE_ACTION_MUTATION } from '../../graphql/Mutations';
+import { FILE_ACTION_MUTATION, DELETE_FILE } from '../../graphql/Mutations';
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import { useParams } from 'react-router-dom';
+import { s3deleteFile } from '../../utils/s3deleteFile';
+
 
 const useStyles = makeStyles((theme)=>({
     button:{
@@ -22,11 +24,12 @@ const useStyles = makeStyles((theme)=>({
 }))
 
 
-export const FileDetailsDialog = ({file, meId, handleDownloadClick, delete }) => {
+export const FileDetailsDialog = ({file, meId, handleDownloadClick, deleteFile }) => {
     let me;
     const [open, setOpen] = useState(false);
     const { userId } = useParams();
     const [fileAction] = useMutation(FILE_ACTION_MUTATION);
+    const [delFile] = useMutation(DELETE_FILE);
     const classes = useStyles();
     if (meId){
         me = meId;
@@ -68,6 +71,15 @@ export const FileDetailsDialog = ({file, meId, handleDownloadClick, delete }) =>
         console.log(response);
         
     }
+
+    const handleDeleteClick = async (fileId, key) => {
+        const response = await delFile({
+          variables:{fileId}
+        });
+        if (response&&response.data){
+            s3deleteFile(key);
+        }
+    };
 
     return (
         <div>
@@ -115,7 +127,7 @@ export const FileDetailsDialog = ({file, meId, handleDownloadClick, delete }) =>
           <Button color='primary'>
               <EditIcon />
           </Button>}
-          {isOwner &&<Button onClick={delete} color='primary'>
+          {isOwner &&<Button onClick={()=>handleDeleteClick(file.id, file.key)} color='primary'>
               <DeleteIcon />
           </Button>
           }
