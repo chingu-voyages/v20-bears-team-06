@@ -66,6 +66,7 @@ const client = new ApolloClient({
   },
   cache: new InMemoryCache(),
 });
+client.writeData({ data: { me: null } });
 
 ReactDOM.render(
   <React.StrictMode>
