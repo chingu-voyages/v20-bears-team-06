@@ -1,10 +1,11 @@
-import { gql } from 'apollo-boost';
+import { gql } from "apollo-boost";
 
 export const LOGIN_MUTATION = gql`
   mutation LoginMutation($email: String!, $password: String!) {
     login(email: $email, password: $password) {
       name
       id
+      firstName
     }
   }
 `;
@@ -47,18 +48,20 @@ export const EDIT_PROFILE_MUTATION = gql`
     $location: String
     $filename: String
     $filetype: String
-  ){
-    editUser(edit:{
-      userId: $userId
-      school: $school
-      department: $department
-      position: $position
-      about_me: $about_me
-      location: $location
-      filename: $filename
-      filetype: $filetype
-    }){
-      user{
+  ) {
+    editUser(
+      edit: {
+        userId: $userId
+        school: $school
+        department: $department
+        position: $position
+        about_me: $about_me
+        location: $location
+        filename: $filename
+        filetype: $filetype
+      }
+    ) {
+      user {
         id
         school
         department
@@ -67,14 +70,13 @@ export const EDIT_PROFILE_MUTATION = gql`
         location
         profilePic_url
       }
-      s3{
+      s3 {
         signedRequest
         key
       }
       success
     }
   }
-  
 `;
 
 export const ADD_USER_SPEC = gql`
@@ -123,7 +125,7 @@ export const FOLLOW_USER_MUTATION = gql`
         title
         subtitle
       }
-      followers{
+      followers {
         id
         profilePic_url
         department
@@ -137,7 +139,7 @@ export const FOLLOW_USER_MUTATION = gql`
 
 export const UNFOLLOW_USER_MUTATION = gql`
   mutation unfollowUser($userId: ID!, $toUnfollow: ID!) {
-    unfollowUser(users: { userId: $userId, toUnfollow: $toUnfollow }){
+    unfollowUser(users: { userId: $userId, toUnfollow: $toUnfollow }) {
       id
       name
       school
@@ -155,7 +157,7 @@ export const UNFOLLOW_USER_MUTATION = gql`
         title
         subtitle
       }
-      followers{
+      followers {
         id
         profilePic_url
         department
@@ -176,17 +178,15 @@ export const S3_SIGN_MUTATION = gql`
   }
 `;
 
-
-export const SET_SEEN_MUTATION = gql `
-  mutation setSeen($notificationIds: [ID!]!){
+export const SET_SEEN_MUTATION = gql`
+  mutation setSeen($notificationIds: [ID!]!) {
     setSeen(notificationIds: $notificationIds)
   }
 `;
 
-
 export const NEW_UPLOAD_MUTATION = gql`
-  mutation newFileUpload($meId: ID!, $filetype: String!, $filename: String!){
-    newFileUpload(meId: $meId filetype:$filetype filename:$filename){
+  mutation newFileUpload($meId: ID!, $filetype: String!, $filename: String!) {
+    newFileUpload(meId: $meId, filetype: $filetype, filename: $filename) {
       id
       filetype
       filename
@@ -195,44 +195,43 @@ export const NEW_UPLOAD_MUTATION = gql`
       signedRequest
       download_count
       likes
-      key     
+      key
     }
   }
 `;
 
 export const GET_SIGNED_DOWNLOAD = gql`
-    mutation s3download($fileId: ID!){
-        s3download(fileId: $fileId){
-          signedRequest
-          key
-        }      
+  mutation s3download($fileId: ID!) {
+    s3download(fileId: $fileId) {
+      signedRequest
+      key
     }
+  }
 `;
 
 export const INCREMENT_DOWNLOAD_MUTATION = gql`
-    mutation incrementDownloadCount($fileId: ID!){
-      incrementDownloadCount(fileId: $fileId){
-        id
-        download_count
-        filetype
-        filename
-        id
-        filetype
-        filename
-        date
-        ownerId
-        signedRequest
-        download_count
-        likes
-        key     
-
-      }
+  mutation incrementDownloadCount($fileId: ID!) {
+    incrementDownloadCount(fileId: $fileId) {
+      id
+      download_count
+      filetype
+      filename
+      id
+      filetype
+      filename
+      date
+      ownerId
+      signedRequest
+      download_count
+      likes
+      key
     }
+  }
 `;
 
 export const FILE_ACTION_MUTATION = gql`
-    mutation fileAction($fileId: ID!, $userId: ID!, $actionType: String!){
-      fileAction(userId: $userId, fileId: $fileId, actionType: $actionType){
+  mutation fileAction($fileId: ID!, $userId: ID!, $actionType: String!) {
+    fileAction(userId: $userId, fileId: $fileId, actionType: $actionType) {
       id
       filetype
       filename
@@ -245,10 +244,6 @@ export const FILE_ACTION_MUTATION = gql`
       gradeLevel
       favorite_count
       save_count
-
-      }
-
     }
+  }
 `;
-
-

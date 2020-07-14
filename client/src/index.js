@@ -8,16 +8,12 @@ import { onError } from "apollo-link-error";
 import { InMemoryCache } from "apollo-cache-inmemory";
 import { getMainDefinition } from "apollo-utilities";
 import { ApolloProvider } from "@apollo/react-hooks";
-import { config } from 'dotenv';
-import AWS from 'aws-sdk';
+import { config } from "dotenv";
 import App from "./App";
+import { resolvers, typeDefs } from "./graphql/Resolvers";
+import { gql } from "apollo-boost";
 
 config();
-
-
-
-
-
 
 const graphqlUrl =
   process.env.NODE_ENV === "development"
@@ -42,8 +38,6 @@ const wsLink = new WebSocketLink({
   },
 });
 
-
-
 const splitLink = split(
   ({ query }) => {
     const definition = getMainDefinition(query);
@@ -57,24 +51,7 @@ const splitLink = split(
 );
 
 const client = new ApolloClient({
-  link : splitLink,
-  onError: (({ graphQLErrors, networkError }) => {
-    if (graphQLErrors)
-      graphQLErrors.map(({ message, locations, path }) =>
-        console.log(
-          `[GraphQL error]: Message: ${message}, Location: ${JSON.stringify(
-            locations
-          )}, Path: ${path}`
-        )
-      );
-  
-    if (networkError) console.log(`[Network error]: ${networkError}`);}),
-  cache: new InMemoryCache()
-})
-
-/*const client = new ApolloClient({
-  uri: graphqlUrl,
-  credentials: "include",
+  link: splitLink,
   onError: ({ graphQLErrors, networkError }) => {
     if (graphQLErrors)
       graphQLErrors.map(({ message, locations, path }) =>
@@ -87,7 +64,8 @@ const client = new ApolloClient({
 
     if (networkError) console.log(`[Network error]: ${networkError}`);
   },
-}); */
+  cache: new InMemoryCache(),
+});
 
 ReactDOM.render(
   <React.StrictMode>

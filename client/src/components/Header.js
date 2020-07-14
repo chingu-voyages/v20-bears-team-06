@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import gql from "graphql-tag";
+import { useAuth } from "../graphql/Hooks";
 import { useQuery, useMutation } from "@apollo/react-hooks";
 import { makeStyles, fade } from "@material-ui/core/styles";
 import {
@@ -15,7 +16,7 @@ import SearchIcon from "@material-ui/icons/Search";
 import AccountCircle from "@material-ui/icons/AccountCircle";
 import { Link as RouterLink, useHistory } from "react-router-dom";
 import { NotificationsPopover } from "./mui_components/NotificationsPopover";
-import { GET_ME } from "../graphql/Queries";
+import { GET_ME_CACHE } from "../graphql/Queries";
 
 const useStyles = makeStyles((theme) => ({
   grow: {
@@ -79,47 +80,26 @@ const LOGOUT = gql`
   }
 `;
 
-export default function Header({
-  setLoggedIn,
-  isLoggedIn,
-  client,
-  meId,
-  setMeId,
-}) {
+export default function Header({ client }) {
   const classes = useStyles();
   const [logout] = useMutation(LOGOUT);
-  const { data, refetch } = useQuery(GET_ME);
   let history = useHistory();
-
-  useEffect(() => {
-    if (isLoggedIn) return;
-    if (isLoggedIn !== (data && data.me)) {
-      refetch();
-    }
-    if (data && data.me) {
-      setMeId(data.me.id);
-      setLoggedIn(true);
-    } else {
-      setLoggedIn(false);
-    }
-  });
-
+  const { data: meData } = useQuery(GET_ME_CACHE);
+  const me = meData ? meData.me : null;
+  console.log("header data me", meData);
   function search(searchTerm) {
     console.log("search values is", searchTerm);
     history.push("/search", { searchTerm });
   }
 
-  console.log("data is ", JSON.stringify(data));
-  console.log("is logged in? ", isLoggedIn);
-
   const renderUser = (
     <div className="accountIcons">
-      {data&&data.me&&isLoggedIn&&<NotificationsPopover meId={data.me.id} />}
+      {me && <NotificationsPopover meId={me.id} />}
 
       <IconButton
         aria-label="account of current user"
         component={RouterLink}
-        to={`${data && data.me ? "/profile/" + data.me.id : "/"}`}
+        to={`${me ? "/profile/" + me.id : "/"}`}
         color="inherit"
       >
         <AccountCircle />
@@ -130,7 +110,6 @@ export default function Header({
         color="inherit"
         onClick={async () => {
           await logout(LOGOUT);
-          await setLoggedIn(false);
           setTimeout(async () => {
             await client.resetStore();
           }, 400);
@@ -196,7 +175,7 @@ export default function Header({
             />
           </div>
           <div className={classes.grow} />
-          {isLoggedIn ? renderUser : renderGuest}
+          {me ? renderUser : renderGuest}
         </Toolbar>
       </AppBar>
     </div>
