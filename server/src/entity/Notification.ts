@@ -55,4 +55,8 @@ export class Notification extends BaseEntity {
   @Field({ nullable: true })
   @Column({ nullable: true })
   message: string;
+
+  @Field({nullable:true})
+  @Column({nullable:true})
+  avatarUrl: string;
 }

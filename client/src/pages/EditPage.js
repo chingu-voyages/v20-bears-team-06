@@ -4,16 +4,22 @@ import { Container } from '@material-ui/core';
 import EditForm from '../components/EditForm';
 import { useParams } from 'react-router-dom';
 import { useQuery } from '@apollo/react-hooks';
-import { GET_ME, GET_PROFILE } from '../graphql/Queries';
+import { GET_ME, GET_PROFILE, GET_ME_CACHE } from '../graphql/Queries';
 import './profilepage.scss';
 import './editpage.scss';
 
-const useCachedMe = () => {
-  const { data, loading, error } = useQuery(CACHE)
+export const useCachedMe = () => {
+  const { data } = useQuery(GET_ME_CACHE);
+  if (data){
+    return data.me.id
+  }else {
+    return null;
+  }
 }
 
-const EditPage = () => {
+export const EditPage = () => {
   const { userId } = useParams();
+  const meId = useCachedMe();
   let profile, isOwnProfile;
   const { data, loading, error } = useQuery(GET_PROFILE,{
     variables:{userId}
@@ -52,4 +58,3 @@ const EditPage = () => {
   );
 };
 
-export default EditPage;

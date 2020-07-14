@@ -23,6 +23,7 @@ import {
 import { User } from "../../entity/User";
 import { FilesPayload } from "../../types/Payloads";
 import { Like } from "typeorm";
+import { SaveContentArgs } from '../../entity/ContentFile';
 
 @ArgsType()
 export class IncDownloadArgs {
@@ -52,6 +53,18 @@ export class NewFileArgs {
 export class FilesArgs {
   @Field(() => ID)
   userId: number;
+}
+
+@ArgsType()
+export class FileActionArgs{
+  @Field(() => ID)
+  userId: number;
+
+  @Field(() => ID)
+  fileId: number;
+
+  @Field()
+  actionType: string;
 }
 
 @ObjectType()
@@ -91,6 +104,26 @@ export class ContentFileResolver {
     });
   }
 
+  @Mutation(() => User)
+  async deleteFile(@Arg('fileId', () => ID) fileId:number)
+  :Promise<User|void>{
+    let file = await ContentFile.findOne(fileId);
+    if (!file) return;
+    let ownerId = file.ownerId;
+    let owner = await User.findOne(ownerId,{relations:['uploads']});
+    if (!owner) return;
+    owner.uploads = (await owner.uploads).filter(el=>el.id!=fileId);
+    await owner.save();
+    await file.remove();
+
+    let updated = User.findOne(ownerId);
+    if(!updated) return;
+    return updated;
+    
+  }
+
+  
+
   @Mutation(() => ContentFile)
   async newFile(
     @Args() { userId, filename, filetype, key, signedRequest }: NewFileArgs,
@@ -106,6 +139,7 @@ export class ContentFileResolver {
       filetype,
     });
 
+   
     const fileNotification = await User.addNotification({
       type: NotificationType.FollowingUpload,
       message: NotificationMessage.FollowingUpload,
@@ -151,5 +185,22 @@ export class ContentFileResolver {
 
     console.log(typeof files);
     return files || [];
+  };
+
+  @Mutation(() => ContentFile)
+  async fileAction(
+    @Args() {userId, fileId, actionType}: FileActionArgs
+  ):Promise<ContentFile|undefined>{
+    let file = await ContentFile.fileAction({
+      userId,
+      fileId,
+      actionType
+    });
+
+    if (!file) return;
+    return file;
   }
+
+
+  
 }

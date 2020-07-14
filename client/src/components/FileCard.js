@@ -1,4 +1,6 @@
+
 import React, { useState, useContext } from 'react';
+import { useMutation } from '@apollo/react-hooks';
 import {
   Grid,
   Card,
@@ -29,6 +31,7 @@ import { Tooltip } from '@material-ui/core';
 import Fade from '@material-ui/core/Fade';
 import SaveAltIcon from '@material-ui/icons/SaveAlt';
 import { FileDetailsDialog } from './mui_components/FileDetailsDialog';
+import { DELETE_FILE } from '../graphql/Mutations';
 
 const isApp = new RegExp('^application', 'gi');
 const isImage = new RegExp('^image', 'gi');
@@ -112,6 +115,7 @@ export const FileCard = ({ file, isOwnProfile, meId, increment }) => {
     </Typography>
   );
 
+  const [delFile] = useMutation(DELETE_FILE);
   const fileId = file.id;
   const { filetype } = file;
 
@@ -120,6 +124,12 @@ export const FileCard = ({ file, isOwnProfile, meId, increment }) => {
     if (key) {
       filetypeDownloadHandler(key, filetype, fileId);
     }
+  };
+
+  const handleDeleteClick = () => {
+      const { data, error, loading } = delFile({
+        variables:{fileId}
+      })
   };
 
   const name =
@@ -186,7 +196,7 @@ export const FileCard = ({ file, isOwnProfile, meId, increment }) => {
             
           </Grid>
           <Grid xs={4} align="center" item>
-            <FileDetailsDialog file={file} meId={meId} handleDownloadClick={handleDownloadClick} />
+            <FileDetailsDialog delete={handleDeleteClick} file={file} meId={meId} handleDownloadClick={handleDownloadClick} />
           </Grid>
         </Grid>
       </Card>

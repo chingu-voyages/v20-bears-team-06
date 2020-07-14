@@ -22,7 +22,7 @@ const useStyles = makeStyles((theme)=>({
 }))
 
 
-export const FileDetailsDialog = ({file, meId, handleDownloadClick }) => {
+export const FileDetailsDialog = ({file, meId, handleDownloadClick, delete }) => {
     let me;
     const [open, setOpen] = useState(false);
     const { userId } = useParams();
@@ -115,7 +115,7 @@ export const FileDetailsDialog = ({file, meId, handleDownloadClick }) => {
           <Button color='primary'>
               <EditIcon />
           </Button>}
-          {isOwner &&<Button color='primary'>
+          {isOwner &&<Button onClick={delete} color='primary'>
               <DeleteIcon />
           </Button>
           }

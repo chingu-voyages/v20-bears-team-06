@@ -247,3 +247,42 @@ export const FILE_ACTION_MUTATION = gql`
     }
   }
 `;
+
+
+export const REMOVE_FOLLOWER_MUTATION = gql`
+  mutation removeFollower($meId: ID!, $userId: ID!){
+    removeFollower(meId: $meId, userId: $userId){
+      id
+      followers {
+        id
+        profilePic_url
+        department
+        firstName
+        lastName
+        school
+        employment
+        location
+        name
+      }
+    }
+  }
+`;
+
+export const DELETE_FILE = gql`
+  mutation deleteFile($fileId: ID!){
+    deleteFile(fileId: $fileId){
+      uploads{
+      id
+      filetype
+      filename
+      date
+      ownerId
+      signedRequest
+      download_count
+      likes
+      key
+
+      }
+    }
+  }
+`;

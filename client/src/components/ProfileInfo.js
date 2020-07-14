@@ -82,6 +82,8 @@ let isFollowing, isOwnProfile;
 
   let { url } = useRouteMatch();
 
+  let followerUrl = url+"/followers";
+
   let { userId } = useParams();
 
   const classes = useStyles();

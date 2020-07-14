@@ -15,6 +15,7 @@ import {
   PubSub,
   PubSubEngine,
   Subscription,
+  Args,
   // Args,
 } from "type-graphql";
 import { FollowInput } from "./FollowInput";
@@ -22,9 +23,19 @@ import { User } from "../../../entity/User";
 import { Topic } from "../../../types/Topic";
 import { FollowEventPayload } from "../../../types/Payloads";
 import { FollowEvent } from "../../../types/FollowEvent";
+import { getRepository } from "typeorm";
 
 @ArgsType()
 class FollowEventArgs {
+  @Field(() => ID)
+  userId: number;
+}
+
+@ArgsType()
+class RemoveFollowerArgs{
+  @Field(() => ID)
+  meId: number;
+
   @Field(() => ID)
   userId: number;
 }
@@ -202,6 +213,33 @@ export class FollowResolver {
       }
     }
 
+    
+
     return;
   }
+
+  @Mutation(() => User)
+  async removeFollower(@Args() {meId, userId}:RemoveFollowerArgs)
+  :Promise<User|void>{
+    
+    const me = await User.findOne(meId);
+    if(!me) return;
+    await me.followers;
+    if (!me.followers) return;
+    me.followers = (await me.followers).filter(el=>el.id !== Number(userId));
+    await me.save();
+    let updatedMe = await User.findOne(meId);
+    if (!updatedMe) return;
+    return updatedMe;
+
+
+
+
 }
+
+
+}
+
+
+
+
