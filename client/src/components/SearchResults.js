@@ -107,8 +107,9 @@ function generatePostResults(results, element) {
   }
 }
 function generateFileResults(results, element) {
-  if (results && results.searchFiles) {
-    return results.searchFiles.map((value) =>
+  console.log("these are file results", results);
+  if (results) {
+    return results.map((value) =>
       React.cloneElement(
         <ListItem>
           <ListItemAvatar>
@@ -198,11 +199,7 @@ export default function SearchResults({ searchTerm }) {
     <Typography variant="h6">No post results found</Typography>
   );
   console.log("what is filedata? ", JSON.stringify(fileData));
-  const theFiles = fileData.searchFiles;
   const { searchFiles } = fileData;
-
-  console.log("is this right 1? ", theFiles);
-  console.log("is this right 2? ", searchFiles);
 
   const fileResults = fileData ? (
     <div>
@@ -211,7 +208,7 @@ export default function SearchResults({ searchTerm }) {
       </Typography>
       <Divider />
       <div className={classes.demo}>
-        <List dense={dense}>{generateFileResults(fileData.searchFiles)}</List>
+        <List dense={dense}>{generateFileResults(searchFiles)}</List>
       </div>
     </div>
   ) : (
