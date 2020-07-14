@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import gql from "graphql-tag";
 import { useAuth } from "../graphql/Hooks";
-import { useQuery, useMutation } from "@apollo/react-hooks";
+import { useQuery, useMutation, useApolloClient } from "@apollo/react-hooks";
 import { makeStyles, fade } from "@material-ui/core/styles";
 import {
   AppBar,
@@ -16,7 +16,7 @@ import SearchIcon from "@material-ui/icons/Search";
 import AccountCircle from "@material-ui/icons/AccountCircle";
 import { Link as RouterLink, useHistory } from "react-router-dom";
 import { NotificationsPopover } from "./mui_components/NotificationsPopover";
-import { GET_ME_CACHE } from "../graphql/Queries";
+import { GET_ME_CACHE, GET_ME } from "../graphql/Queries";
 
 const useStyles = makeStyles((theme) => ({
   grow: {
@@ -80,11 +80,25 @@ const LOGOUT = gql`
   }
 `;
 
-export default function Header({ client }) {
+export default function Header() {
   const classes = useStyles();
   const [logout] = useMutation(LOGOUT);
   let history = useHistory();
+  const client = useApolloClient();
+
   const { data: meData } = useQuery(GET_ME_CACHE);
+  // const { data: testMe } = client.readQuery({
+  //   query: gql`
+  //     {
+  //       me {
+  //         id
+  //         name
+  //         firstName
+  //       }
+  //     }
+  //   `,
+  // });
+  // console.log("test me data", testMe);
   const me = meData ? meData.me : null;
   console.log("header data me", meData);
   function search(searchTerm) {
