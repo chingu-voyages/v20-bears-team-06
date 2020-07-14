@@ -37,17 +37,6 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function downloadFileHandler(key) {
-  const s3 = new aws.S3({
-    region: "us-west-1",
-    signatureVersion: "v4",
-  });
-  s3.getObject({
-    Bucket: process.env.S3_BUCKET,
-    Key: key || "uploads/20200629-02amb-chingucli-1.png",
-  });
-}
-
 function generateTeacherResults(results, element) {
   return results.map((value) =>
     React.cloneElement(
