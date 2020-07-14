@@ -43,9 +43,8 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const EditForm = ({ meId }) => {
+const EditForm = ({ meId, profile }) => {
   const [edit] = useMutation(EDIT_PROFILE_MUTATION);
-  const profile = useProfile();
   
   let isOwnProfile;
 

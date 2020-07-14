@@ -5,13 +5,14 @@ import EditForm from '../components/EditForm';
 import { useParams } from 'react-router-dom';
 import { useQuery } from '@apollo/react-hooks';
 import { GET_ME, GET_PROFILE } from '../graphql/Queries';
-import { useOwnProfile } from '../utils/useOwnProfile';
-import { useProfile, useFollowing } from './ProfilePage';
-
 import './profilepage.scss';
 import './editpage.scss';
 
-const EditPage = ({ meId }) => {
+const useCachedMe = () => {
+  const { data, loading, error } = useQuery(CACHE)
+}
+
+const EditPage = () => {
   const { userId } = useParams();
   let profile, isOwnProfile;
   const { data, loading, error } = useQuery(GET_PROFILE,{
