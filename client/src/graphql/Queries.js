@@ -61,6 +61,7 @@ export const SEARCH_FILES = gql`
   query searchFiles($searchTerm: String!) {
     searchFiles(searchTerm: $searchTerm) {
       id
+      owner
       ownerId
       filename
       filetype
