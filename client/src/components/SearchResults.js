@@ -118,13 +118,6 @@ function generateFileResults(results, element) {
             <Avatar>
               <FolderIcon />
             </Avatar>
-          </ListItemAvatar>
-          <ListItemText
-            primary={value.name_pretty}
-            secondary={value.description}
-          />
-          <ListItemSecondaryAction>
-            <GetAppIcon onClick={downloadFileHandler(value.key)} />
             <IconButton
               edge="end"
               aria-label="arrowforward"
@@ -132,6 +125,15 @@ function generateFileResults(results, element) {
               to={`${"/profile/" + value.ownerId}`}
             >
               <AccountCircle />
+            </IconButton>
+          </ListItemAvatar>
+          <ListItemText
+            primary={value.name_pretty}
+            secondary={value.description}
+          />
+          <ListItemSecondaryAction>
+            <IconButton onClick={downloadFileHandler(value.key)}>
+              <GetAppIcon />
             </IconButton>
           </ListItemSecondaryAction>
         </ListItem>,
