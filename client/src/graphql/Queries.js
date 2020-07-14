@@ -72,6 +72,16 @@ export const SEARCH_FILES = gql`
   }
 `;
 
+export const GET_USER_INFO = gql`
+  query getUserInfo($userId: ID!) {
+    user(userId: $userId) {
+      id
+      name
+      profilePic_url
+    }
+  }
+`;
+
 export const GET_PROFILE = gql`
   query getUser($userId: ID!) {
     user(userId: $userId) {

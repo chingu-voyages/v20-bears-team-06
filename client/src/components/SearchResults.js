@@ -9,7 +9,12 @@ import Divider from "@material-ui/core/Divider";
 import GetAppIcon from "@material-ui/icons/GetApp";
 import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
 import ListItemText from "@material-ui/core/ListItemText";
-import { SEARCH_USERS, SEARCH_POSTS, SEARCH_FILES } from "../graphql/Queries";
+import {
+  SEARCH_USERS,
+  SEARCH_POSTS,
+  SEARCH_FILES,
+  GET_USER_INFO,
+} from "../graphql/Queries";
 import FolderIcon from "@material-ui/icons/Folder";
 import ArrowForwardIosIcon from "@material-ui/icons/ArrowForwardIos";
 import { Grid, Typography, ListItem, IconButton } from "@material-ui/core";
@@ -111,8 +116,15 @@ function generatePostResults(results, element) {
 }
 function generateFileResults(results, element) {
   console.log("these are file results", results);
+
   if (results) {
-    return results.map((value) =>
+    return results.map((value) => {
+      const { loading, error, data } = useQuery(GET_USER_INFO, {
+        variables: {
+          userId: value.ownerId,
+        },
+      });
+      console.log("item data", JSON.stringify(data));
       React.cloneElement(
         <ListItem>
           <ListItemAvatar>
@@ -147,8 +159,8 @@ function generateFileResults(results, element) {
         {
           key: value.id,
         }
-      )
-    );
+      );
+    });
   }
 }
 export default function SearchResults({ searchTerm }) {
