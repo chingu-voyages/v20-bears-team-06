@@ -7,7 +7,7 @@ import {
   Typography,
   Button,
 } from '@material-ui/core';
-import { useParams } from 'react-router-dom';
+import { useParams, useRouteMatch, Link } from 'react-router-dom';
 import Card from '@material-ui/core/Card';
 import CardActionArea from '@material-ui/core/CardActionArea';
 import CardActions from '@material-ui/core/CardActions';
@@ -42,6 +42,9 @@ const useStyles = makeStyles((theme) => ({
 
  },
  mobileCards : {
+   minHeight: theme.spacing(30),
+   justifyContent: 'center',
+   alignItems: 'center',
   [theme.breakpoints.down('md')] : {
     minHeight: '50vh'
   }
@@ -95,11 +98,16 @@ const useStyles = makeStyles((theme) => ({
  },
  buttonGroup: {
    color: 'white'
+ },
+ link: {
+   textDecoration: 'none'
  }
 }));
 
 export const ContentBoard = ({profile, meId }) => {
-  const [toDisplay, setToDisplay ] = useState('saved');
+  const [toDisplay, setToDisplay ] = useState('user');
+  let { url } = useRouteMatch();
+  url+='/followers';
   let isOwnProfile, isLoggedIn, isFollowing, refetchQuery;
   if (meId){
     isLoggedIn = true;
@@ -124,7 +132,6 @@ export const ContentBoard = ({profile, meId }) => {
   const [follow] = useMutation(FOLLOW_USER_MUTATION);
   const [unfollow] = useMutation(UNFOLLOW_USER_MUTATION);
 
-  console.log(isOwnProfile, isLoggedIn, isFollowing);
 
   const followUser = async () => {
     const response = await follow({
@@ -178,13 +185,16 @@ export const ContentBoard = ({profile, meId }) => {
             </Grid>
         <Grid item container xs={12} justify='center'>
           <Grid item xs={12} md={10}>
+           
             <Card className={classes.mobileCards} >
+            
               <FollowerCount currentCount={profile&&profile.follower_count} />
               <Typography variant='h5' align='center' color='primary' >followers</Typography>
+              <Link className={classes.link} to={url} >
               <FollowerAvatarGroup followers={profile&&profile.followers} className={classes.avatarGroup} align='center' max={4} size='small' />
-                
+              </Link>
               
-              <Grid container justify='center' xs={12}>
+              <Grid container justify='center'  xs={12}>
                 <Grid item className={classes.followButton}>
                   {(!isOwnProfile && isLoggedIn &&!isFollowing) &&
               <Button onClick={followUser} size='small' variant='outlined' color='primary' >
@@ -198,7 +208,9 @@ export const ContentBoard = ({profile, meId }) => {
                     </Button>}
               </Grid>
               </Grid>
+              
               </Card>
+             
             </Grid>
           </Grid>
         </Grid>

@@ -43,14 +43,20 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const EditForm = ({ profile, isOwnProfile }) => {
+const EditForm = ({ meId, profile }) => {
   const [edit] = useMutation(EDIT_PROFILE_MUTATION);
+  
+  let isOwnProfile;
+
+  if (profile&&meId){
+    isOwnProfile = profile.id===meId;
+  }
 
   const theme = useTheme();
 
   const classes = useStyles(theme);
 
-  if (isOwnProfile) {
+  if (profile){
     return (
       <Container component="main" maxWidth="xs">
         <CssBaseline />
@@ -99,7 +105,7 @@ const EditForm = ({ profile, isOwnProfile }) => {
                 try {
                   const response = await edit({
                     variables: {
-                      userId: profile.id,
+                      userId: meId,
                       school: values.school ? values.school : profile.school,
                       department: values.department
                         ? values.department
@@ -216,10 +222,8 @@ const EditForm = ({ profile, isOwnProfile }) => {
           </Formik>
         </div>
       </Container>
-    );
-  } else {
-    return null;
-  }
-};
+    );}else{
+      return null;
+    }};
 
 export default EditForm;

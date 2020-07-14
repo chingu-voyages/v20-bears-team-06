@@ -29,6 +29,7 @@ export const NOTIFICATION_QUERY = gql`
       fromUserId
       id
       url
+      avatarUrl
     }
   }
 `;
@@ -108,6 +109,51 @@ export const GET_PROFILE = gql`
         firstName
         lastName
         school
+        employment
+        location
+        name
+      }
+      uploads {
+        id
+        filetype
+        filename
+        date
+        ownerId
+        signedRequest
+        download_count
+        likes
+        key
+        gradeLevel
+        favorite_count
+        save_count
+      }
+      savedContent {
+        id
+        filetype
+        filename
+        date
+        ownerId
+        signedRequest
+        download_count
+        likes
+        key
+        gradeLevel
+        favorite_count
+        save_count
+      }
+      favoriteContent {
+        id
+        filetype
+        filename
+        date
+        ownerId
+        signedRequest
+        download_count
+        likes
+        key
+        gradeLevel
+        favorite_count
+        save_count
       }
     }
   }

@@ -12,16 +12,19 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export const Notifications = (props) => {
+export const Notifications = ({subscribeToNew, data, loading, error, trigger, ...props}) => {
+  console.log(props)
   const classes = useStyles();
+  useEffect(() => {
+    subscribeToNew();
+  });
 
+  const length = data&&data.newNotifications.length;
   return (
-    <IconButton>
+    <IconButton {...trigger}>
       <Badge
         className={classes.icon}
-        badgeContent={
-          (props.notifications && props.notifications.length) || null
-        }
+        badgeContent={length}        
       >
         <SvgIcon className={classes.icon}>
           <NotifcationsIcon {...props.trigger} />
