@@ -197,7 +197,7 @@ export default function SearchResults({ searchTerm }) {
   ) : (
     <Typography variant="h6">No post results found</Typography>
   );
-
+  console.log("what is filedata? ", JSON.stringify(fileData));
   const fileResults = fileData ? (
     <div>
       <Typography variant="h6" className={classes.title}>
