@@ -65,6 +65,8 @@ export const SEARCH_FILES = gql`
       filename
       filetype
       key
+      name_pretty
+      description
     }
   }
 `;

@@ -15,6 +15,8 @@ import ArrowForwardIosIcon from "@material-ui/icons/ArrowForwardIos";
 import { Grid, Typography, ListItem, IconButton } from "@material-ui/core";
 import { Link as RouterLink, useHistory } from "react-router-dom";
 import AccountCircleIcon from "@material-ui/icons/AccountCircle";
+import AccountCircle from "@material-ui/icons/AccountCircle";
+
 import aws from "aws-sdk";
 
 const useStyles = makeStyles((theme) => ({
@@ -117,16 +119,19 @@ function generateFileResults(results, element) {
               <FolderIcon />
             </Avatar>
           </ListItemAvatar>
-          <ListItemText primary="primary text" secondary="secondary text" />
+          <ListItemText
+            primary={value.name_pretty}
+            secondary={value.description}
+          />
           <ListItemSecondaryAction>
-            <GetAppIcon onClick={() => downloadFileHandler(value.key)} />
+            <GetAppIcon onClick={downloadFileHandler(value.key)} />
             <IconButton
               edge="end"
               aria-label="arrowforward"
               component={RouterLink}
-              to={`${"/profile/" + value.userId}`}
+              to={`${"/profile/" + value.ownerId}`}
             >
-              <ArrowForwardIosIcon />
+              <AccountCircle />
             </IconButton>
           </ListItemSecondaryAction>
         </ListItem>,
