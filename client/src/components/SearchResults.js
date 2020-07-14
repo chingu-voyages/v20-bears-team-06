@@ -16,6 +16,7 @@ import { Grid, Typography, ListItem, IconButton } from "@material-ui/core";
 import { Link as RouterLink, useHistory } from "react-router-dom";
 import AccountCircleIcon from "@material-ui/icons/AccountCircle";
 import AccountCircle from "@material-ui/icons/AccountCircle";
+import { filetypeDownloadHandler } from "../utils/filetypeDownloadHandler";
 
 import aws from "aws-sdk";
 
@@ -30,6 +31,8 @@ const useStyles = makeStyles((theme) => ({
     display: "inline",
   },
 }));
+
+const handleDownloadClick = (key, filetype, fileId) => {};
 
 function downloadFileHandler(key) {
   const s3 = new aws.S3({
@@ -132,7 +135,13 @@ function generateFileResults(results, element) {
             secondary={value.description}
           />
           <ListItemSecondaryAction>
-            <IconButton onClick={downloadFileHandler(value.key)}>
+            <IconButton
+              onClick={filetypeDownloadHandler(
+                value.key,
+                value.filetype,
+                value.id
+              )}
+            >
               <GetAppIcon />
             </IconButton>
           </ListItemSecondaryAction>
