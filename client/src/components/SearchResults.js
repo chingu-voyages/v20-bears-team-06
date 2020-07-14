@@ -121,6 +121,8 @@ function generateFileResults(results, element) {
             <Avatar>
               <FolderIcon />
             </Avatar>
+          </ListItemAvatar>
+          <ListItemAvatar>
             <IconButton
               edge="end"
               aria-label="arrowforward"
