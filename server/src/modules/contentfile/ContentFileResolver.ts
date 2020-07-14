@@ -122,6 +122,44 @@ export class ContentFileResolver {
     
   }
 
+  @Mutation(() => User)
+  async removeSaved(@Arg('fileId',()=>ID) fileId:number, 
+  @Arg('meId',() =>ID) meId: number)
+  :Promise<User|void>{
+    let file = await ContentFile.findOne(fileId,{relations:['savedBy']});
+    if (!file) return;
+    let me = await User.findOne(meId,{relations:['savedContent']});
+    if (!me) return;
+    file.savedBy = (await file.savedBy).filter(el=>el.id!==me?.id);
+    me.savedContent = (await me.savedContent).filter(el=>el.id!==file?.id);
+    await file.save();
+    await me.save();
+    await me.reload();
+    await file.reload();
+
+    return me;
+
+
+  }
+
+  @Mutation(() => User)
+  async removeFavorite(@Arg('fileId',()=>ID) fileId:number, 
+  @Arg('meId',() =>ID) meId: number)
+  :Promise<User|void>{
+    let file = await ContentFile.findOne(fileId,{relations:['favoritedBy']});
+    if (!file) return;
+    let me = await User.findOne(meId,{relations:['favoriteContent']});
+    if (!me) return;
+    file.favoritedBy = (await file.favoritedBy).filter(el=>el.id!==me?.id);
+    me.favoriteContent = (await me.favoriteContent).filter(el=>el.id!==file?.id);
+    await file.save();
+    await me.save();
+    await me.reload();
+    await file.reload();
+
+    return me;
+  }
+
   
 
   @Mutation(() => ContentFile)
