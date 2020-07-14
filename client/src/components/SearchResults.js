@@ -32,8 +32,6 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const handleDownloadClick = (key, filetype, fileId) => {};
-
 function downloadFileHandler(key) {
   const s3 = new aws.S3({
     region: "us-west-1",
@@ -138,11 +136,9 @@ function generateFileResults(results, element) {
           />
           <ListItemSecondaryAction>
             <IconButton
-              onClick={filetypeDownloadHandler(
-                value.key,
-                value.filetype,
-                value.id
-              )}
+              onClick={() =>
+                filetypeDownloadHandler(value.key, value.filetype, value.id)
+              }
             >
               <GetAppIcon />
             </IconButton>
