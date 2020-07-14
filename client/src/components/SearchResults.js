@@ -119,12 +119,6 @@ function generateFileResults(results, element) {
 
   if (results) {
     return results.map((value) => {
-      const { loading, error, data } = useQuery(GET_USER_INFO, {
-        variables: {
-          userId: value.ownerId,
-        },
-      });
-      console.log("item data", JSON.stringify(data));
       React.cloneElement(
         <ListItem>
           <ListItemAvatar>
