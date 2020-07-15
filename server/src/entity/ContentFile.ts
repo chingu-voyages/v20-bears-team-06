@@ -123,6 +123,19 @@ export class ContentFile extends BaseEntity {
   @Field({ defaultValue: false })
   private: boolean;
 
+  @Field()
+  name_pretty(@Root() parent: ContentFile): string {
+    if (parent.filename.indexOf("uploads") > -1) {
+      const namePretty = parent.filename.substring(
+        8,
+        parent.filename.length - 4
+      );
+      return namePretty;
+    } else {
+      return parent.filename.substring(0, parent.filename.length - 4);
+    }
+  }
+
   static async fileAction(
     @Args() { userId, fileId, actionType }: SaveContentArgs,
     @PubSub() pubSub: PubSubEngine

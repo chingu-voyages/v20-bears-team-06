@@ -83,6 +83,7 @@ const client = new ApolloClient({
   cache: cache,
   connectToDevTools: true
 });
+client.writeData({ data: { me: null } });
 
 
 
