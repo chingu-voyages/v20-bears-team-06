@@ -36,21 +36,30 @@ const useStyles = makeStyles((theme) => ({
   },
   form: {
     width: "100%", // Fix IE 11 issue.
-    marginTop: theme.spacing(1),
+    marginTop: theme.spacing(3),
+    '& input' : {
+      fontSize: theme.typography.subtitle2
+    }
   },
   submit: {
     margin: theme.spacing(3, 0, 2),
   },
 }));
 
-const EditForm = ({ profile, isOwnProfile }) => {
+const EditForm = ({ meId, profile }) => {
   const [edit] = useMutation(EDIT_PROFILE_MUTATION);
+  
+  let isOwnProfile;
+
+  if (profile&&meId){
+    isOwnProfile = profile.id===meId;
+  }
 
   const theme = useTheme();
 
   const classes = useStyles(theme);
 
-  if (isOwnProfile) {
+  if (profile){
     return (
       <Container component="main" maxWidth="xs">
         <CssBaseline />
@@ -60,16 +69,20 @@ const EditForm = ({ profile, isOwnProfile }) => {
           </Typography>
           <Formik
             initialValues={{
+              firstName: profile.firstName,
+              lastName: profile.lastName,
               school: profile.school,
               department: profile.department,
               position: profile.position,
               aboutMe: profile.about_me,
               location: profile.location,
-              file: [],
+              file:[],
             }}
             validateOnBlur={false}
             validateOnChange={false}
             validationSchema={Yup.object({
+              firstName: Yup.string().min(3).max(40).nullable(),
+              lastName: Yup.string().min(3).max(40).nullable(),
               school: Yup.string()
                 .min(3)
                 .max(60, "School name must be between 3-60 characters")
@@ -99,7 +112,7 @@ const EditForm = ({ profile, isOwnProfile }) => {
                 try {
                   const response = await edit({
                     variables: {
-                      userId: profile.id,
+                      userId: meId,
                       school: values.school ? values.school : profile.school,
                       department: values.department
                         ? values.department
@@ -115,6 +128,9 @@ const EditForm = ({ profile, isOwnProfile }) => {
                         : profile.location,
                       filetype: type ? type : null,
                       filename: name ? formatFileName(name) : null,
+                      firstName: values.firstName?
+                      values.firstName: profile.lastName,
+                      lastName: values.lastName? values.lastName: profile.lastName,
                     },
                   });
                   console.log(response);
@@ -139,8 +155,33 @@ const EditForm = ({ profile, isOwnProfile }) => {
             }}
           >
             <Form className={classes.form} noValidate>
+            <Field
+                label="Update First Name"
+                name="firstName"
+                type="text"
+                margin="normal"
+                placeholder={profile.firstName || "enter school name"}
+                variant="outlined"
+                autoFocus
+                fullWidth
+                id="firstName"
+                as={TextInputField}
+              ></Field>
+              <Field
+                label="Update Last Name"
+                name="lastName"
+                type="text"
+                placeholder={profile.lastName || "enter school name"}
+                variant="outlined"
+                autoFocus
+                margin="normal"
+                fullWidth
+                id="lastName"
+                as={TextInputField}
+              ></Field>
               <Field
                 label="Update School"
+                margin="normal"
                 name="school"
                 type="text"
                 placeholder={profile.school || "enter school name"}
@@ -216,10 +257,8 @@ const EditForm = ({ profile, isOwnProfile }) => {
           </Formik>
         </div>
       </Container>
-    );
-  } else {
-    return null;
-  }
-};
+    );}else{
+      return null;
+    }};
 
 export default EditForm;

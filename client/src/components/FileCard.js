@@ -1,4 +1,6 @@
+
 import React, { useState, useContext } from 'react';
+import { useMutation } from '@apollo/react-hooks';
 import {
   Grid,
   Card,
@@ -29,6 +31,7 @@ import { Tooltip } from '@material-ui/core';
 import Fade from '@material-ui/core/Fade';
 import SaveAltIcon from '@material-ui/icons/SaveAlt';
 import { FileDetailsDialog } from './mui_components/FileDetailsDialog';
+import { DELETE_FILE } from '../graphql/Mutations';
 
 const isApp = new RegExp('^application', 'gi');
 const isImage = new RegExp('^image', 'gi');
@@ -99,8 +102,8 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export const FileCard = ({ file, isOwnProfile, meId, increment }) => {
-  console.log(file)
+export const FileCard = ({ file, isOwnProfile, meId, increment, toDisplay }) => {
+ 
   const [key, setKey] = useState(file.key);
   const classes = useStyles();
   let titleString = (file && file.filename) || '';
@@ -112,6 +115,7 @@ export const FileCard = ({ file, isOwnProfile, meId, increment }) => {
     </Typography>
   );
 
+  
   const fileId = file.id;
   const { filetype } = file;
 
@@ -121,6 +125,8 @@ export const FileCard = ({ file, isOwnProfile, meId, increment }) => {
       filetypeDownloadHandler(key, filetype, fileId);
     }
   };
+
+  
 
   const name =
     file.filename.length > 18
@@ -153,7 +159,6 @@ export const FileCard = ({ file, isOwnProfile, meId, increment }) => {
       <Card variant="outlined" className={classes.card}>
         <CardActionArea
           className={classes.cardContent}
-          onClick={handleDownloadClick}
         >
           <CardHeader
             className={classes.cardHeader}
@@ -187,7 +192,7 @@ export const FileCard = ({ file, isOwnProfile, meId, increment }) => {
             
           </Grid>
           <Grid xs={4} align="center" item>
-            <FileDetailsDialog file={file} meId={meId} handleDownloadClick={handleDownloadClick} />
+            <FileDetailsDialog toDisplay={toDisplay} file={file} meId={meId} handleDownloadClick={handleDownloadClick} />
           </Grid>
         </Grid>
       </Card>

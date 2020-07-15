@@ -14,7 +14,7 @@ import { GET_PROFILE, GET_ME, GET_FOLLOWING } from '../graphql/Queries';
 import ProfileInfo from '../components/ProfileInfo';
 import { ContentBoard } from '../components/ContentBoard';
 import { useOwnProfile } from '../utils/useOwnProfile';
-
+import { useCachedMe } from './EditPage';
 export const useProfile = () => {
   const { userId } = useParams();
   let { error, loading, data, updateQuery, refetch } = useQuery(GET_PROFILE, {
@@ -60,9 +60,9 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 
-
-export const ProfilePage = ({ meId }) => {
+export const ProfilePage = () => {
   const userId = useParams();
+  const meId = useCachedMe();
   let profile, refetch, updateQuery;
   let profileData = useProfile();
   if (profileData){
@@ -73,6 +73,8 @@ export const ProfilePage = ({ meId }) => {
   const followingData = useFollowing(meId);
 
   const classes = useStyles();
+
+  
 
   return (
     <Grid

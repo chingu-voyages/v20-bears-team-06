@@ -29,6 +29,7 @@ export const NOTIFICATION_QUERY = gql`
       fromUserId
       id
       url
+      avatarUrl
     }
   }
 `;
@@ -85,6 +86,8 @@ export const GET_PROFILE = gql`
   query getUser($userId: ID!) {
     user(userId: $userId) {
       id
+      firstName
+      lastName
       name
       school
       department
@@ -108,6 +111,57 @@ export const GET_PROFILE = gql`
         firstName
         lastName
         school
+        employment
+        location
+        name
+      }
+      uploads {
+        id
+        filetype
+        filename
+        date
+        ownerId
+        signedRequest
+        download_count
+        likes
+        key
+        gradeLevel
+        favorite_count
+        save_count
+        favoritedByIds
+        savedByIds
+      }
+      savedContent {
+        id
+        filetype
+        filename
+        date
+        ownerId
+        signedRequest
+        download_count
+        likes
+        key
+        gradeLevel
+        favorite_count
+        save_count
+        favoritedByIds
+        savedByIds
+      }
+      favoriteContent {
+        id
+        filetype
+        filename
+        date
+        ownerId
+        signedRequest
+        download_count
+        likes
+        key
+        gradeLevel
+        favorite_count
+        save_count
+        favoritedByIds
+        savedByIds
       }
     }
   }

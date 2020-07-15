@@ -26,4 +26,7 @@ export abstract class NotificationObject {
     @Field()
     fromUserName: string;
 
+    @Field({nullable:true})
+    avatarUrl: string;
+
 }

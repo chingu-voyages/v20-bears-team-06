@@ -1,3 +1,4 @@
+import { Specialty } from './../../entity/Specialty';
 import { ToFollowerNotification } from "./../../entity/ToFollowerNotification";
 import { AddToFollowerPayload } from "./../notifications/types/NotificationPayloads";
 import { NotificationType } from "../notifications/types/NotificationType";
@@ -23,6 +24,7 @@ import {
 import { User } from "../../entity/User";
 import { FilesPayload } from "../../types/Payloads";
 import { Like } from "typeorm";
+import { SaveContentArgs } from '../../entity/ContentFile';
 
 @ArgsType()
 export class IncDownloadArgs {
@@ -52,6 +54,36 @@ export class NewFileArgs {
 export class FilesArgs {
   @Field(() => ID)
   userId: number;
+}
+
+@ArgsType()
+class EditFileArgs{
+  @Field(() => ID)
+  fileId: number;
+
+  @Field({nullable:true, defaultValue:null})
+  filename: string;
+
+  @Field({defaultValue:''})
+  description: string;
+
+  @Field({defaultValue:''})
+  gradeLevel: string;
+
+  @Field({defaultValue:''})
+  category: string;
+}
+
+@ArgsType()
+export class FileActionArgs{
+  @Field(() => ID)
+  userId: number;
+
+  @Field(() => ID)
+  fileId: number;
+
+  @Field()
+  actionType: string;
 }
 
 @ObjectType()
@@ -91,6 +123,64 @@ export class ContentFileResolver {
     });
   }
 
+  @Mutation(() => User)
+  async deleteFile(@Arg('fileId', () => ID) fileId:number)
+  :Promise<User|void>{
+    let file = await ContentFile.findOne(fileId);
+    if (!file) return;
+    let ownerId = file.ownerId;
+    let owner = await User.findOne(ownerId,{relations:['uploads']});
+    if (!owner) return;
+    owner.uploads = (await owner.uploads).filter(el=>el.id!=fileId);
+    await owner.save();
+    await file.remove();
+
+    let updated = User.findOne(ownerId);
+    if(!updated) return;
+    return updated;
+    
+  }
+
+  @Mutation(() => User)
+  async removeSaved(@Arg('fileId',()=>ID) fileId:number, 
+  @Arg('meId',() =>ID) meId: number)
+  :Promise<User|void>{
+    let file = await ContentFile.findOne(fileId,{relations:['savedBy']});
+    if (!file) return;
+    let me = await User.findOne(meId,{relations:['savedContent']});
+    if (!me) return;
+    file.savedBy = (await file.savedBy).filter(el=>el.id!==me?.id);
+    me.savedContent = (await me.savedContent).filter(el=>el.id!==file?.id);
+    await file.save();
+    await me.save();
+    await me.reload();
+    await file.reload();
+
+    return me;
+
+
+  }
+
+  @Mutation(() => User)
+  async removeFavorite(@Arg('fileId',()=>ID) fileId:number, 
+  @Arg('meId',() =>ID) meId: number)
+  :Promise<User|void>{
+    let file = await ContentFile.findOne(fileId,{relations:['favoritedBy']});
+    if (!file) return;
+    let me = await User.findOne(meId,{relations:['favoriteContent']});
+    if (!me) return;
+    file.favoritedBy = (await file.favoritedBy).filter(el=>el.id!==me?.id);
+    me.favoriteContent = (await me.favoriteContent).filter(el=>el.id!==file?.id);
+    await file.save();
+    await me.save();
+    await me.reload();
+    await file.reload();
+
+    return me;
+  }
+
+  
+
   @Mutation(() => ContentFile)
   async newFile(
     @Args() { userId, filename, filetype, key, signedRequest }: NewFileArgs,
@@ -106,6 +196,7 @@ export class ContentFileResolver {
       filetype,
     });
 
+   
     const fileNotification = await User.addNotification({
       type: NotificationType.FollowingUpload,
       message: NotificationMessage.FollowingUpload,
@@ -151,5 +242,52 @@ export class ContentFileResolver {
 
     console.log(typeof files);
     return files || [];
+  };
+
+  @Mutation(() => ContentFile)
+  async fileAction(
+    @Args() {userId, fileId, actionType}: FileActionArgs
+  ):Promise<ContentFile|undefined>{
+    let file = await ContentFile.fileAction({
+      userId,
+      fileId,
+      actionType
+    });
+
+    if (!file) return;
+    return file;
   }
+
+  @Mutation(() => ContentFile)
+  async editFileDetails(
+    @Args(){fileId, category, filename, gradeLevel, description}:EditFileArgs
+  ):Promise<ContentFile|void>{
+    let file = await ContentFile.findOne(fileId);
+    if (!file) return;
+    file.filename = filename!==""&&filename!==null?filename:file.filename;
+    file.gradeLevel = gradeLevel!==""?gradeLevel:file.gradeLevel;
+    file.description = description!==""?description:file.description;
+    if (category!==""){
+    let spec = await Specialty.findOne({where:{title:category}});
+    if (!spec){
+      spec = Specialty.create({
+        title: category
+      });
+      (await spec.files).push(file);
+    }else{
+      (await spec.files).push(file);
+    }
+    await spec.save();
+  }
+
+  
+    
+    await file.save();
+    await file.reload();
+    if (file) return file;
+    return;
+  }
+
+
+  
 }

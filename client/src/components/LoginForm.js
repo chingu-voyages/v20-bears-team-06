@@ -49,10 +49,15 @@ export const LoginForm = ({ isLoggedIn, setLoggedIn }) => {
 
   const classes = useStyles();
   let history = useHistory();
+  console.log(history);
   const { data } = useQuery(GET_ME);
 
   function returnHome() {
-    history.push("/");
+    const link = <Link to={'/'} />;
+    link.style.display='hidden';
+    link.click();
+
+    //history.push("/");
   }
   if (isLoggedIn) {
     console.log("redirecting");

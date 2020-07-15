@@ -255,12 +255,14 @@ export class User extends BaseEntity {
     if (toFollowers === true) {
       let user = await this.findOne(userId, { relations: ["followers"] });
       if (!user) return;
+      let avatarUrl = user.profilePic_url;
       let followers = await user.followers;
       let notification = ToFollowerNotification.create({
         message,
         type,
         fromUserId,
         url,
+        avatarUrl,
         fromUserName,
         owners: followers,
       }).save();
@@ -270,12 +272,16 @@ export class User extends BaseEntity {
       }
     } else if (toFollowers === false) {
       let user = await this.findOne(userId);
+      let fromUser = await User.findOne(fromUserId);
       if (!user) return;
+     
+      let avatarUrl =fromUser?.profilePic_url;
       let notification = await Notification.create({
         message,
         type,
         fromUserId,
         url,
+        avatarUrl,
         fromUserName,
         owner: user,
       }).save();
@@ -288,7 +294,7 @@ export class User extends BaseEntity {
   }
 
   static async addNewFile(
-    @Args() { userId, key, signedRequest, filetype, filename }: AddNewFileArgs
+    @Args() { userId, key, signedRequest, filetype, filename }: AddNewFileArgs,
   ): Promise<ContentFile | undefined> {
     let user = await this.findOne(userId);
     if (!user) return;

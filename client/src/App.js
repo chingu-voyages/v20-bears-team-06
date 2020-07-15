@@ -8,7 +8,7 @@ import {
 import { GET_ME } from "./graphql/Queries";
 import Header from "./components/Header";
 import { ProfilePage } from "./pages/ProfilePage";
-import EditPage from "./pages/EditPage";
+import {EditPage} from "./pages/EditPage";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import { useSubscription, useQuery } from "@apollo/react-hooks";
@@ -17,6 +17,7 @@ import { UploadExample } from "./components/UploadExample";
 import SearchResultsPage from "./pages/SearchResultsPage";
 import HomePage from "./pages/HomePage";
 import "./App.scss";
+import { FollowersPage } from "./pages/FollowersPage";
 
 const useMeId = () => {
   const { data, loading, error } = useQuery(GET_ME);
@@ -61,6 +62,10 @@ export default function App({ client }) {
         />
         <Switch>
           {/* <ThemeProvider theme={theme}> */}
+          <Route exact path='/profile/:userId/followers'
+          render = {(props) => (
+            <FollowersPage />
+          )} />
 
           <Route exact path="/profile/:userId/edit">
             <EditPage meId={meId} isLoggedIn={isLoggedIn} />
@@ -93,6 +98,7 @@ export default function App({ client }) {
           />
           <Route exact path="/upload" component={UploadExample} />
           <Route exact path="/search" component={SearchResultsPage} />
+          
           <Route
             exact
             path="/"
@@ -100,6 +106,7 @@ export default function App({ client }) {
               <HomePage {...props} isLoggedIn={isLoggedIn} meId={meId} />
             )}
           />
+
           {/* </ThemeProvider> */}
         </Switch>
       </div>
