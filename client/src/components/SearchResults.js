@@ -106,45 +106,43 @@ function generatePostResults(results, element) {
 function generateFileResults(results, element) {
   console.log("these are file results", results);
 
-  if (results) {
-    return results.map((value) => {
-      React.cloneElement(
-        <ListItem>
-          <ListItemAvatar>
-            <Avatar>
-              <FolderIcon />
-            </Avatar>
-          </ListItemAvatar>
-          <ListItemAvatar>
-            <IconButton
-              edge="end"
-              aria-label="arrowforward"
-              component={RouterLink}
-              to={`${"/profile/" + value.ownerId}`}
-            >
-              <AccountCircle />
-            </IconButton>
-          </ListItemAvatar>
-          <ListItemText
-            primary={value.name_pretty}
-            secondary={value.description}
-          />
-          <ListItemSecondaryAction>
-            <IconButton
-              onClick={() =>
-                filetypeDownloadHandler(value.key, value.filetype, value.id)
-              }
-            >
-              <GetAppIcon />
-            </IconButton>
-          </ListItemSecondaryAction>
-        </ListItem>,
-        {
-          key: value.id,
-        }
-      );
-    });
-  }
+  return results.map((value) => {
+    React.cloneElement(
+      <ListItem>
+        <ListItemAvatar>
+          <Avatar>
+            <FolderIcon />
+          </Avatar>
+        </ListItemAvatar>
+        <ListItemAvatar>
+          <IconButton
+            edge="end"
+            aria-label="arrowforward"
+            component={RouterLink}
+            to={`${"/profile/" + value.ownerId}`}
+          >
+            <AccountCircle />
+          </IconButton>
+        </ListItemAvatar>
+        <ListItemText
+          primary={value.name_pretty}
+          secondary={value.description}
+        />
+        <ListItemSecondaryAction>
+          <IconButton
+            onClick={() =>
+              filetypeDownloadHandler(value.key, value.filetype, value.id)
+            }
+          >
+            <GetAppIcon />
+          </IconButton>
+        </ListItemSecondaryAction>
+      </ListItem>,
+      {
+        key: value.id,
+      }
+    );
+  });
 }
 export default function SearchResults({ searchTerm }) {
   const classes = useStyles();
