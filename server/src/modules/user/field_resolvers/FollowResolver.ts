@@ -23,7 +23,6 @@ import { User } from "../../../entity/User";
 import { Topic } from "../../../types/Topic";
 import { FollowEventPayload } from "../../../types/Payloads";
 import { FollowEvent } from "../../../types/FollowEvent";
-import { getRepository } from "typeorm";
 
 @ArgsType()
 class FollowEventArgs {

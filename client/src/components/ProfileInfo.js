@@ -1,6 +1,6 @@
 import React, { useContext, useEffect } from 'react';
 import { Link, useRouteMatch, useParams } from 'react-router-dom';
-import { Grid, Avatar, Container, Paper, Typography } from '@material-ui/core';
+import { Grid, Avatar, Container, Paper, Typography, IconButton } from '@material-ui/core';
 import { useQuery, useMutation } from '@apollo/react-hooks';
 import { GET_PROFILE, GET_ME_CACHE } from '../graphql/Queries';
 import { ADD_USER_SPEC } from '../graphql/Mutations';
@@ -16,6 +16,8 @@ import CoverPhoto from './CoverPhoto';
 import { ProfileContext } from '../pages/ProfilePage';
 import AddCircleIcon from '@material-ui/icons/AddCircle';
 import AddSpecialtyPopover from './mui_components/AddSpecialtyPopover.js';
+import MailOutlineIcon from '@material-ui/icons/MailOutline';
+import { weirdRouter } from '../utils/weirdRouter';
 
 const useStyles = makeStyles((theme) => ({
   
@@ -70,6 +72,10 @@ const useStyles = makeStyles((theme) => ({
       height: '100%',
 
     }
+  },
+  emailButton : {
+    marginLeft: 'auto',
+    marginRight: 'auto'
   }
 }));
 
@@ -183,6 +189,14 @@ if (profile&&profile!=='loading'&&meId){
           <Typography align="center" variant="subtitle1">
             {profile && profile.school}
           </Typography>
+          {!isOwnProfile&&isFollowing &&
+          <Grid container justify='center' alignItems='center' xs={12} >
+            <Grid item>
+          <IconButton color='primary' onClick={()=>{
+            weirdRouter(`mailto:${profile&&profile.email}`)
+          }}>
+            <MailOutlineIcon className={classes.emailButton} />
+        </IconButton></Grid> </Grid>}
 
           <Grid container xs={12} alignItems="center" direction="column">
             <Grid item xs={10}>
