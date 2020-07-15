@@ -40,7 +40,7 @@ const subscriber = new Redis(options);
 export const pubSub = new RedisPubSub({
   publisher,
   subscriber
-})
+});
 
 
 

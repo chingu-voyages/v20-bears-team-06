@@ -4,6 +4,7 @@ import { Dialog } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core';
 import { useMutation } from '@apollo/react-hooks';
 import { S3_SIGN_MUTATION, NEW_UPLOAD_MUTATION } from '../../graphql/Mutations';
+import { GET_PROFILE } from '../../graphql/Queries';
 import { Fab } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
 import { uploadToS3 } from '../../utils/uploadToS3';
@@ -24,12 +25,7 @@ export const FileUploadDialog = ({ setUpdate, meId, iconColor, ...props }) => {
   const [open, setOpen] = useState(false);
   const [fileObjects, setFileObjects] = useState([]);
   
-  const [newUpload] = useMutation(NEW_UPLOAD_MUTATION,{
-    refetchQueries: {
-      query: GET_FILES,
-      variables: {userId: meId}
-    }
-  });
+  const [newUpload] = useMutation(NEW_UPLOAD_MUTATION);
  
   const fileTypes = [
     'application/pdf',
@@ -67,7 +63,11 @@ export const FileUploadDialog = ({ setUpdate, meId, iconColor, ...props }) => {
             filename,
             filetype,
             meId
-          }
+          },
+          refetchQueries: [{
+            query:GET_PROFILE,
+            variables: {userId:meId}
+        }],
         });
 
 
@@ -114,7 +114,7 @@ export const FileUploadDialog = ({ setUpdate, meId, iconColor, ...props }) => {
           <DropzoneDialogBase
           acceptedFiles={[fileTypes]}
           fileObjects={fileObjects}
-          filesLimit={3}
+          filesLimit={1}
           cancelButtonText={"cancel"}
           submitButtonText={"submit"}
           maxFileSize={5000000}
@@ -125,6 +125,8 @@ export const FileUploadDialog = ({ setUpdate, meId, iconColor, ...props }) => {
           }}
           onDelete={deleteFileObj => {
             console.log('onDelete', deleteFileObj);
+            let objs = fileObjects.filter(el=>el.data!==deleteFileObj.data);
+            setFileObjects(objs);
           }}
           onSave={(event) => {
             console.log('onSave', fileObjects);
@@ -132,6 +134,7 @@ export const FileUploadDialog = ({ setUpdate, meId, iconColor, ...props }) => {
             setOpen(false);
            
           }}
+          onClose={()=>setOpen(false)}
           showPreviews={true}
           showFileNamesInPreview={true}
         />

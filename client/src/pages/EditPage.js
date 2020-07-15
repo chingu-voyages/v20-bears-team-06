@@ -10,7 +10,7 @@ import './editpage.scss';
 
 export const useCachedMe = () => {
   const { data } = useQuery(GET_ME_CACHE);
-  if (data){
+  if (data&&data.me){
     return data.me.id
   }else {
     return null;
@@ -20,7 +20,7 @@ export const useCachedMe = () => {
 export const EditPage = () => {
   const { userId } = useParams();
   const meId = useCachedMe();
-  let profile, isOwnProfile;
+    let profile, isOwnProfile;
   const { data, loading, error } = useQuery(GET_PROFILE,{
     variables:{userId}
   });

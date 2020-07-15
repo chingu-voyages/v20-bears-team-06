@@ -15,13 +15,25 @@ const useStyles = makeStyles(theme=>({
         }
     },
     cardGrid:{
+        [theme.breakpoints.up('md')]:{
         paddingLeft: theme.spacing(5),
         paddingRight: theme.spacing(5),
-        maxHeight: '85vh',
-        overflowY: 'scroll'
+        height: '65vh',
+        overflowY: 'scroll',
+        margin: 'auto'
+        },
+        [theme.breakpoints.down('md')]:{
+            paddingLeft: theme.spacing(1),
+            paddingRight: theme.spacing(1),
+            margin: 'auto',
+            minHeight: '50vh'
+        }
     },
     gridCard:{
-        padding: theme.spacing(3)
+        padding: theme.spacing(3),
+        [theme.breakpoints.down('md')] : {
+            padding: theme.spacing(2)
+        }
     },
     fab: {
         position: 'fixed'
@@ -39,7 +51,7 @@ export const ContentDisplay=({userId, update, meId, toDisplay})=>{
     return(
 
 <Grid className={classes.cardGrid} container xs={12} justify='flex-start'  direction='row' >
- <Query query={GET_PROFILE} pollInterval={500} variables={{userId:userId}}>
+ <Query query={GET_PROFILE}  variables={{userId:userId}}>
      {({data , loading, error}) => {
          
 

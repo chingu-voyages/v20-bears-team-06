@@ -5,6 +5,7 @@ import { NotificationType } from "../notifications/types/NotificationType";
 import { NotificationMessage } from "../notifications/types/NotificationMessage";
 import { Topic } from "./../../types/Topic";
 import { ContentFile } from "./../../entity/ContentFile";
+import { pubSub } from '../../redis';
 import {
   Resolver,
   Query,
@@ -252,7 +253,10 @@ export class ContentFileResolver {
       userId,
       fileId,
       actionType
-    });
+    },pubSub);
+
+
+    
 
     if (!file) return;
     return file;

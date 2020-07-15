@@ -22,6 +22,7 @@ import { TextAreaField } from "./fields/TextAreaField";
 import { ProfileContext } from "../pages/ProfilePage";
 import * as Yup from "yup";
 import { DropZoneField } from "./mui_components/DropzoneArea";
+import { weirdRouter } from '../utils/weirdRouter';
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -145,12 +146,14 @@ const EditForm = ({ meId, profile }) => {
                       s3.signedRequest
                     );
                     console.log(s3response);
+                    
                   }
                 } catch (e) {
                   console.log("error with edit", e);
                 }
 
                 setSubmitting(false);
+                weirdRouter(`/profile/${meId}`);
               }, 400);
             }}
           >

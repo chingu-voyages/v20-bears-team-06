@@ -2,6 +2,7 @@ import React, { useContext, useEffect } from 'react';
 import { Link, useRouteMatch, useParams } from 'react-router-dom';
 import { Grid, Avatar, Container, Paper, Typography } from '@material-ui/core';
 import { useQuery, useMutation } from '@apollo/react-hooks';
+import { GET_PROFILE, GET_ME_CACHE } from '../graphql/Queries';
 import { ADD_USER_SPEC } from '../graphql/Mutations';
 import Card from '@material-ui/core/Card';
 import Button from '@material-ui/core/Button';
@@ -64,21 +65,49 @@ const useStyles = makeStyles((theme) => ({
       color : 'blue'
     }
   },
-}));
+  userInfoCard: {
+    [theme.breakpoints.up('md')] : {
+      height: '100%',
 
-const ProfileInfo = ({meId, profile}) =>{
-let isFollowing, isOwnProfile;
-  if (profile && meId){
-    if (profile.id === meId){
-      isOwnProfile = true;
-    }
-
-    if (profile.followers.map(el=>{
-      return el.id;
-    }).includes(meId)){
-      isFollowing = true;
     }
   }
+}));
+
+const useProfile = () => {
+  const {userId} = useParams();
+  const { data, loading, error } = useQuery(GET_PROFILE,{variables:{userId}});
+  if (error) console.log(error);
+  if (loading) return 'loading';
+  if (!loading&&data&&data.user){
+    return data.user;
+  }
+
+}
+
+const ProfileInfo = () =>{
+let meId;
+const { data, loading, error } = useQuery(GET_ME_CACHE);
+if (error) console.log(error);
+if (!loading&&data&&data.me){
+  meId = data.me.id;
+}
+const profile  = useProfile();
+let isFollowing, isOwnProfile;
+
+if (profile&&profile!=='loading'&&meId){
+  isOwnProfile = profile.id===meId;
+  if (profile.followers.map(el=>{
+    return el.id;
+  }).includes(meId)){
+    isFollowing = true;
+  }
+}
+  
+
+
+  
+
+    
 
   let { url } = useRouteMatch();
 
@@ -107,9 +136,10 @@ let isFollowing, isOwnProfile;
     });
   }
 
+  if (profile&&profile!=='loading'){
   return (
     <Grid item container xs={12} md={12} direction="column">
-      <Card>
+      <Card raised className={classes.userInfoCard} >
         <CardActionArea>
           <CardMedia>
             <Avatar
@@ -156,7 +186,7 @@ let isFollowing, isOwnProfile;
 
           <Grid container xs={12} alignItems="center" direction="column">
             <Grid item xs={10}>
-              <Card className={classes.specialtyCard}>
+              <Card raised className={classes.specialtyCard}>
                 <CardContent className={classes.cardList} component="ul">
                   <Typography
                     color="primary"
@@ -179,7 +209,9 @@ let isFollowing, isOwnProfile;
         </CardContent>
       </Card>
     </Grid>
-  );
+  );} else{
+    return null;
+  }
 };
 
 export default ProfileInfo;
