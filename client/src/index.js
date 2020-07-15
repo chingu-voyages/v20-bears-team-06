@@ -49,7 +49,7 @@ const splitLink = split(
   wsLink,
   httpLink
 );
-
+const cache = new InMemoryCache();
 const client = new ApolloClient({
   link: splitLink,
   onError: ({ graphQLErrors, networkError }) => {
@@ -64,8 +64,10 @@ const client = new ApolloClient({
 
     if (networkError) console.log(`[Network error]: ${networkError}`);
   },
-  cache: new InMemoryCache(),
+  cache: cache
 });
+
+
 
 ReactDOM.render(
   <React.StrictMode>

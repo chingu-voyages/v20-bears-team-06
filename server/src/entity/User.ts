@@ -294,7 +294,7 @@ export class User extends BaseEntity {
   }
 
   static async addNewFile(
-    @Args() { userId, key, signedRequest, filetype, filename }: AddNewFileArgs
+    @Args() { userId, key, signedRequest, filetype, filename }: AddNewFileArgs,
   ): Promise<ContentFile | undefined> {
     let user = await this.findOne(userId);
     if (!user) return;

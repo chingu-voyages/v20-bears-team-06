@@ -102,8 +102,8 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export const FileCard = ({ file, isOwnProfile, meId, increment }) => {
-  
+export const FileCard = ({ file, isOwnProfile, meId, increment, toDisplay }) => {
+ 
   const [key, setKey] = useState(file.key);
   const classes = useStyles();
   let titleString = (file && file.filename) || '';
@@ -192,7 +192,7 @@ export const FileCard = ({ file, isOwnProfile, meId, increment }) => {
             
           </Grid>
           <Grid xs={4} align="center" item>
-            <FileDetailsDialog file={file} meId={meId} handleDownloadClick={handleDownloadClick} />
+            <FileDetailsDialog toDisplay={toDisplay} file={file} meId={meId} handleDownloadClick={handleDownloadClick} />
           </Grid>
         </Grid>
       </Card>
