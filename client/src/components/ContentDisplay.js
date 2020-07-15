@@ -17,9 +17,8 @@ const useStyles = makeStyles(theme=>({
     cardGrid:{
         paddingLeft: theme.spacing(5),
         paddingRight: theme.spacing(5),
-        height: '60vh',
-        scrollBehavior: 'smooth',
-        overflow: 'scroll'
+        maxHeight: '85vh',
+        overflowY: 'scroll'
     },
     gridCard:{
         padding: theme.spacing(3)
@@ -65,7 +64,7 @@ export const ContentDisplay=({userId, update, meId, toDisplay})=>{
              return(<>
                  {files.map((file,i)=>{
                      return (<Grid item xs={6} md={3} className={classes.gridCard}  key={file.id}>
-                        <FileCard meId={meId} increment={increment} history={history} file={file} key={`file_${file.id}`} />
+                        <FileCard toDisplay={toDisplay} meId={meId} increment={increment} history={history} file={file} key={`file_${file.id}`} />
                         </Grid>)
                  })}</>)
                 

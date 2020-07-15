@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { DropzoneDialogBase } from 'material-ui-dropzone';
+import { Dialog } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core';
 import { useMutation } from '@apollo/react-hooks';
 import { S3_SIGN_MUTATION, NEW_UPLOAD_MUTATION } from '../../graphql/Mutations';
@@ -108,32 +109,41 @@ export const FileUploadDialog = ({ setUpdate, meId, iconColor, ...props }) => {
       >
         <AddIcon />
         
-      </Fab>
-      </Tooltip>
-        <DropzoneDialogBase
-        acceptedFiles={[fileTypes]}
-        fileObjects={fileObjects}
-        filesLimit={3}
-        cancelButtonText={"cancel"}
-        submitButtonText={"submit"}
-        maxFileSize={5000000}
-        open={open}
-        onAdd={newFileObjs => {
-          console.log('onAdd', newFileObjs);
-          setFileObjects([].concat(fileObjects, newFileObjs));
-        }}
-        onDelete={deleteFileObj => {
-          console.log('onDelete', deleteFileObj);
-        }}
-        onSave={(event) => {
-          console.log('onSave', fileObjects);
-          handleFileSubmit(meId,event);
-          setOpen(false);
-         
-        }}
-        showPreviews={true}
-        showFileNamesInPreview={true}
-      />
+        </Fab>
+        </Tooltip>
+          <DropzoneDialogBase
+          acceptedFiles={[fileTypes]}
+          fileObjects={fileObjects}
+          filesLimit={3}
+          cancelButtonText={"cancel"}
+          submitButtonText={"submit"}
+          maxFileSize={5000000}
+          open={open}
+          onAdd={newFileObjs => {
+            console.log('onAdd', newFileObjs);
+            setFileObjects([].concat(fileObjects, newFileObjs));
+          }}
+          onDelete={deleteFileObj => {
+            console.log('onDelete', deleteFileObj);
+          }}
+          onSave={(event) => {
+            console.log('onSave', fileObjects);
+            handleFileSubmit(meId,event);
+            setOpen(false);
+           
+          }}
+          showPreviews={true}
+          showFileNamesInPreview={true}
+        />
+        
+       
+
+     
     </div>
   );
 };
+
+
+
+
+

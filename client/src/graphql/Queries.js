@@ -86,6 +86,8 @@ export const GET_PROFILE = gql`
   query getUser($userId: ID!) {
     user(userId: $userId) {
       id
+      firstName
+      lastName
       name
       school
       department
@@ -126,6 +128,8 @@ export const GET_PROFILE = gql`
         gradeLevel
         favorite_count
         save_count
+        favoritedByIds
+        savedByIds
       }
       savedContent {
         id
@@ -140,6 +144,8 @@ export const GET_PROFILE = gql`
         gradeLevel
         favorite_count
         save_count
+        favoritedByIds
+        savedByIds
       }
       favoriteContent {
         id
@@ -154,6 +160,8 @@ export const GET_PROFILE = gql`
         gradeLevel
         favorite_count
         save_count
+        favoritedByIds
+        savedByIds
       }
     }
   }

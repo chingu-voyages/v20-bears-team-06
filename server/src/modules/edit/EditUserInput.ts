@@ -32,6 +32,12 @@ export class EditUserInput {
   @Field({nullable:true})
   filetype: string;
 
+  @Field({nullable:true})
+  firstName: string;
+
+  @Field({nullable:true})
+  lastName: string;
+
  
 
 

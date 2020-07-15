@@ -1,4 +1,4 @@
-import { gql } from "apollo-boost";
+import { gql } from 'apollo-boost';
 
 export const LOGIN_MUTATION = gql`
   mutation LoginMutation($email: String!, $password: String!) {
@@ -48,6 +48,8 @@ export const EDIT_PROFILE_MUTATION = gql`
     $location: String
     $filename: String
     $filetype: String
+    $firstName: String
+    $lastName: String
   ) {
     editUser(
       edit: {
@@ -59,6 +61,8 @@ export const EDIT_PROFILE_MUTATION = gql`
         location: $location
         filename: $filename
         filetype: $filetype
+        firstName: $firstName
+        lastName: $lastName
       }
     ) {
       user {
@@ -69,6 +73,9 @@ export const EDIT_PROFILE_MUTATION = gql`
         about_me
         location
         profilePic_url
+        firstName
+        lastName
+        name
       }
       s3 {
         signedRequest
@@ -248,10 +255,9 @@ export const FILE_ACTION_MUTATION = gql`
   }
 `;
 
-
 export const REMOVE_FOLLOWER_MUTATION = gql`
-  mutation removeFollower($meId: ID!, $userId: ID!){
-    removeFollower(meId: $meId, userId: $userId){
+  mutation removeFollower($meId: ID!, $userId: ID!) {
+    removeFollower(meId: $meId, userId: $userId) {
       id
       followers {
         id
@@ -269,9 +275,74 @@ export const REMOVE_FOLLOWER_MUTATION = gql`
 `;
 
 export const DELETE_FILE = gql`
-  mutation deleteFile($fileId: ID!){
-    deleteFile(fileId: $fileId){
-      uploads{
+  mutation deleteFile($fileId: ID!) {
+    deleteFile(fileId: $fileId) {
+      uploads {
+        id
+        filetype
+        filename
+        date
+        ownerId
+        signedRequest
+        download_count
+        likes
+        key
+      }
+    }
+  }
+`;
+
+export const REMOVE_SAVED_FILE = gql`
+  mutation removeSaved($meId: ID!, $fileId: ID!) {
+    removeSaved(meId: $meId, fileId: $fileId) {
+      uploads {
+        id
+        filetype
+        filename
+        date
+        ownerId
+        signedRequest
+        download_count
+        likes
+        key
+      }
+    }
+  }
+`;
+
+export const REMOVE_FAV_FILE = gql`
+  mutation removeFavorite($meId: ID!, $fileId: ID!) {
+    removeFavorite(meId: $meId, fileId: $fileId) {
+      uploads {
+        id
+        filetype
+        filename
+        date
+        ownerId
+        signedRequest
+        download_count
+        likes
+        key
+      }
+    }
+  }
+`;
+
+export const EDIT_FILE_DETAILS = gql`
+  mutation editFileDetails(
+    $fileId: ID!
+    $filename: String = null
+    $description: String = ""
+    $gradeLevel: String = ""
+    $category: String = ""
+  ) {
+    editFileDetails(
+      fileId: $fileId,
+      filename: $filename,
+      description: $description,
+      gradeLevel: $gradeLevel,
+      category: $category
+    ){
       id
       filetype
       filename
@@ -281,8 +352,10 @@ export const DELETE_FILE = gql`
       download_count
       likes
       key
+      gradeLevel
+      favorite_count
+      save_count
 
-      }
     }
   }
 `;

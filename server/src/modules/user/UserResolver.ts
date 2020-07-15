@@ -13,6 +13,7 @@ import { User } from "../../entity/User";
 import { EditUserInput } from "../edit/EditUserInput";
 import { Like } from "typeorm";
 import { EditUserPayload } from '../../types/Payloads';
+import { SignedS3Payload } from "../../types/SignedS3Payload";
 
 @ArgsType()
 class GetUserArgs {
@@ -88,7 +89,7 @@ export class UserResolver {
   @Mutation(() => EditUserPayload)
   async editUser(
     @Arg('edit')
-    { school, department, position, userId, about_me, location, filename, filetype }: EditUserInput
+    { school, department, position, userId, about_me, location, filename, filetype, firstName, lastName }: EditUserInput
   ): Promise<EditUserPayload|undefined> {
     try {
       let user = await User.findOne(userId);
@@ -100,21 +101,38 @@ export class UserResolver {
       user!.position = position || user!.position;
       user!.about_me = about_me || user!.about_me;
       user!.location = location || user!.location;
+      if (firstName){
+        user.firstName = firstName;
+      }
+
+      if(lastName){
+        user.lastName = lastName;
+      }
 
       await user!.save();
 
       let result = await User.findOne(userId);
       if(!result) return;
+      if (filetype&&filename){
       let s3 = await User.updateProfilePic({userId, filetype, filename});
       if(!s3) return;
+      await user.reload();
+      if (!user) return;
+      const payload:EditUserPayload = {
+        s3,
+        user,
+        success:true
+      };
+      return payload;
+      }
       
       user = await User.findOne(userId);
       if (!user) return;
       
         const payload:EditUserPayload = {
-          s3,
           user,
-          success:true
+          success:true,
+         
         };
         return payload;
       

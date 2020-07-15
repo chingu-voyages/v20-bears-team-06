@@ -1,3 +1,4 @@
+import { Specialty } from './../../entity/Specialty';
 import { ToFollowerNotification } from "./../../entity/ToFollowerNotification";
 import { AddToFollowerPayload } from "./../notifications/types/NotificationPayloads";
 import { NotificationType } from "../notifications/types/NotificationType";
@@ -53,6 +54,24 @@ export class NewFileArgs {
 export class FilesArgs {
   @Field(() => ID)
   userId: number;
+}
+
+@ArgsType()
+class EditFileArgs{
+  @Field(() => ID)
+  fileId: number;
+
+  @Field({nullable:true, defaultValue:null})
+  filename: string;
+
+  @Field({defaultValue:''})
+  description: string;
+
+  @Field({defaultValue:''})
+  gradeLevel: string;
+
+  @Field({defaultValue:''})
+  category: string;
 }
 
 @ArgsType()
@@ -237,6 +256,36 @@ export class ContentFileResolver {
 
     if (!file) return;
     return file;
+  }
+
+  @Mutation(() => ContentFile)
+  async editFileDetails(
+    @Args(){fileId, category, filename, gradeLevel, description}:EditFileArgs
+  ):Promise<ContentFile|void>{
+    let file = await ContentFile.findOne(fileId);
+    if (!file) return;
+    file.filename = filename!==""&&filename!==null?filename:file.filename;
+    file.gradeLevel = gradeLevel!==""?gradeLevel:file.gradeLevel;
+    file.description = description!==""?description:file.description;
+    if (category!==""){
+    let spec = await Specialty.findOne({where:{title:category}});
+    if (!spec){
+      spec = Specialty.create({
+        title: category
+      });
+      (await spec.files).push(file);
+    }else{
+      (await spec.files).push(file);
+    }
+    await spec.save();
+  }
+
+  
+    
+    await file.save();
+    await file.reload();
+    if (file) return file;
+    return;
   }
 
 
