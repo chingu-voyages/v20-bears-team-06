@@ -39,6 +39,9 @@ const useStyles = makeStyles((theme) => ({
       height: '100%',
       marginTop: theme.spacing(5),
     },
+    [theme.breakpoints.up('xs')] : {
+      marginTop: theme.spacing(3)
+    }
   },
 }));
 
@@ -82,7 +85,7 @@ export const ProfilePage = () => {
           isFollowing={isFollowing ? isFollowing : false}
           meId={meId}
         />
-        />
+       
       </Grid>
       <Grid item container xs={12} md={9}>
         <ContentBoard

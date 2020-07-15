@@ -47,7 +47,11 @@ const useStyles = makeStyles((theme) => ({
    justifyContent: 'center',
    alignItems: 'center',
   [theme.breakpoints.down('md')] : {
-    minHeight: '50vh'
+    display: 'flex',
+    flexDirection: 'column',
+    minHeight: '50vh',
+    justifyContent: 'center',
+    alignContent: 'center'
   }
 },
  avatarGroup :{
@@ -77,15 +81,23 @@ const useStyles = makeStyles((theme) => ({
    }
  },
  contentCard : {
+   [theme.breakpoints.up('s')]:{
    boxSizing: 'border-box',
    height: '100%',
-   width: '100%',
+   width: '100%'
+   },
+   [theme.breakpoints.down('md')] : {
+     height: 'fit-content'
+   }
  },
  topContentCard: {
    boxSizing: 'border-box',
    height: '50%',
    width: '100%',
-   justifySelf: 'flex-start'
+   justifySelf: 'flex-start',
+   [theme.breakpoints.down('md')]:{
+
+   }
   
  },
  bottomContentCard: {
@@ -111,7 +123,10 @@ const useStyles = makeStyles((theme) => ({
  },
  toolbarText: {
    color: 'white',
-   fontWeight: theme.typography.fontWeightMedium
+   fontWeight: theme.typography.fontWeightMedium,
+   [theme.breakpoints.down('s')] : {
+     fontSize: '1.1rem'
+   }
  },
  fab : {
    position: 'absolute',

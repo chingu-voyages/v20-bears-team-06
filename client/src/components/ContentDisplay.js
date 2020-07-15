@@ -15,14 +15,25 @@ const useStyles = makeStyles(theme=>({
         }
     },
     cardGrid:{
+        [theme.breakpoints.up('md')]:{
         paddingLeft: theme.spacing(5),
         paddingRight: theme.spacing(5),
         height: '65vh',
         overflowY: 'scroll',
         margin: 'auto'
+        },
+        [theme.breakpoints.down('md')]:{
+            paddingLeft: theme.spacing(1),
+            paddingRight: theme.spacing(1),
+            margin: 'auto',
+            minHeight: '50vh'
+        }
     },
     gridCard:{
-        padding: theme.spacing(3)
+        padding: theme.spacing(3),
+        [theme.breakpoints.down('md')] : {
+            padding: theme.spacing(2)
+        }
     },
     fab: {
         position: 'fixed'
