@@ -20,7 +20,14 @@ export function NotificationListItem({notification, history}){
     return(
         <>
         
-        <ListItem button={true} onClick={()=>history.push(notification.url)}  alignItems='flex-start'>
+        <ListItem button={true} onClick={()=>{
+            const link = document.createElement('a');
+            link.style.display = 'hidden';
+            link.href= notification.url;
+            const divs = document.getElementsByTagName('div');
+            divs[0].appendChild(link);
+            link.click();
+        }}  alignItems='flex-start'>
         <Link to={notification.url}>
             <ListItemAvatar>
                 <Avatar src={notification.avatarUrl} alt={notification.fromUserName} />

@@ -50,7 +50,7 @@ export const FollowersListItem = ({follower, meId}) => {
   }
   let match = useRouteMatch();
   let path = match.path.replace(':userId/followers',follower.id);
-
+  let isOwnProfile = match.params.userId === meId;
   const classes = useStyles();
   console.log(follower)
   if (follower){   
@@ -78,9 +78,9 @@ export const FollowersListItem = ({follower, meId}) => {
             </>
           }
         />
-        <ListItemSecondaryAction>
+       {isOwnProfile&& <ListItemSecondaryAction>
         <Button  onClick={removeFollower}><DeleteIcon className={classes.button} size='small' color='primary' /></Button>
-        </ListItemSecondaryAction>
+        </ListItemSecondaryAction>}
       <Divider fullwidth />
     </ListItem>
   ); };

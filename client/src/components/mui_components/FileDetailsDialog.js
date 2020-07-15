@@ -13,6 +13,7 @@ import ButtonGroup from '@material-ui/core/ButtonGroup';
 import { GET_ME_CACHE} from '../../graphql/Queries';
 import DeleteIcon from '@material-ui/icons/Delete';
 import { FILE_ACTION_MUTATION, DELETE_FILE, REMOVE_FAV_FILE, REMOVE_SAVED_FILE } from '../../graphql/Mutations';
+import { GET_PROFILE } from '../../graphql/Queries';
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import { useParams } from 'react-router-dom';
 import { s3deleteFile } from '../../utils/s3deleteFile';
@@ -44,7 +45,7 @@ export const FileDetailsDialog = ({file, handleDownloadClick, toDisplay }) => {
     const classes = useStyles();
     
     if (error) console.log(error);
-    if (!loading && data){
+    if (!loading && data && data.me){
         meId = data.me.id;
     }
 
@@ -79,7 +80,11 @@ export const FileDetailsDialog = ({file, handleDownloadClick, toDisplay }) => {
                 userId: meId,
                 fileId: file.id,
                 actionType: actionType
-            }
+            },
+            refetchQueries: [{
+                query:GET_PROFILE,
+                variables: {userId}
+            }],
         });
 
         console.log(response);
@@ -88,7 +93,11 @@ export const FileDetailsDialog = ({file, handleDownloadClick, toDisplay }) => {
 
     const handleDeleteClick = async (fileId, key) => {
         const response = await delFile({
-          variables:{fileId}
+          variables:{fileId},
+          refetchQueries: [{
+            query:GET_PROFILE,
+            variables: {userId}
+        }],
         });
         if (response&&response.data){
             s3deleteFile(key);
@@ -97,14 +106,22 @@ export const FileDetailsDialog = ({file, handleDownloadClick, toDisplay }) => {
 
     const handleUnsaveClick = async (meId, fileId) => {
         const response = await rmSaved({
-            variables:{meId, fileId}
+            variables:{meId, fileId},
+            refetchQueries: [{
+                query:GET_PROFILE,
+                variables: {userId}
+            }],
         });
         console.log(response);
     }
 
     const handleUnfavClick = async (meId, fileId) =>{
         const response = await rmFaved({
-            variables: {meId, fileId}
+            variables: {meId, fileId},
+            refetchQueries: [{
+                query:GET_PROFILE,
+                variables: {userId}
+            }],
         });
         console.log(response);
     }
@@ -125,7 +142,7 @@ export const FileDetailsDialog = ({file, handleDownloadClick, toDisplay }) => {
       </IconButton>
 
         <Dialog open={open}  aria-labelledby='form-dialog-title'>
-            <DialogTitle id='form-dialog-title'>File Details {isOwner && 
+            <DialogTitle id='form-dialog-title'>File Details {isOwner && toDisplay!=='saved' && toDisplay!=='favorite' &&
           <EditFileDialog fileId={file.id} /> }
           </DialogTitle>
             

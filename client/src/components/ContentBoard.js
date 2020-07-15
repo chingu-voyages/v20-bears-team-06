@@ -26,6 +26,7 @@ import { FollowerAvatarGroup } from './FollowerAvatarGroup';
 import { FileUploadDialog } from './mui_components/FileUploadDialog';
 import { BottomNavSwitch } from './mui_components/BottomNavSwitch';
 import { ButtonGroup } from '@material-ui/core';
+import { ToolbarTabs } from './mui_components/ToolbarTabs';
 
 
 
@@ -52,10 +53,6 @@ const useStyles = makeStyles((theme) => ({
  avatarGroup :{
    justifyContent : 'center',
    padding: theme.spacing(2),
-   '& div' : {
-     width: theme.spacing(4),
-     height: theme.spacing(4)
-   }
  },
  leftCard : {
    minHeight: theme.spacing(10)
@@ -72,23 +69,49 @@ const useStyles = makeStyles((theme) => ({
      [theme.breakpoints.up('md')] : {
        
      }
+   },
+   aboutGridItem : {
+     [theme.breakpoints.up('md')] : {
+       height: '50%'
+     }
    }
  },
- contentCard: {
+ contentCard : {
    boxSizing: 'border-box',
-   height: '85%',
+   height: '100%',
    width: '100%',
+ },
+ topContentCard: {
+   boxSizing: 'border-box',
+   height: '50%',
+   width: '100%',
+   justifySelf: 'flex-start'
   
  },
+ bottomContentCard: {
+  boxSizing: 'border-box',
+  height: '50%',
+  width: '100%',
+  justifySelf: 'flex-end'
+ 
+},
  contentToolbar : {
    backgroundColor: theme.palette.primary.light,
    borderWidth: '1px',
    borderStyle : 'solid',
-   borderColor: 'white'
+   borderColor: theme.palette.primary.light
    
  },
+ bottomToolbar: {
+   backgroundColor: theme.palette.primary.light,
+   minHeight: theme.spacing(5),
+   color: 'white',
+   display: 'flex',
+   justifyContent: 'center'
+ },
  toolbarText: {
-   color: 'white'
+   color: 'white',
+   fontWeight: theme.typography.fontWeightMedium
  },
  fab : {
    position: 'absolute',
@@ -139,6 +162,7 @@ export const ContentBoard = ({profile, meId }) => {
         userId: meId || null,
         toFollow: userId || null,
       },
+      refetchQueries: [{query:GET_PROFILE, variables:{userId}}]
     });
 
     
@@ -150,6 +174,7 @@ export const ContentBoard = ({profile, meId }) => {
         userId: meId || null,
         toUnfollow: userId || null,
       },
+      refetchQueries: [{query:GET_PROFILE, variables:{userId}}]
     });
 
     
@@ -170,9 +195,9 @@ export const ContentBoard = ({profile, meId }) => {
     <>
     
       <Grid className={classes.contentCard} item container xs={12} md={4} direction='row' >
-        <Grid item container xs={12} justify='center' alignItems='center'>
-          <Grid item xs={12} md={10} >
-            <Card className={classes.mobileCards} >
+        <Grid className={classes.contentCard} item container xs={12} justify='center' alignItems='center'>
+          <Grid item xs={12} md={10} className={classes.topContentCard} >
+            <Card raised className={classes.mobileCards} >
               <CardContent >
               <Typography variant='h6' color='primary'>
                 About Me
@@ -183,15 +208,15 @@ export const ContentBoard = ({profile, meId }) => {
               </CardContent>
             </Card>
             </Grid>
-        <Grid item container xs={12} justify='center'>
-          <Grid item xs={12} md={10}>
+        <Grid item container xs={12}  alignItems='center' direction='column' className={classes.bottomContentCard}>
+          <Grid item xs={12} md={10} className={classes.bottomContentCard}>
            
-            <Card className={classes.mobileCards} >
+            <Card raised className={classes.mobileCards} >
             
               <FollowerCount currentCount={profile&&profile.follower_count} />
               <Typography variant='h5' align='center' color='primary' >followers</Typography>
               <Link className={classes.link} to={url} >
-              <FollowerAvatarGroup followers={profile&&profile.followers} className={classes.avatarGroup} align='center' max={4} size='small' />
+              <FollowerAvatarGroup followers={profile&&profile.followers} className={classes.avatarGroup} align='center' max={4}  />
               </Link>
               
               <Grid container justify='center'  xs={12}>
@@ -217,7 +242,7 @@ export const ContentBoard = ({profile, meId }) => {
       </Grid>
       <Grid item container direction="row" xs={12} md={8}>
         <Grid item xs={12}>
-          <Card className={classes.contentCard}>
+          <Card raised className={classes.contentCard}>
             <Toolbar className={classes.contentToolbar}  >
               
               <Grid container direction='row' alignItems='center' xs={12}>
@@ -229,32 +254,20 @@ export const ContentBoard = ({profile, meId }) => {
               <Grid item>
               <Typography variant='h6' className={classes.toolbarText}>{profile&&profile.name}'s {contentSlug} Content</Typography>
               </Grid>
-              <Grid item container direction='row' justify='center' alignItems='center'>
-             
-              <ButtonGroup align='center' fullwidth variant='text' color='primaryText' size='small'>
-                <Button onClick={handleContentSwitch}  value='user' className={classes.buttonGroup}>
-                  User
-                </Button>
-                <Button onClick={handleContentSwitch}  value='saved' className={classes.buttonGroup}>
-                  Saved
-                </Button>
-                <Button onClick={handleContentSwitch} value='favorite' className={classes.buttonGroup}>
-                  Favorite
-                </Button>
-              </ButtonGroup>
+              
   
-              </Grid>
+             
               
               <Grid className={classes.fab} item>
                 
                 { isOwnProfile &&
-              <FileUploadDialog meId={meId} iconColor={classes.fab.color} size='small' /> }
+              <FileUploadDialog meId={meId?meId:null} iconColor={classes.fab.color} size='small' /> }
               </Grid>
-              </Grid>
+                </Grid> 
             </Toolbar>
-            <ContentDisplay meId={meId} toDisplay={toDisplay}  className={classes.mobileCards} userId={userId}/>
+            <ContentDisplay meId={meId?meId:null} toDisplay={toDisplay}  className={classes.mobileCards} userId={userId}/>
             
-            
+            <Toolbar  className={classes.bottomToolbar}><ToolbarTabs toDisplay={toDisplay} setToDisplay={setToDisplay} /></Toolbar>
           </Card>
           
 

@@ -3,5 +3,7 @@ export enum NotificationType {
     FollowingUpload = 'following upload',
     FollowerDownload = 'follower download',
     ProfilePic = 'follower profile pic',
-    Like = 'like'
+    Like = 'like',
+    Favorite= 'favorite',
+    Save = 'save'
 };

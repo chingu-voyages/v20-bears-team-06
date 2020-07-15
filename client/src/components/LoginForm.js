@@ -53,7 +53,7 @@ export const LoginForm = ({ isLoggedIn, setLoggedIn }) => {
   const { data } = useQuery(GET_ME);
 
   function returnHome() {
-    const link = <Link to={'/'} />;
+    const link = <Link to={'/'}/>;
     link.style.display='hidden';
     link.click();
 

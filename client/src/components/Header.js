@@ -17,6 +17,8 @@ import AccountCircle from "@material-ui/icons/AccountCircle";
 import { Link as RouterLink, useHistory } from "react-router-dom";
 import { NotificationsPopover } from "./mui_components/NotificationsPopover";
 import { GET_ME_CACHE } from "../graphql/Queries";
+import { useLocation } from 'react-router-dom';
+import { weirdRouter } from '../utils/weirdRouter';
 
 const useStyles = makeStyles((theme) => ({
   grow: {
@@ -82,6 +84,7 @@ const LOGOUT = gql`
 
 export default function Header({ client }) {
   const classes = useStyles();
+  const location = useLocation();
   const [logout] = useMutation(LOGOUT);
   let history = useHistory();
   const { data: meData } = useQuery(GET_ME_CACHE);
@@ -99,6 +102,15 @@ export default function Header({ client }) {
       <IconButton
         aria-label="account of current user"
         component={RouterLink}
+        onClick={() => {
+         const link = document.createElement('a');
+         link.style.display= 'hidden';
+         link.href = me?`/profile/${me.id}`:'/';
+         let divs = document.getElementsByTagName('div');
+         divs[0].appendChild(link);
+         link.click();
+         
+        }}
         to={`${me ? "/profile/" + me.id : "/"}`}
         color="inherit"
       >
@@ -111,7 +123,8 @@ export default function Header({ client }) {
         onClick={async () => {
           await logout(LOGOUT);
           setTimeout(async () => {
-            await client.resetStore();
+            await client.clearStore();
+            weirdRouter('/');
           }, 400);
         }}
       >

@@ -4,6 +4,7 @@ import { ApolloClient } from "apollo-client";
 import { split, ApolloLink } from "apollo-link";
 import { HttpLink } from "apollo-link-http";
 import { WebSocketLink } from "apollo-link-ws";
+import { SubscriptionClient } from 'subscriptions-transport-ws';
 import { onError } from "apollo-link-error";
 import { InMemoryCache } from "apollo-cache-inmemory";
 import { getMainDefinition } from "apollo-utilities";
@@ -30,13 +31,28 @@ const httpLink = new HttpLink({
   credentials: "include",
 });
 
-const wsLink = new WebSocketLink({
+const subClient = new SubscriptionClient(wsUrl, {
+  reconnect: true,
+  lazy: true,
+  credentials: "include"  
+});
+
+subClient.maxConnectTimeGenerator.setMin(3000);
+const wsLink = new WebSocketLink(subClient,{
+  uri: wsUrl,
+  credentials:"include"
+});
+
+
+{/*const wsLink = new WebSocketLink({
   uri: wsUrl,
   credentials: "include",
   options: {
     reconnect: true,
+    lazy: true
   },
-});
+}); */}
+
 
 const splitLink = split(
   ({ query }) => {
@@ -64,7 +80,8 @@ const client = new ApolloClient({
 
     if (networkError) console.log(`[Network error]: ${networkError}`);
   },
-  cache: cache
+  cache: cache,
+  connectToDevTools: true
 });
 
 

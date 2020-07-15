@@ -17,8 +17,9 @@ const useStyles = makeStyles(theme=>({
     cardGrid:{
         paddingLeft: theme.spacing(5),
         paddingRight: theme.spacing(5),
-        maxHeight: '85vh',
-        overflowY: 'scroll'
+        height: '65vh',
+        overflowY: 'scroll',
+        margin: 'auto'
     },
     gridCard:{
         padding: theme.spacing(3)
@@ -39,7 +40,7 @@ export const ContentDisplay=({userId, update, meId, toDisplay})=>{
     return(
 
 <Grid className={classes.cardGrid} container xs={12} justify='flex-start'  direction='row' >
- <Query query={GET_PROFILE} pollInterval={500} variables={{userId:userId}}>
+ <Query query={GET_PROFILE}  variables={{userId:userId}}>
      {({data , loading, error}) => {
          
 

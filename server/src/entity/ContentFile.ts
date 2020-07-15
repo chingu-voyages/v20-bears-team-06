@@ -1,8 +1,11 @@
-import { JoinTable } from "typeorm";
-import { Lazy } from "./../utils/Lazy";
-import { User } from "./User";
-import { Specialty } from "./Specialty";
-import { ObjectType, Field, ID, Int, ArgsType, Args } from "type-graphql";
+import { Topic } from './../types/Topic';
+import { NotificationType } from './../modules/notifications/types/NotificationType';
+import { NotificationMessage } from './../modules/notifications/types/NotificationMessage';
+import { JoinTable } from 'typeorm';
+import { Lazy } from './../utils/Lazy';
+import { User } from './User';
+import { Specialty } from './Specialty';
+import { ObjectType, Field, ID, Int, ArgsType, Args, PubSub, PubSubEngine } from 'type-graphql';
 import {
   Entity,
   RelationCount,
@@ -14,7 +17,7 @@ import {
   RelationId,
   JoinColumn,
   CreateDateColumn,
-} from "typeorm";
+} from 'typeorm';
 
 @ArgsType()
 export class SaveContentArgs {
@@ -35,7 +38,7 @@ export class ContentFile extends BaseEntity {
   @Field(() => ID)
   id: number;
 
-  @CreateDateColumn({ type: "timestamp" })
+  @CreateDateColumn({ type: 'timestamp' })
   @Field(() => Date)
   date: Date;
 
@@ -121,11 +124,12 @@ export class ContentFile extends BaseEntity {
   private: boolean;
 
   static async fileAction(
-    @Args() { userId, fileId, actionType }: SaveContentArgs
+    @Args() { userId, fileId, actionType }: SaveContentArgs,
+    @PubSub() pubSub: PubSubEngine
   ): Promise<ContentFile | undefined> {
-    if (actionType === "save") {
-      let user = await User.findOne(userId, { relations: ["savedContent"] });
-      let file = await this.findOne(fileId, { relations: ["savedBy"] });
+    if (actionType === 'save') {
+      let user = await User.findOne(userId, { relations: ['savedContent'] });
+      let file = await this.findOne(fileId, { relations: ['savedBy'] });
       let owner = await file?.owner;
       if (user && file && owner) {
         let content = await user.savedContent;
@@ -139,8 +143,21 @@ export class ContentFile extends BaseEntity {
           await file.save();
           await user.save();
           await owner.save();
-
           let updatedFile = await this.findOne(fileId);
+          if (owner.id !== user.id) {
+            let notification = await User.addNotification({
+              userId: owner.id,
+              message: NotificationMessage.Save,
+              type: NotificationType.Save,
+              fromUserId: userId,
+              fromUserName: await User.getName(userId),
+              toFollowers: false,
+              url: `/profile/${userId}`,
+            });
+            if (notification!==undefined){
+            pubSub.publish(Topic.NewNotification, notification);
+            }
+          }
           if (updatedFile) {
             return updatedFile;
           }
@@ -149,10 +166,10 @@ export class ContentFile extends BaseEntity {
       return;
     }
 
-    if ((actionType = "favorite")) {
-      let user = await User.findOne(userId, { relations: ["favoriteContent"] });
+    if (actionType === 'favorite') {
+      let user = await User.findOne(userId, { relations: ['favoriteContent'] });
 
-      let file = await this.findOne(fileId, { relations: ["favoritedBy"] });
+      let file = await this.findOne(fileId, { relations: ['favoritedBy'] });
       let owner = await file?.owner;
       if (user && file && owner) {
         let content = await user.favoriteContent;
@@ -166,6 +183,21 @@ export class ContentFile extends BaseEntity {
           await user.save();
           await owner.save();
           let updatedFile = await this.findOne(fileId);
+          if (owner.id !== user.id) {
+            let notification = await User.addNotification({
+              userId: owner.id,
+              message: NotificationMessage.Favorite,
+              type: NotificationType.Favorite,
+              fromUserId: userId,
+              fromUserName: await User.getName(userId),
+              toFollowers: false,
+              url: `/profile/${userId}`,
+            });
+            if (notification!==undefined){
+            pubSub.publish(Topic.NewNotification, notification);
+            }
+          }
+
           if (updatedFile) {
             return updatedFile;
           }
@@ -174,7 +206,7 @@ export class ContentFile extends BaseEntity {
       return;
     }
 
-    if ((actionType = "download")) {
+    if (actionType === 'download') {
       let file = await this.findOne(fileId);
       if (!file) return;
       let count = file.download_count;
@@ -185,6 +217,20 @@ export class ContentFile extends BaseEntity {
       if (!owner) return;
       await owner.save();
       let updatedFile = this.findOne(fileId);
+      if (userId !== owner.id) {
+        let notification = await User.addNotification({
+          userId: owner.id,
+          message: NotificationMessage.FollowerDownload,
+          type: NotificationType.FollowerDownload,
+          fromUserId: userId,
+          fromUserName: await User.getName(userId),
+          toFollowers: false,
+          url: `/profile/${userId}`,
+        });
+        if (notification!==undefined){
+          pubSub.publish(Topic.NewNotification, notification)
+        }
+      }
       if (!updatedFile) return;
       return updatedFile;
     }

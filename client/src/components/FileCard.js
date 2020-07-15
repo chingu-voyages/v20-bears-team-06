@@ -76,6 +76,9 @@ const useStyles = makeStyles((theme) => ({
     [theme.breakpoints.up('md')]: {
       maxHeight: theme.spacing(20),
     },
+    borderColor: theme.palette.primary.light,
+    borderWidth: '1px',
+    borderStyle: 'solid'
   },
   cardContent: {
     height: '80%',
@@ -86,6 +89,7 @@ const useStyles = makeStyles((theme) => ({
   },
   bottomBar: {
     paddingTop: theme.spacing(2),
+    borderTop: `1px solid ${theme.palette.primary.light}`
   },
 
   popper: {
@@ -100,6 +104,11 @@ const useStyles = makeStyles((theme) => ({
   tooltipText: {
     backgroundColor: theme.palette.primary.light
   },
+  divider : {
+    root: {
+      backgroundColor: theme.palette.primary.light
+    }
+  }
 }));
 
 export const FileCard = ({ file, isOwnProfile, meId, increment, toDisplay }) => {
@@ -156,7 +165,7 @@ export const FileCard = ({ file, isOwnProfile, meId, increment, toDisplay }) => 
 
   return (
    
-      <Card variant="outlined" className={classes.card}>
+      <Card raised variant="elevation" className={classes.card}>
         <CardActionArea
           className={classes.cardContent}
         >
@@ -169,7 +178,7 @@ export const FileCard = ({ file, isOwnProfile, meId, increment, toDisplay }) => 
           <CardContent align="center">
             <FileCardIcon align="center" filetype={file && file.filetype} />
           </CardContent>
-          <Divider />
+          <Divider classes={classes.divider.root}  />
         </CardActionArea>
         <Grid
           className={classes.bottomBar}
