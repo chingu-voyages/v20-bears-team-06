@@ -106,7 +106,7 @@ function generatePostResults(results, element) {
 function generateFileResults(results, element) {
   console.log("these are file results", results);
 
-  return results.map((value) => {
+  return results.map((value) =>
     React.cloneElement(
       <ListItem>
         <ListItemAvatar>
@@ -141,8 +141,8 @@ function generateFileResults(results, element) {
       {
         key: value.id,
       }
-    );
-  });
+    )
+  );
 }
 export default function SearchResults({ searchTerm }) {
   const classes = useStyles();
