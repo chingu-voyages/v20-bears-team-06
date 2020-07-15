@@ -49,14 +49,13 @@ const main = async () => {
     session({
       store: new RedisStore({
         client: redis as any,
-        ttl: 86400
       }),
       name: 'qid',
       secret: 'aslkdfjoiq12312',
       resave: false,
       saveUninitialized: false,
       cookie: {
-        httpOnly:false,
+        httpOnly: false,
         secure: process.env.NODE_ENV === 'production',
         maxAge: 1000 * 60 * 60 * 24 * 7 * 365, // 7 years
       },

@@ -5,7 +5,7 @@ import { JoinTable } from 'typeorm';
 import { Lazy } from './../utils/Lazy';
 import { User } from './User';
 import { Specialty } from './Specialty';
-import { ObjectType, Field, ID, Int, ArgsType, Args, PubSub, PubSubEngine } from 'type-graphql';
+import { ObjectType, Field, ID, Int, ArgsType, Args, PubSub, PubSubEngine, Root } from 'type-graphql';
 import {
   Entity,
   RelationCount,

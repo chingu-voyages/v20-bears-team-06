@@ -15,32 +15,15 @@ import ProfileInfo from '../components/ProfileInfo';
 import { ContentBoard } from '../components/ContentBoard';
 import { useOwnProfile } from '../utils/useOwnProfile';
 import { useCachedMe } from './EditPage';
+
 export const useProfile = () => {
   const { userId } = useParams();
-  let { error, loading, data, updateQuery, refetch } = useQuery(GET_PROFILE, {
-    variables: {
-      userId: userId,
-    },
-  });
-
-  if (!loading && data) {
-    if (data.user) {
-      return { profile: data.user, ...updateQuery, ...refetch};
-    }
-  }
-};
-
-export const useFollowing = (meId) => {
-  const { userId } = useParams();
-  let { error, loading, data } = useQuery(GET_FOLLOWING, {
-    variables: {
-      meId,
-      userId,
-    },
+  const { data, loading, error } = useQuery(GET_PROFILE, {
+    variables: { userId },
   });
   if (error) console.log(error);
-  if (!loading && data) {
-    return data;
+  if (!loading && data && data.user) {
+    return data.user;
   }
 };
 
@@ -59,22 +42,27 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-
 export const ProfilePage = () => {
   const userId = useParams();
   const meId = useCachedMe();
-  let profile, refetch, updateQuery;
-  let profileData = useProfile();
-  if (profileData){
-    profile = profileData.profile;
-    refetch = profileData.refetch;
-    updateQuery = profileData.updateQuery;
+  const profile = useProfile();
+
+  let isOwnProfile = false,
+    isFollowing = false;
+
+  if (profile && profile.id && meId) {
+    isOwnProfile = profile.id && meId;
+    if (profile.followerIds) {
+      isFollowing = profile.followerIds.map((el) => {
+        if (el === meId) {
+          isFollowing = true;
+        }
+        return el;
+      });
+    }
   }
-  const followingData = useFollowing(meId);
 
   const classes = useStyles();
-
-  
 
   return (
     <Grid
@@ -90,17 +78,17 @@ export const ProfilePage = () => {
       <Grid item container xs={12} md={3} direction="row" alignItems="stretch">
         <ProfileInfo
           profile={profile}
-          isOwnProfile={followingData && followingData.isOwnProfile}
-          isFollowing={followingData && followingData.isFollowing}
+          isOwnProfile={isOwnProfile ? isOwnProfile : false}
+          isFollowing={isFollowing ? isFollowing : false}
           meId={meId}
+        />
         />
       </Grid>
       <Grid item container xs={12} md={9}>
         <ContentBoard
           profile={profile}
-          refetch={refetch}
-          isOwnProfile={followingData && followingData.isOwnProfile}
-          isFollowing={followingData && followingData.isFollowing}
+          isOwnProfile={isOwnProfile ? isOwnProfile : false}
+          isFollowing={isFollowing ? isFollowing : false}
           meId={meId}
         />
       </Grid>
