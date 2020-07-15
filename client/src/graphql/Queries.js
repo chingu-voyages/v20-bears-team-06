@@ -88,6 +88,7 @@ export const GET_PROFILE = gql`
       id
       firstName
       lastName
+      email
       name
       school
       department

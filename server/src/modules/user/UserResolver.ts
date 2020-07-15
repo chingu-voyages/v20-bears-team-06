@@ -128,10 +128,13 @@ export class UserResolver {
       
       user = await User.findOne(userId);
       if (!user) return;
-      
+        const s3 = new SignedS3Payload();
+        s3.signedRequest= '';
+        s3.key='';
         const payload:EditUserPayload = {
           user,
           success:true,
+          s3
          
         };
         return payload;

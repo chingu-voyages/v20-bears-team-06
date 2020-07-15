@@ -25,7 +25,6 @@ import {
 import { User } from "../../entity/User";
 import { FilesPayload } from "../../types/Payloads";
 import { Like } from "typeorm";
-import { SaveContentArgs } from '../../entity/ContentFile';
 
 @ArgsType()
 export class IncDownloadArgs {
