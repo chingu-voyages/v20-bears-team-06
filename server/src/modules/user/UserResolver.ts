@@ -11,7 +11,6 @@ import {
 } from "type-graphql";
 import { User } from "../../entity/User";
 import { EditUserInput } from "../edit/EditUserInput";
-import { Like } from "typeorm";
 import { EditUserPayload } from '../../types/Payloads';
 import { SignedS3Payload } from "../../types/SignedS3Payload";
 
@@ -52,16 +51,25 @@ export class UserResolver {
   async users(
     @Arg("searchTerm") searchTerm: string
   ): Promise<User[] | undefined> {
-    return User.find({
-      where: [
-        { firstName: Like(`%${searchTerm}%`) },
-        { lastName: Like(`%${searchTerm}%`) },
-        { school: Like(`%${searchTerm}%`) },
-        { department: Like(`%${searchTerm}%`) },
-        { position: Like(`%${searchTerm}%`) },
-        { location: Like(`%${searchTerm}%`) },
-      ],
-    });
+   
+
+    let users = await  User.createQueryBuilder('user')
+    .leftJoinAndSelect('user.specialties','specialties')
+    .leftJoinAndSelect('user.uploads', 'uploads')
+    .where('Lower(uploads.filename) like Lower(:searchTerm)', {searchTerm:`%${searchTerm}%`})
+    .orWhere('Lower(specialties.title) like Lower(:searchTerm)', {searchTerm:`%${searchTerm}%`})
+    .orWhere('Lower(user.firstName) like Lower(:searchTerm)', {searchTerm:`%${searchTerm}%`})
+    .orWhere('Lower(user.lastName) like Lower(:searchTerm)', {searchTerm:`%${searchTerm}%`})
+    .orWhere('Lower(user.position) like Lower(:searchTerm)', {searchTerm:`%${searchTerm}%`})
+    .orWhere('Lower(user.location) like Lower(:searchTerm)', {searchTerm:`%${searchTerm}%`})
+    .orWhere('Lower(user.department) like Lower(:searchTerm)', {searchTerm:`%${searchTerm}%`})
+    .orWhere('Lower(user.school) like Lower(:searchTerm)', {searchTerm:`%${searchTerm}%`})
+    .orWhere('Lower(user.about_me) like Lower(:searchTerm)', {searchTerm:`%${searchTerm}%`})
+    .orWhere('Lower(user.lastName) like Lower(:searchTerm)', {searchTerm:`%${searchTerm}%`})
+    .getMany();
+
+    return users;
+
   }
 
 

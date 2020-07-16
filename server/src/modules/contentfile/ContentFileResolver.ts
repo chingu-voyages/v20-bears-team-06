@@ -6,6 +6,7 @@ import { NotificationMessage } from "../notifications/types/NotificationMessage"
 import { Topic } from "./../../types/Topic";
 import { ContentFile } from "./../../entity/ContentFile";
 import { pubSub } from '../../redis';
+
 import {
   Resolver,
   Query,
@@ -24,7 +25,7 @@ import {
 } from "type-graphql";
 import { User } from "../../entity/User";
 import { FilesPayload } from "../../types/Payloads";
-import { Like } from "typeorm";
+
 
 @ArgsType()
 export class IncDownloadArgs {
@@ -114,13 +115,34 @@ export class ContentFileResolver {
     return [];
   }
 
+ 
+
   @Query(() => [ContentFile])
   async searchFiles(
-    @Arg("searchTerm") searchTerm: string
-  ): Promise<ContentFile[] | undefined> {
-    return ContentFile.find({
-      where: [{ filename: Like(`%${searchTerm}%`) }],
-    });
+    @Arg('searchTerm') searchTerm:string
+  ):Promise<ContentFile[] | undefined> {
+    const byName = await ContentFile.createQueryBuilder('file')
+    .leftJoinAndSelect('file.owner','owner')
+    .where('LOWER(owner.firstName) like LOWER(:searchTerm)', {searchTerm:`%${searchTerm}%`})
+    .orWhere('LOWER(owner.lastName) like LOWER(:searchTerm)', {searchTerm:`%${searchTerm}%`})
+    .orWhere('LOWER(file.filename) like LOWER(:searchTerm)', {searchTerm:`%${searchTerm}%`})
+    .orWhere('LOWER(file.description) like LOWER(:searchTerm)', {searchTerm:`%${searchTerm}%`})
+    .getMany();
+
+    const byCategory = await ContentFile.createQueryBuilder('file')
+    .innerJoinAndSelect('file.categories','categories')
+    .where('LOWER(categories.title) like LOWER(:searchTerm)',{searchTerm:`%${searchTerm}%`})
+    .orWhere('LOWER(categories.subtitle) like (:searchTerm)',{searchTerm:`%${searchTerm}%`})
+    .getMany();
+
+
+
+    
+    let combined = [...byCategory,...byName];
+    return combined;
+      
+
+  
   }
 
   @Mutation(() => User)
