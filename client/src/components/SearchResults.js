@@ -14,6 +14,7 @@ import {
   SEARCH_POSTS,
   SEARCH_FILES,
   GET_USER_INFO,
+  GET_ME_CACHE,
 } from "../graphql/Queries";
 import FolderIcon from "@material-ui/icons/Folder";
 import ArrowForwardIosIcon from "@material-ui/icons/ArrowForwardIos";
@@ -103,9 +104,8 @@ function generatePostResults(results, element) {
     );
   }
 }
-function generateFileResults(results, element) {
+function generateFileResults(results, me) {
   console.log("these are file results", results);
-
   return results.map((value) =>
     React.cloneElement(
       <ListItem>
@@ -129,13 +129,19 @@ function generateFileResults(results, element) {
           secondary={value.description}
         />
         <ListItemSecondaryAction>
-          <IconButton
-            onClick={() =>
-              filetypeDownloadHandler(value.key, value.filetype, value.id)
-            }
-          >
-            <GetAppIcon />
-          </IconButton>
+          {me ? (
+            <IconButton
+              onClick={() =>
+                filetypeDownloadHandler(value.key, value.filetype, value.id)
+              }
+            >
+              <GetAppIcon />
+            </IconButton>
+          ) : (
+            <IconButton component={RouterLink} to={"/register"}>
+              <GetAppIcon />
+            </IconButton>
+          )}
         </ListItemSecondaryAction>
       </ListItem>,
       {
@@ -147,6 +153,9 @@ function generateFileResults(results, element) {
 export default function SearchResults({ searchTerm }) {
   const classes = useStyles();
   const [dense, setDense] = React.useState(false);
+  const { data: meData } = useQuery(GET_ME_CACHE);
+  const me = meData ? meData.me : null;
+
   const [secondary, setSecondary] = React.useState(false);
   const { loading: userLoading, error: userError, data: userData } = useQuery(
     SEARCH_USERS,
@@ -206,7 +215,8 @@ export default function SearchResults({ searchTerm }) {
     <Typography variant="h6">No post results found</Typography>
   );
   console.log("what is filedata? ", JSON.stringify(fileData));
-  const { searchFiles } = fileData;
+
+  const { searchFiles } = fileData ? fileData : { searchFiles: null };
 
   const fileResults = fileData ? (
     <div>
@@ -215,7 +225,7 @@ export default function SearchResults({ searchTerm }) {
       </Typography>
       <Divider />
       <div className={classes.demo}>
-        <List dense={dense}>{generateFileResults(searchFiles)}</List>
+        <List dense={dense}>{generateFileResults(searchFiles, me)}</List>
       </div>
     </div>
   ) : (

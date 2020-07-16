@@ -9,9 +9,19 @@ import {
   fade,
   InputBase,
   useMediaQuery,
+  ListItem,
+  IconButton,
+  ListItemAvatar,
+  Avatar,
+  ListItemText,
+  ListItemSecondaryAction,
+  Divider,
+  List,
 } from "@material-ui/core";
+import AccountCircleIcon from "@material-ui/icons/AccountCircle";
+import ArrowForwardIosIcon from "@material-ui/icons/ArrowForwardIos";
 import { useTheme } from "@material-ui/core/styles";
-import { GET_ME_CACHE } from "../graphql/Queries";
+import { GET_ME_CACHE, GET_SAMPLE_USERS } from "../graphql/Queries";
 import SearchIcon from "@material-ui/icons/Search";
 import { Link as RouterLink, useHistory } from "react-router-dom";
 import { GET_ME } from "../graphql/Queries";
@@ -81,12 +91,53 @@ const useStyles = makeStyles((theme) => ({
   profileButton: {
     margin: theme.spacing(2),
   },
+  sampleUsers: {
+    margin: "20px",
+  },
 }));
+
+function generateTeacherResults(results, element) {
+  return results.map((value) =>
+    React.cloneElement(
+      <ListItem>
+        <ListItemAvatar>
+          {value.profilePic_url ? (
+            <Avatar src={value.profilePic_url} />
+          ) : (
+            <AccountCircleIcon />
+          )}
+        </ListItemAvatar>
+        <ListItemText
+          primary={value.name}
+          secondary={
+            value.position && value.school
+              ? `${value.position} at ${value.school}`
+              : "new user at teachers app"
+          }
+        />
+        <ListItemSecondaryAction>
+          <IconButton
+            edge="end"
+            aria-label="arrowforward"
+            component={RouterLink}
+            to={`${"/profile/" + value.id}`}
+          >
+            <ArrowForwardIosIcon />
+          </IconButton>
+        </ListItemSecondaryAction>
+      </ListItem>,
+      {
+        key: value.id,
+      }
+    )
+  );
+}
 
 export default function HomePage() {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.up("sm"));
   const classes = useStyles();
+  const [dense, setDense] = React.useState(false);
   const searchFieldText = isMobile
     ? "Search..."
     : "Search for teachers and documents here...";
@@ -98,7 +149,20 @@ export default function HomePage() {
   const { data: meData } = useQuery(GET_ME_CACHE);
   const me = meData ? meData.me : null;
   console.log(`homepage login ? ${me}`);
-
+  const { loading: userLoading, error: userError, data: userData } = useQuery(
+    GET_SAMPLE_USERS
+  );
+  const userResults = userData ? (
+    <div>
+      <div className={classes.demo}>
+        <List dense={dense}>
+          {generateTeacherResults(userData.getSampleUsers)}
+        </List>
+      </div>
+    </div>
+  ) : (
+    <Typography variant="h6">No user results found</Typography>
+  );
   return me ? (
     <div>
       <Container maxWidth="md" align="center">
@@ -136,7 +200,21 @@ export default function HomePage() {
         >
           View Your Profile, Connections, and Content
         </Button>
+        <Grid container spacing={2}>
+          <Grid item xs={12}></Grid>
+        </Grid>
       </Container>
+      <div className={classes.sampleUsers}>
+        <Divider />
+        <Typography variant="h5" align="center">
+          Here are the latest members of Teacher's App!
+        </Typography>
+        <Grid container spacing={2}>
+          <Grid item xs={12}>
+            {userResults}
+          </Grid>
+        </Grid>
+      </div>
     </div>
   ) : (
     <div>
@@ -179,6 +257,17 @@ export default function HomePage() {
                 >
                   Log In
                 </Button>
+              </Grid>
+            </Grid>
+          </div>
+          <div className={classes.sampleUsers}>
+            <Divider />
+            <Typography variant="h5" align="center">
+              Here are the latest members of Teacher's App!
+            </Typography>
+            <Grid container spacing={2}>
+              <Grid item xs={12}>
+                {userResults}
               </Grid>
             </Grid>
           </div>
