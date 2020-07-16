@@ -9,6 +9,7 @@ import { UploadComponent } from './fields/UploadField';
 
 const useMe = () => {
   let { loading, error, data } = useQuery(GET_ME);
+  if (error) console.log(error);
   if (!loading && data && data.me && data.me.id) {
     return data.me.id;
   }
@@ -67,7 +68,7 @@ export const UploadExample = () => {
             meId
           },
         });
-        const { signedRequest, url } = response.data.signS3;
+        const { signedRequest} = response.data.signS3;
 
         const s3Response = await uploadToS3(fileToUpload, signedRequest);
         console.log(s3Response);

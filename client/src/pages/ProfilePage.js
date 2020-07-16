@@ -29,20 +29,26 @@ export const useProfile = () => {
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    [theme.breakpoints.up('md')]: {
-      height: '87vh',
+    [theme.breakpoints.between('md','lg')]: {
+      height: '65vh',
       padding: '3.5vh',
     },
   },
   profileGrid: {
-    [theme.breakpoints.up('md')]: {
-      height: '100%',
+    [theme.breakpoints.between('md','lg')]: {
+      height: 'fit-content',
       marginTop: theme.spacing(5),
     },
     [theme.breakpoints.up('xs')] : {
       marginTop: theme.spacing(3)
     }
   },
+
+  profileHolder: {
+    [theme.breakpoints.between('md','lg')] : {
+      height: 'inherit'
+    }
+  }
 }));
 
 export const ProfilePage = () => {
@@ -70,15 +76,15 @@ export const ProfilePage = () => {
   return (
     <Grid
       className={classes.profileGrid}
-      spacing={1}
+      spacing={2}
       container
       item
       direction="row"
       alignItems="stretch"
-      justify="space-evenly"
+      justify="space-around"
       xs={12}
     >
-      <Grid item container xs={12} md={3} direction="row" alignItems="stretch">
+      <Grid className={classes.profileHolder} item container xs={12} md={3} direction="row" alignItems="stretch">
         <ProfileInfo
           profile={profile}
           isOwnProfile={isOwnProfile ? isOwnProfile : false}
@@ -87,7 +93,7 @@ export const ProfilePage = () => {
         />
        
       </Grid>
-      <Grid item container xs={12} md={9}>
+      <Grid item container className={classes.profileHolder} xs={12} md={9}>
         <ContentBoard
           profile={profile}
           isOwnProfile={isOwnProfile ? isOwnProfile : false}

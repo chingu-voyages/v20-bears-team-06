@@ -40,7 +40,9 @@ const subClient = new SubscriptionClient(wsUrl, {
 subClient.maxConnectTimeGenerator.setMin(3000);
 const wsLink = new WebSocketLink(subClient,{
   uri: wsUrl,
-  credentials:"include"
+  credentials:"include",
+  reconnect: true,
+  lazy: true
 });
 
 

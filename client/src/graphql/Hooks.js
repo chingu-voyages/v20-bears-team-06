@@ -1,12 +1,10 @@
-import { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
 import { useQuery, useMutation } from "@apollo/react-hooks";
-import { FOLLOWER_IDS, GET_PROFILE, GET_FILES } from "./Queries";
+import { GET_PROFILE} from "./Queries";
 import { SET_SEEN_MUTATION } from "./Mutations";
-import { GET_ME, IS_LOGGED_IN } from "./Queries";
+import { GET_ME } from "./Queries";
 
 export async function useProfile(userId) {
-  const { data = null, loading, error } = useQuery(GET_PROFILE, {
+  const { data = null, loading } = useQuery(GET_PROFILE, {
     variables: { userId: userId },
   });
 

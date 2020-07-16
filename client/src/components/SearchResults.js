@@ -14,7 +14,7 @@ import {
   SEARCH_POSTS,
   SEARCH_FILES,
   GET_USER_INFO,
-  GET_ME_CACHE,
+  GET_ME
 } from "../graphql/Queries";
 import FolderIcon from "@material-ui/icons/Folder";
 import ArrowForwardIosIcon from "@material-ui/icons/ArrowForwardIos";
@@ -103,33 +103,77 @@ function generatePostResults(results, element) {
       )
     );
   }
-}
-function generateFileResults(results, me) {
+};
+
+function generateFileResults(results, handleDownloadClick, me){
   console.log("these are file results", results);
-  return results.map((value) =>
+return results.map((value) =>
     React.cloneElement(
       <ListItem>
         <ListItemAvatar>
-          <Avatar>
-            <FolderIcon />
-          </Avatar>
+          <FolderIcon />
         </ListItemAvatar>
-        <ListItemAvatar>
+        <ListItemText
+          primary={value.filename}
+          secondary={
+            value.name_pretty && value.description
+              ? `${value.name_pretty} /nl
+              ${value.description}`
+              : ""
+          }
+        />
+        <ListItemSecondaryAction>
           <IconButton
             edge="end"
             aria-label="arrowforward"
             component={RouterLink}
-            to={`${"/profile/" + value.ownerId}`}
+            to={`${"/profile/" + value.id}`}
           >
-            <AccountCircle />
+            <ArrowForwardIosIcon />
           </IconButton>
-        </ListItemAvatar>
-        <ListItemText
-          primary={value.name_pretty}
-          secondary={value.description}
-        />
-        <ListItemSecondaryAction>
-          {me ? (
+          <IconButton disabled={me===null} onClick={handleDownloadClick}
+          aria-label='downloadfile'
+          title={`${value.key},${value.filetype},${value.id}`}
+          >
+            <GetAppIcon />
+          </IconButton>
+        </ListItemSecondaryAction>
+      </ListItem>,
+      {
+        key: value.id
+      }
+    )
+  );
+}
+
+
+/*function generateFileResults(results, element) {
+  console.log("these are file results", results);
+
+  if (results&&results.searchFiles) {
+    return results.map((value) => {
+      React.cloneElement(
+        <ListItem>
+          <ListItemAvatar>
+            <Avatar>
+              <FolderIcon />
+            </Avatar>
+          </ListItemAvatar>
+          <ListItemAvatar>
+            <IconButton
+              edge="end"
+              aria-label="arrowforward"
+              component={RouterLink}
+              to={`${"/profile/" + value.ownerId}`}
+            >
+              <AccountCircle />
+            </IconButton>
+          </ListItemAvatar>
+          <ListItemText
+            primary={value.name_pretty}
+            secondary={value.description}
+          />
+          <ListItemSecondaryAction>
             <IconButton
               onClick={() =>
                 filetypeDownloadHandler(value.key, value.filetype, value.id)
@@ -137,26 +181,33 @@ function generateFileResults(results, me) {
             >
               <GetAppIcon />
             </IconButton>
-          ) : (
-            <IconButton component={RouterLink} to={"/register"}>
-              <GetAppIcon />
-            </IconButton>
-          )}
-        </ListItemSecondaryAction>
-      </ListItem>,
-      {
-        key: value.id,
-      }
-    )
-  );
-}
+          </ListItemSecondaryAction>
+        </ListItem>,
+        {
+          key: value.id,
+        }
+      );
+    });
+  }
+}*/
+
+
 export default function SearchResults({ searchTerm }) {
   const classes = useStyles();
   const [dense, setDense] = React.useState(false);
-  const { data: meData } = useQuery(GET_ME_CACHE);
-  const me = meData ? meData.me : null;
+ let me= null;
+ const { data, loading, error } = useQuery(GET_ME);
+ if (error) console.log(error);
+ if (!loading&&data&&data.me){
+   me = data.me;
+ }
 
   const [secondary, setSecondary] = React.useState(false);
+
+  const handleDownloadClick = (event) => {
+    const [key, filetype, id ] = event.currentTarget.title.split(",");
+    filetypeDownloadHandler(key,filetype,id);
+  }
   const { loading: userLoading, error: userError, data: userData } = useQuery(
     SEARCH_USERS,
     {
@@ -218,21 +269,22 @@ export default function SearchResults({ searchTerm }) {
 
   const { searchFiles } = fileData ? fileData : { searchFiles: null };
 
-  const fileResults = fileData ? (
+  const fileResults = searchFiles ? (
     <div>
       <Typography variant="h6" className={classes.title}>
         Files
       </Typography>
       <Divider />
       <div className={classes.demo}>
-        <List dense={dense}>{generateFileResults(searchFiles, me)}</List>
+        <List dense={dense}>{generateFileResults(searchFiles, handleDownloadClick, me)}</List>
       </div>
     </div>
   ) : (
     <Typography variant="h6">No file results found</Typography>
   );
 
-  function buildSearchResults() {
+  function buildSearchResults(userResults, fileResults) {
+   
     return (
       <div className={classes.root}>
         <Grid container spacing={2}>
@@ -254,6 +306,6 @@ export default function SearchResults({ searchTerm }) {
       No results found
     </Typography>
   ) : (
-    buildSearchResults()
+    buildSearchResults(userResults,fileResults)
   );
 }
