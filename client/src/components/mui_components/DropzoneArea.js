@@ -1,21 +1,16 @@
-import React, {useState} from 'react';
+import React from 'react';
 import {
-  DropzoneDialog,
+  
   DropzoneAreaBase,
 } from 'material-ui-dropzone';
-import { Button, makeStyles } from '@material-ui/core';
-import { useMutation } from '@apollo/react-hooks';
-import {S3_SIGN_MUTATION } from '../../graphql/Mutations';
+import {  makeStyles } from '@material-ui/core';
 import { useField } from 'formik';
-import { Fab } from '@material-ui/core';
-import AddIcon from '@material-ui/icons/Add';
-import { uploadToS3 } from '../../utils/uploadToS3';
-import { formatFileName } from '../../utils/formatFileName';
 
 
 
 export const DropZoneField = ({ label, type, name, ...props }) => {
   const [field, meta, helpers] = useField('file');
+  console.log(field,meta);
   const {setValue} = helpers;
   
  
@@ -34,13 +29,7 @@ export const DropZoneField = ({ label, type, name, ...props }) => {
 };
 
 
-const useStyles = makeStyles(theme=>({
-  button:{
-    backgroundColor: 'white',
-    opacity: '.85',
-    height: theme.spacing(3),
-  }
-}));
+
 
 
 

@@ -7,7 +7,7 @@ export const FollowerCount = ({currentCount}) => {
 
     const count = currentCount || 0;
     
-    const { userId } = useParams();
+    
     
     
 

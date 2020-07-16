@@ -50,7 +50,6 @@ export const LoginForm = ({ isLoggedIn, setLoggedIn }) => {
   const classes = useStyles();
   let history = useHistory();
   console.log(history);
-  const { data } = useQuery(GET_ME);
 
   function returnHome() {
     const link = <Link to={'/'}/>;
