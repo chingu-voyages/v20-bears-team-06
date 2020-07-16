@@ -43,16 +43,10 @@ const useStyles = makeStyles((theme) => ({
 
  },
  mobileCards : {
-   minHeight: theme.spacing(30),
-   justifyContent: 'center',
-   alignItems: 'center',
-  [theme.breakpoints.down('md')] : {
-    display: 'flex',
-    flexDirection: 'column',
-    minHeight: '50vh',
-    justifyContent: 'center',
-    alignContent: 'center'
-  }
+   
+   [theme.breakpoints.between('md','lg')]:{
+     height: '40vh'
+   }
 },
  avatarGroup :{
    justifyContent : 'center',
@@ -81,23 +75,22 @@ const useStyles = makeStyles((theme) => ({
    }
  },
  contentCard : {
-   [theme.breakpoints.up('s')]:{
+   [theme.breakpoints.up('xs')]:{
    boxSizing: 'border-box',
    height: '100%',
    width: '100%'
    },
-   [theme.breakpoints.down('md')] : {
-     height: 'fit-content'
-   }
+   [theme.breakpoints.between('md','lg')]:{
+    height: '40vh'
+  }
+   
  },
  topContentCard: {
-   boxSizing: 'border-box',
-   height: '50%',
-   width: '100%',
-   justifySelf: 'flex-start',
-   [theme.breakpoints.down('md')]:{
-
-   }
+  [theme.breakpoints.between('md','lg')]:{
+    height: '20vh',
+    marginBottom: '1vh'
+  }
+   
   
  },
  bottomContentCard: {
@@ -209,7 +202,7 @@ export const ContentBoard = ({profile, meId }) => {
   return (
     <>
     
-      <Grid className={classes.contentCard} item container xs={12} md={4} direction='row' >
+      <Grid  item container xs={12} md={4} direction='row' >
         <Grid className={classes.contentCard} item container xs={12} justify='center' alignItems='center'>
           <Grid item xs={12} md={10} className={classes.topContentCard} >
             <Card raised className={classes.mobileCards} >

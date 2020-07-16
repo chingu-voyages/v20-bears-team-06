@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "production": "ts-node src/index.ts",
-    "start": "node -r ts-node/register --inspect --max_old_space_size=4096 src/index.ts",
+    "start": "node -r ts-node/register --inspect --optimize_for_size --max_old_space_size=460 src/index.ts",
     "dev": "ts-node-dev --respawn src/index.ts",
     "db:setup": "ts-node ./src/test-utils/setup.ts",
     "test": "npm run db:setup && jest"

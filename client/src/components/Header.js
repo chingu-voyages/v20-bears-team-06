@@ -88,6 +88,7 @@ export default function Header() {
   const [logout] = useMutation(LOGOUT);
   let history = useHistory();
   const client = useApolloClient();
+  console.log(client)
 
   const { data: meData } = useQuery(GET_ME_CACHE);
   // const { data: testMe } = client.readQuery({

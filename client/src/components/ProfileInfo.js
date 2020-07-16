@@ -28,8 +28,8 @@ const useStyles = makeStyles((theme) => ({
   },
   avatar: {
     [theme.breakpoints.up('xs')]: {
-      height: theme.spacing(8),
-      width: theme.spacing(8),
+      height: theme.spacing(13),
+      width: theme.spacing(12),
       marginLeft: 'auto',
       marginRight: 'auto',
       marginBottom: theme.spacing(2),
@@ -42,6 +42,7 @@ const useStyles = makeStyles((theme) => ({
       marginRight: 'auto',
       marginBottom: theme.spacing(4),
     },
+   
   },
   specialtyCard: {
     boxShadow: 'none',
@@ -69,7 +70,8 @@ const useStyles = makeStyles((theme) => ({
   },
   userInfoCard: {
     [theme.breakpoints.up('md')] : {
-      height: '100%',
+      width: '90%',
+      alignSelf: 'center'
 
     }
   },
