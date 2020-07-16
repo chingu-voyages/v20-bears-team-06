@@ -14,7 +14,7 @@ import {
   SEARCH_POSTS,
   SEARCH_FILES,
   GET_USER_INFO,
-  GET_ME_CACHE,
+  GET_ME
 } from "../graphql/Queries";
 import FolderIcon from "@material-ui/icons/Folder";
 import ArrowForwardIosIcon from "@material-ui/icons/ArrowForwardIos";
@@ -105,7 +105,7 @@ function generatePostResults(results, element) {
   }
 };
 
-function generateFileResults(results, handleDownloadClick){
+function generateFileResults(results, handleDownloadClick, me){
   console.log("these are file results", results);
 return results.map((value) =>
     React.cloneElement(
@@ -131,7 +131,7 @@ return results.map((value) =>
           >
             <ArrowForwardIosIcon />
           </IconButton>
-          <IconButton onClick={handleDownloadClick}
+          <IconButton disabled={me===null} onClick={handleDownloadClick}
           aria-label='downloadfile'
           title={`${value.key},${value.filetype},${value.id}`}
           >
@@ -195,8 +195,12 @@ return results.map((value) =>
 export default function SearchResults({ searchTerm }) {
   const classes = useStyles();
   const [dense, setDense] = React.useState(false);
-  const { data: meData } = useQuery(GET_ME_CACHE);
-  const me = meData ? meData.me : null;
+ let me= null;
+ const { data, loading, error } = useQuery(GET_ME);
+ if (error) console.log(error);
+ if (!loading&&data&&data.me){
+   me = data.me;
+ }
 
   const [secondary, setSecondary] = React.useState(false);
 
@@ -272,7 +276,7 @@ export default function SearchResults({ searchTerm }) {
       </Typography>
       <Divider />
       <div className={classes.demo}>
-        <List dense={dense}>{generateFileResults(searchFiles, handleDownloadClick)}</List>
+        <List dense={dense}>{generateFileResults(searchFiles, handleDownloadClick, me)}</List>
       </div>
     </div>
   ) : (
