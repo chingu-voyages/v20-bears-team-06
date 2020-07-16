@@ -16,7 +16,7 @@ import SearchIcon from "@material-ui/icons/Search";
 import AccountCircle from "@material-ui/icons/AccountCircle";
 import { Link as RouterLink, useHistory } from "react-router-dom";
 import { NotificationsPopover } from "./mui_components/NotificationsPopover";
-import { GET_ME_CACHE } from "../graphql/Queries";
+import { GET_ME } from "../graphql/Queries";
 import { useLocation } from 'react-router-dom';
 import { weirdRouter } from '../utils/weirdRouter';
 
@@ -88,8 +88,13 @@ export default function Header() {
   const [logout] = useMutation(LOGOUT);
   let history = useHistory();
   const client = useApolloClient();
-
-  const { data: meData } = useQuery(GET_ME_CACHE);
+  console.log(client)
+  let meData;
+  const { data, error, loading } = useQuery(GET_ME);
+  if (error) console.log(error);
+  if (!loading&&data&&data.me){
+    meData = data;
+  }
   // const { data: testMe } = client.readQuery({
   //   query: gql`
   //     {

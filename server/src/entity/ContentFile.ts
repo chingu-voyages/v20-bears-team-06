@@ -95,6 +95,12 @@ export class ContentFile extends BaseEntity {
   @Field(() => [Specialty])
   categories: Lazy<Specialty[]>;
 
+  @Field(() => [String])
+  async getCategories(@Root() file:ContentFile): Promise<string[]|[]> {
+    let categories = (await file.categories).map(el=>el.title);
+    return categories;
+  }
+
   @Column({ nullable: true })
   @Field({ nullable: true })
   filetype: string;

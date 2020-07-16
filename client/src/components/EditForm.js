@@ -99,7 +99,7 @@ const EditForm = ({ meId, profile }) => {
               aboutMe: Yup.string()
                 .nullable()
                 .min(1)
-                .max(5000, "School name must be between 1-5000 characters"),
+                .max(140, "About me must be between 1-140 characters"),
               file: Yup.array().nullable(),
             })}
             onSubmit={(values, { setSubmitting, setFieldError }) => {
@@ -134,7 +134,7 @@ const EditForm = ({ meId, profile }) => {
                       lastName: values.lastName? values.lastName: profile.lastName,
                     },
                   });
-                  console.log(response);
+                  
                   if (response && response.data && !response.data.editUser) {
                     setFieldError("invalid field data");
                     return;
@@ -145,11 +145,11 @@ const EditForm = ({ meId, profile }) => {
                       values.file[0].file,
                       s3.signedRequest
                     );
-                    console.log(s3response);
+                    
                     
                   }
                 } catch (e) {
-                  console.log("error with edit", e);
+                  
                 }
 
                 setSubmitting(false);

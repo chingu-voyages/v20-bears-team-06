@@ -43,16 +43,14 @@ const useStyles = makeStyles((theme) => ({
 
  },
  mobileCards : {
-   minHeight: theme.spacing(30),
-   justifyContent: 'center',
-   alignItems: 'center',
-  [theme.breakpoints.down('md')] : {
-    display: 'flex',
-    flexDirection: 'column',
-    minHeight: '50vh',
-    justifyContent: 'center',
-    alignContent: 'center'
-  }
+   
+   [theme.breakpoints.between('md','lg')]:{
+     height: '20vh',
+     marginBottom: '5vh'
+   },
+   [theme.breakpoints.up('lg')] : {
+     height: '35vh'
+   }
 },
  avatarGroup :{
    justifyContent : 'center',
@@ -81,23 +79,23 @@ const useStyles = makeStyles((theme) => ({
    }
  },
  contentCard : {
-   [theme.breakpoints.up('s')]:{
+   [theme.breakpoints.up('xs')]:{
    boxSizing: 'border-box',
    height: '100%',
    width: '100%'
    },
-   [theme.breakpoints.down('md')] : {
-     height: 'fit-content'
-   }
+   [theme.breakpoints.between('md','lg')]:{
+   
+   height: 'fit-content'
+  }
+   
  },
  topContentCard: {
-   boxSizing: 'border-box',
-   height: '50%',
-   width: '100%',
-   justifySelf: 'flex-start',
-   [theme.breakpoints.down('md')]:{
-
-   }
+  [theme.breakpoints.between('md','lg')]:{
+    height: '20vh',
+    marginBottom: '1vh'
+  }
+   
   
  },
  bottomContentCard: {
@@ -139,7 +137,8 @@ const useStyles = makeStyles((theme) => ({
  },
  link: {
    textDecoration: 'none'
- }
+ },
+ 
 }));
 
 export const ContentBoard = ({profile, meId }) => {
@@ -209,16 +208,16 @@ export const ContentBoard = ({profile, meId }) => {
   return (
     <>
     
-      <Grid className={classes.contentCard} item container xs={12} md={4} direction='row' >
+      <Grid  item container xs={12} md={4} direction='row' >
         <Grid className={classes.contentCard} item container xs={12} justify='center' alignItems='center'>
-          <Grid item xs={12} md={10} className={classes.topContentCard} >
+          <Grid item xs={12} md={10}>
             <Card raised className={classes.mobileCards} >
               <CardContent >
               <Typography variant='h6' color='primary'>
                 About Me
               </Typography>
               <Typography variant='body2' align='justify'>
-                {profile&&profile.about_me}
+                {profile&&profile.about_me.slice(0,140)}
               </Typography>
               </CardContent>
             </Card>
@@ -234,7 +233,7 @@ export const ContentBoard = ({profile, meId }) => {
               <FollowerAvatarGroup followers={profile&&profile.followers} className={classes.avatarGroup} align='center' max={4}  />
               </Link>
               
-              <Grid container justify='center'  xs={12}>
+              <Grid container justify='center' className={classes.displayArea}  xs={12}>
                 <Grid item className={classes.followButton}>
                   {(!isOwnProfile && isLoggedIn &&!isFollowing) &&
               <Button onClick={followUser} size='small' variant='outlined' color='primary' >

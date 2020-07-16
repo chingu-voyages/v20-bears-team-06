@@ -10,7 +10,7 @@ export const GET_ME = gql`
   }
 `;
 
-export const GET_ME_CACHE = gql`
+/*export const GET_ME_CACHE = gql`
   query GetMe {
     me @client {
       id
@@ -18,7 +18,7 @@ export const GET_ME_CACHE = gql`
       firstName
     }
   }
-`;
+`;*/
 
 export const GET_SAMPLE_USERS = gql`
   query GetSampleUsers {
@@ -136,6 +136,8 @@ export const GET_PROFILE = gql`
         filename
         date
         ownerId
+        description
+        getCategories
         signedRequest
         download_count
         likes
@@ -156,6 +158,8 @@ export const GET_PROFILE = gql`
         download_count
         likes
         key
+        description
+        getCategories
         gradeLevel
         favorite_count
         save_count
@@ -174,6 +178,8 @@ export const GET_PROFILE = gql`
         key
         gradeLevel
         favorite_count
+        description
+        getCategories
         save_count
         favoritedByIds
         savedByIds

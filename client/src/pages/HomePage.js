@@ -21,7 +21,7 @@ import {
 import AccountCircleIcon from "@material-ui/icons/AccountCircle";
 import ArrowForwardIosIcon from "@material-ui/icons/ArrowForwardIos";
 import { useTheme } from "@material-ui/core/styles";
-import { GET_ME_CACHE, GET_SAMPLE_USERS } from "../graphql/Queries";
+import {GET_SAMPLE_USERS } from "../graphql/Queries";
 import SearchIcon from "@material-ui/icons/Search";
 import { Link as RouterLink, useHistory } from "react-router-dom";
 import { GET_ME } from "../graphql/Queries";
@@ -146,7 +146,7 @@ export default function HomePage() {
     history.push("/search", { searchTerm: terms });
   }
   let history = useHistory();
-  const { data: meData } = useQuery(GET_ME_CACHE);
+  const { data: meData } = useQuery(GET_ME);
   const me = meData ? meData.me : null;
   console.log(`homepage login ? ${me}`);
   const { loading: userLoading, error: userError, data: userData } = useQuery(
