@@ -102,11 +102,54 @@ function generatePostResults(results, element) {
       )
     );
   }
+};
+
+function generateFileResults(results, handleDownloadClick){
+  console.log("these are file results", results);
+return results.map((value) =>
+    React.cloneElement(
+      <ListItem>
+        <ListItemAvatar>
+          <FolderIcon />
+        </ListItemAvatar>
+        <ListItemText
+          primary={value.filename}
+          secondary={
+            value.name_pretty && value.description
+              ? `${value.name_pretty} /nl
+              ${value.description}`
+              : ""
+          }
+        />
+        <ListItemSecondaryAction>
+          <IconButton
+            edge="end"
+            aria-label="arrowforward"
+            component={RouterLink}
+            to={`${"/profile/" + value.id}`}
+          >
+            <ArrowForwardIosIcon />
+          </IconButton>
+          <IconButton onClick={handleDownloadClick}
+          aria-label='downloadfile'
+          title={`${value.key},${value.filetype},${value.id}`}
+          >
+            <GetAppIcon />
+          </IconButton>
+        </ListItemSecondaryAction>
+      </ListItem>,
+      {
+        key: value.id
+      }
+    )
+  );
 }
-function generateFileResults(results, element) {
+
+
+/*function generateFileResults(results, element) {
   console.log("these are file results", results);
 
-  if (results) {
+  if (results&&results.searchFiles) {
     return results.map((value) => {
       React.cloneElement(
         <ListItem>
@@ -145,11 +188,18 @@ function generateFileResults(results, element) {
       );
     });
   }
-}
+}*/
+
+
 export default function SearchResults({ searchTerm }) {
   const classes = useStyles();
   const [dense, setDense] = React.useState(false);
   const [secondary, setSecondary] = React.useState(false);
+
+  const handleDownloadClick = (event) => {
+    const [key, filetype, id ] = event.currentTarget.title.split(",");
+    filetypeDownloadHandler(key,filetype,id);
+  }
   const { loading: userLoading, error: userError, data: userData } = useQuery(
     SEARCH_USERS,
     {
@@ -210,21 +260,22 @@ export default function SearchResults({ searchTerm }) {
   console.log("what is filedata? ", JSON.stringify(fileData));
   const { searchFiles } = fileData;
 
-  const fileResults = fileData ? (
+  const fileResults = searchFiles ? (
     <div>
       <Typography variant="h6" className={classes.title}>
         Files
       </Typography>
       <Divider />
       <div className={classes.demo}>
-        <List dense={dense}>{generateFileResults(searchFiles)}</List>
+        <List dense={dense}>{generateFileResults(searchFiles, handleDownloadClick)}</List>
       </div>
     </div>
   ) : (
     <Typography variant="h6">No file results found</Typography>
   );
 
-  function buildSearchResults() {
+  function buildSearchResults(userResults, fileResults) {
+   
     return (
       <div className={classes.root}>
         <Grid container spacing={2}>
@@ -246,6 +297,6 @@ export default function SearchResults({ searchTerm }) {
       No results found
     </Typography>
   ) : (
-    buildSearchResults()
+    buildSearchResults(userResults,fileResults)
   );
 }
