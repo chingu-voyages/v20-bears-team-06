@@ -3,7 +3,7 @@ import { useMutation, useQuery, useApolloClient } from '@apollo/react-hooks';
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
 import { Link as RouterLink, Redirect, useHistory } from 'react-router-dom';
-import { GET_ME, GET_ME_CACHE } from '../graphql/Queries';
+import { GET_ME} from '../graphql/Queries';
 import { LOGIN_MUTATION } from '../graphql/Mutations';
 import {
   Avatar,
@@ -93,7 +93,7 @@ export const LoginForm = ({ isLoggedIn, setLoggedIn }) => {
                     },
                     refetchQueries: [
                       {
-                        query: GET_ME,
+                        query: GET_ME
                       }
                     ],
                   });

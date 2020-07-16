@@ -10,7 +10,7 @@ export const GET_ME = gql`
   }
 `;
 
-export const GET_ME_CACHE = gql`
+/*export const GET_ME_CACHE = gql`
   query GetMe {
     me @client {
       id
@@ -18,7 +18,7 @@ export const GET_ME_CACHE = gql`
       firstName
     }
   }
-`;
+`;*/
 
 export const GET_SAMPLE_USERS = gql`
   query GetSampleUsers {
