@@ -2,7 +2,7 @@ import React, { useContext, useEffect } from 'react';
 import { Link, useRouteMatch, useParams } from 'react-router-dom';
 import { Grid, Avatar, Container, Paper, Typography, IconButton } from '@material-ui/core';
 import { useQuery, useMutation } from '@apollo/react-hooks';
-import { GET_PROFILE, GET_ME_CACHE } from '../graphql/Queries';
+import { GET_PROFILE, GET_ME} from '../graphql/Queries';
 import { ADD_USER_SPEC } from '../graphql/Mutations';
 import Card from '@material-ui/core/Card';
 import Button from '@material-ui/core/Button';
@@ -94,7 +94,7 @@ const useProfile = () => {
 
 const ProfileInfo = () =>{
 let meId;
-const { data, loading, error } = useQuery(GET_ME_CACHE);
+const { data, loading, error } = useQuery(GET_ME);
 if (error) console.log(error);
 if (!loading&&data&&data.me){
   meId = data.me.id;

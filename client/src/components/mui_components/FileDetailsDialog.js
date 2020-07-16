@@ -10,10 +10,9 @@ import SaveIcon from '@material-ui/icons/Save';
 import CloseIcon from '@material-ui/icons/Close';
 import CloudDownloadIcon from '@material-ui/icons/CloudDownload';
 import ButtonGroup from '@material-ui/core/ButtonGroup';
-import { GET_ME_CACHE} from '../../graphql/Queries';
 import DeleteIcon from '@material-ui/icons/Delete';
 import { FILE_ACTION_MUTATION, DELETE_FILE, REMOVE_FAV_FILE, REMOVE_SAVED_FILE } from '../../graphql/Mutations';
-import { GET_PROFILE } from '../../graphql/Queries';
+import { GET_PROFILE, GET_ME } from '../../graphql/Queries';
 import MoreHorizIcon from '@material-ui/icons/MoreHoriz';
 import { useParams } from 'react-router-dom';
 import { s3deleteFile } from '../../utils/s3deleteFile';
@@ -34,7 +33,7 @@ const useStyles = makeStyles((theme)=>({
 
 export const FileDetailsDialog = ({file, handleDownloadClick, toDisplay }) => {
     let meId;
-    const { data, loading, error } = useQuery(GET_ME_CACHE);
+    const { data, loading, error } = useQuery(GET_ME);
     const [open, setOpen] = useState(false);
     const [editOpen, setEditOpen ] = useState(false);
     const { userId } = useParams();
