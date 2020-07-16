@@ -20,6 +20,20 @@ export const GET_ME_CACHE = gql`
   }
 `;
 
+export const GET_SAMPLE_USERS = gql`
+  query GetSampleUsers {
+    getSampleUsers {
+      id
+      name
+      school
+      location
+      department
+      position
+      profilePic_url
+    }
+  }
+`;
+
 export const NOTIFICATION_QUERY = gql`
   query newNotifications($userId: ID!) {
     newNotifications(userId: $userId) {

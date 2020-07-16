@@ -14,6 +14,7 @@ import {
   SEARCH_POSTS,
   SEARCH_FILES,
   GET_USER_INFO,
+  GET_ME_CACHE,
 } from "../graphql/Queries";
 import FolderIcon from "@material-ui/icons/Folder";
 import ArrowForwardIosIcon from "@material-ui/icons/ArrowForwardIos";
@@ -194,6 +195,9 @@ return results.map((value) =>
 export default function SearchResults({ searchTerm }) {
   const classes = useStyles();
   const [dense, setDense] = React.useState(false);
+  const { data: meData } = useQuery(GET_ME_CACHE);
+  const me = meData ? meData.me : null;
+
   const [secondary, setSecondary] = React.useState(false);
 
   const handleDownloadClick = (event) => {
@@ -258,7 +262,8 @@ export default function SearchResults({ searchTerm }) {
     <Typography variant="h6">No post results found</Typography>
   );
   console.log("what is filedata? ", JSON.stringify(fileData));
-  const { searchFiles } = fileData;
+
+  const { searchFiles } = fileData ? fileData : { searchFiles: null };
 
   const fileResults = searchFiles ? (
     <div>
