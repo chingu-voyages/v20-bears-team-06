@@ -33,7 +33,7 @@ const useStyles = makeStyles((theme) => ({
         justifyContent: 'space-between'
     },
     [theme.breakpoints.between('md','lg')]: {
-      height: 'inherit'
+      height: '60vh'
     }
   },
 
@@ -45,6 +45,9 @@ const useStyles = makeStyles((theme) => ({
       padding: theme.spacing(2),
       height: theme.spacing(3),
     },
+    [theme.breakpoints.between('md','lg')]:{
+      height: '100%'
+    }
     
   },
   fab: {

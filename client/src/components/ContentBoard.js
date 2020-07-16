@@ -49,7 +49,7 @@ const useStyles = makeStyles((theme) => ({
      marginBottom: '5vh'
    },
    [theme.breakpoints.up('lg')] : {
-     height: '30vh'
+     height: '35vh'
    }
 },
  avatarGroup :{
@@ -85,7 +85,8 @@ const useStyles = makeStyles((theme) => ({
    width: '100%'
    },
    [theme.breakpoints.between('md','lg')]:{
-   paddingBottom: theme.spacing(3)
+   
+   height: 'fit-content'
   }
    
  },
@@ -216,7 +217,7 @@ export const ContentBoard = ({profile, meId }) => {
                 About Me
               </Typography>
               <Typography variant='body2' align='justify'>
-                {profile&&profile.about_me}
+                {profile&&profile.about_me.slice(0,140)}
               </Typography>
               </CardContent>
             </Card>
