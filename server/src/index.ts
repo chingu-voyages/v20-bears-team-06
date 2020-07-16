@@ -40,7 +40,7 @@ const main = async () => {
       credentials: true,
       origin:
         process.env.NODE_ENV === 'production'
-          ? ['https://brave-einstein-04bd68.netlify.app','https://vigilant-wing-b6da5d.netlify.app/']
+          ? ['https://brave-einstein-04bd68.netlify.app','https://vigilant-wing-b6da5d.netlify.app']
           : 'http://localhost:3000',
     })
   );
