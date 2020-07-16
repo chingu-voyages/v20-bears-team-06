@@ -154,10 +154,11 @@ export const FileDetailsDialog = ({file, handleDownloadClick, toDisplay }) => {
                     
                 <Typography variant='body2' color='textPrimary'>Name:   {file&&file.filename}</Typography>
                 <Typography variant='body2' color='textPrimary'>Uploaded On:   {file&&file.date}</Typography>
-                <Typography variant='body2' color='textPrimary'>Categories:   {file.specialties&&specialties}</Typography>
                 <Typography variant='body2' color='textPrimary'>Downloads:   {file&&file.download_count}</Typography>
                 <Typography variant='body2' color='textPrimary'>Favorites:   {file&&file.favorite_count}</Typography>
                 <Typography variant='body2' color='textPrimary'>Grade Level:   {file&&file.gradeLevel}</Typography>
+                <Typography varaint='body2' color='textPrimary'>Categories: {file&&file.getCategories.join("/")}</Typography>
+                <Typography variant ='caption' color='textPrimary'>Description: {file&&file.description}</Typography>
                 
 
                 </DialogContentText>

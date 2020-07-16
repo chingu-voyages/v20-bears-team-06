@@ -23,7 +23,7 @@ const useStyles = makeStyles((theme) => ({
   
   mainCard: {
     [theme.breakpoints.up('md')]: {
-      height: '84vh',
+      height: '70vh',
     },
   },
   avatar: {

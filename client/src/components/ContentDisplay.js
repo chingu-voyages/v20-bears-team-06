@@ -31,6 +31,9 @@ const useStyles = makeStyles((theme) => ({
     margin: 'auto',
     [theme.breakpoints.down('s')]:{
         justifyContent: 'space-between'
+    },
+    [theme.breakpoints.between('md','lg')]: {
+      height: 'inherit'
     }
   },
 
@@ -49,9 +52,7 @@ const useStyles = makeStyles((theme) => ({
     [theme.breakpoints.up('md')]: {
       height: '100%',
     },
-    [theme.breakpoints.down('md')]: {
-      height: '75%',
-    },
+    
   },
 }));
 

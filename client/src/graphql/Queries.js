@@ -122,6 +122,8 @@ export const GET_PROFILE = gql`
         filename
         date
         ownerId
+        description
+        getCategories
         signedRequest
         download_count
         likes
@@ -142,6 +144,8 @@ export const GET_PROFILE = gql`
         download_count
         likes
         key
+        description
+        getCategories
         gradeLevel
         favorite_count
         save_count
@@ -160,6 +164,8 @@ export const GET_PROFILE = gql`
         key
         gradeLevel
         favorite_count
+        description
+        getCategories
         save_count
         favoritedByIds
         savedByIds

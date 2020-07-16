@@ -45,7 +45,11 @@ const useStyles = makeStyles((theme) => ({
  mobileCards : {
    
    [theme.breakpoints.between('md','lg')]:{
-     height: '40vh'
+     height: '20vh',
+     marginBottom: '5vh'
+   },
+   [theme.breakpoints.up('lg')] : {
+     height: '30vh'
    }
 },
  avatarGroup :{
@@ -81,7 +85,7 @@ const useStyles = makeStyles((theme) => ({
    width: '100%'
    },
    [theme.breakpoints.between('md','lg')]:{
-    height: '40vh'
+   paddingBottom: theme.spacing(3)
   }
    
  },
@@ -132,7 +136,8 @@ const useStyles = makeStyles((theme) => ({
  },
  link: {
    textDecoration: 'none'
- }
+ },
+ 
 }));
 
 export const ContentBoard = ({profile, meId }) => {
@@ -204,7 +209,7 @@ export const ContentBoard = ({profile, meId }) => {
     
       <Grid  item container xs={12} md={4} direction='row' >
         <Grid className={classes.contentCard} item container xs={12} justify='center' alignItems='center'>
-          <Grid item xs={12} md={10} className={classes.topContentCard} >
+          <Grid item xs={12} md={10}>
             <Card raised className={classes.mobileCards} >
               <CardContent >
               <Typography variant='h6' color='primary'>
@@ -227,7 +232,7 @@ export const ContentBoard = ({profile, meId }) => {
               <FollowerAvatarGroup followers={profile&&profile.followers} className={classes.avatarGroup} align='center' max={4}  />
               </Link>
               
-              <Grid container justify='center'  xs={12}>
+              <Grid container justify='center' className={classes.displayArea}  xs={12}>
                 <Grid item className={classes.followButton}>
                   {(!isOwnProfile && isLoggedIn &&!isFollowing) &&
               <Button onClick={followUser} size='small' variant='outlined' color='primary' >

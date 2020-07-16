@@ -11,7 +11,9 @@ import MenuItem from '@material-ui/core/MenuItem';
 import EditIcon from '@material-ui/icons/Edit';
 import { makeStyles } from '@material-ui/core';
 import { EDIT_FILE_DETAILS } from '../../graphql/Mutations';
+import { GET_PROFILE } from '../../graphql/Queries';
 import { useMutation } from '@apollo/react-hooks';
+import { useParams } from 'react-router-dom';
 
 
 const gradeLevels = [
@@ -51,6 +53,7 @@ export const EditFileDialog = ({fileId}) => {
   });
 
   const [editFile] = useMutation(EDIT_FILE_DETAILS);
+  const { userId } = useParams();
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -72,7 +75,8 @@ export const EditFileDialog = ({fileId}) => {
 
   const handleSubmit = async () => {
       const response = await editFile({
-          variables: {...values}
+          variables: {...values},
+          refetchQueries: [{query:GET_PROFILE, variables:{userId}}]
       });
       
       if (response){
