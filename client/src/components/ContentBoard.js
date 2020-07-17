@@ -43,6 +43,11 @@ const useStyles = makeStyles((theme) => ({
 
  },
  mobileCards : {
+
+  [theme.breakpoints.up('xs')]:{
+    height: '35vh',
+    marginBottom: theme.spacing(5)
+  },
    
    [theme.breakpoints.between('md','lg')]:{
      height: '20vh',
@@ -82,12 +87,14 @@ const useStyles = makeStyles((theme) => ({
    [theme.breakpoints.up('xs')]:{
    boxSizing: 'border-box',
    height: '100%',
-   width: '100%'
+   width: '100%',
+   justifySelf: 'center'
    },
    [theme.breakpoints.between('md','lg')]:{
-   
+   width: '100%',
    height: 'fit-content'
-  }
+  },
+
    
  },
  topContentCard: {
@@ -99,10 +106,9 @@ const useStyles = makeStyles((theme) => ({
   
  },
  bottomContentCard: {
-  boxSizing: 'border-box',
-  height: '50%',
   width: '100%',
-  justifySelf: 'flex-end'
+  
+
  
 },
  contentToolbar : {
@@ -122,7 +128,7 @@ const useStyles = makeStyles((theme) => ({
  toolbarText: {
    color: 'white',
    fontWeight: theme.typography.fontWeightMedium,
-   [theme.breakpoints.down('s')] : {
+   [theme.breakpoints.down('md')] : {
      fontSize: '1.1rem'
    }
  },
@@ -134,6 +140,11 @@ const useStyles = makeStyles((theme) => ({
  },
  buttonGroup: {
    color: 'white'
+ },
+ toolbarTypography: {
+   [theme.breakpoints.down('s')]:{
+     fontSize: '0.8rem'
+   }
  },
  link: {
    textDecoration: 'none'
