@@ -228,7 +228,7 @@ export const ContentBoard = ({profile, meId }) => {
                 About Me
               </Typography>
               <Typography variant='body2' align='justify'>
-                {profile&&profile.about_me.slice(0,140)}
+                {profile&&profile.about_me&&profile.about_me!==''&&profile.about_me.length>140?profile.about_me.slice(0,140):''}
               </Typography>
               </CardContent>
             </Card>

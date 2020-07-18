@@ -17,12 +17,15 @@ const useStyles = makeStyles(theme=>({
     list: {
         marginTop: theme.spacing(10),
         overflowY: 'scroll',
-        maxHeight: theme.spacing(70)
+        maxHeight: theme.spacing(50)
     }
 },
     [theme.breakpoints.up('xs')] : {
        list: {
-           marginTop: theme.spacing(10)
+           marginTop: theme.spacing(10),
+           overflowY: 'scroll',
+           maxHeight: '50vh'
+
 
        }
     },
