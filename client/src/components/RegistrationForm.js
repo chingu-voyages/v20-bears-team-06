@@ -3,6 +3,7 @@ import { useMutation } from "@apollo/react-hooks";
 import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
 import { Link as RouterLink, Redirect, useHistory } from "react-router-dom";
+import { weirdRouter } from '../utils/weirdRouter';
 //Redirect conditional for usage with submitForm
 import {
   Avatar,
@@ -67,7 +68,7 @@ export const RegistrationForm = ({ isLoggedIn, setLoggedIn }) => {
   let history = useHistory();
 
   function returnHome() {
-    history.push("/");
+    weirdRouter("/")
   }
   if (isLoggedIn) {
     console.log("redirecting");
