@@ -18,27 +18,17 @@ import * as Yup from 'yup';
 const useStyles = makeStyles((theme) => ({
   paper: {
     marginTop: theme.spacing(1),
-    padding: theme.spacing(5),
+    padding: theme.spacing(6),
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
-    '& #specialty' : {
-        height : '1rem',
-        padding: '.3rem',
-        fontSize: '.6rem'
-    },
-    '& #focusIn' : {
-        height : '1rem',
-        padding: '.3rem',
-        fontSize: '.6rem'
-    }
   },
   form: {
 
   },
   submit: {},
   field : {
-      fontSize : '.6rem'
+      
   }
 }));
 
@@ -49,6 +39,13 @@ export const AddSpecialtyForm = (props) => {
   const [spec] = useMutation(ADD_USER_SPEC);
 
   const classes = useStyles();
+
+
+  const InputProps = {
+    margin: 'dense',
+    size: 'small'
+
+  }
 
   return (
     <Grid container xs={12}>
@@ -94,31 +91,35 @@ export const AddSpecialtyForm = (props) => {
           }}
         >
           <Form className={classes.form} noValidate>
-              <Grid item container direction='column' justify='center' spacing={3}>
+              <Grid item container direction='column' justify='center'>
                   <Grid item>
             <Field
               label="Specialty"
               type="text"
               name="specialty"
-              placeholder={`'math', 'science', ...`}
               variant="outlined"
+              InputProps={InputProps}
+              margin='dense'
+              size='small'
               autoFocus
-              fullWidth
+              
               id="specialty"
               as={TextInputField}
-              className={classes.field}
+              
             />
             </Grid>
             <Grid item>
             <Field
-                className={classes.field}
+                
                 label='Focus In'
                 type='text'
                 name='focusIn'
                 placholder={`'calculus','16th century', ...`}
                 variant = 'outlined'
                 autoFocus
-                fullWidth
+                margin='dense'
+                size='small'
+                InputProps={InputProps}
                 id='focusIn'
                 as={TextInputField}
              />

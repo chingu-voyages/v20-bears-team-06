@@ -1,24 +1,25 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
 import gql from "graphql-tag";
 import { useAuth } from "../graphql/Hooks";
 import { useQuery, useMutation, useApolloClient } from "@apollo/react-hooks";
-import { makeStyles, fade } from "@material-ui/core/styles";
+import { makeStyles, fade, useTheme } from "@material-ui/core/styles";
 import {
   AppBar,
   Button,
   IconButton,
   InputBase,
+  useMediaQuery,
   Toolbar,
   Typography,
+  Grid
 } from "@material-ui/core";
 import SearchIcon from "@material-ui/icons/Search";
 import AccountCircle from "@material-ui/icons/AccountCircle";
-import { Link as RouterLink, useHistory } from "react-router-dom";
+import { Link as RouterLink, useHistory, Redirect } from "react-router-dom";
 import { NotificationsPopover } from "./mui_components/NotificationsPopover";
 import { GET_ME } from "../graphql/Queries";
 import { useLocation } from 'react-router-dom';
-import { weirdRouter } from '../utils/weirdRouter';
 
 const useStyles = makeStyles((theme) => ({
   grow: {
@@ -51,6 +52,11 @@ const useStyles = makeStyles((theme) => ({
       marginLeft: theme.spacing(3),
       width: "auto",
     },
+    [theme.breakpoints.down('sm')] :{
+      width: '68%',
+      marginRight: '0',
+      marginBottom: theme.spacing(2)
+    }
   },
   searchIcon: {
     padding: theme.spacing(0, 2),
@@ -74,6 +80,24 @@ const useStyles = makeStyles((theme) => ({
       width: "20ch",
     },
   },
+  barButtons : {
+    [theme.breakpoints.down('sm')]:{
+      padding: '2px 5px'
+    }
+  },
+  buttonText : {
+    [theme.breakpoints.down('sm')]:{
+      fontSize: '.65rem'
+    }
+  },
+  mobileTitle: {
+    marginTop: theme.spacing(2)
+  },
+  mediumButton: {
+    [theme.breakpoints.up('md')]: {
+    justifyContent: 'flex-end'
+    }
+  }
 }));
 
 const LOGOUT = gql`
@@ -83,12 +107,14 @@ const LOGOUT = gql`
 `;
 
 export default function Header() {
+  const [redirect, setRedirect ] = useState(null);
   const classes = useStyles();
   const location = useLocation();
   const [logout] = useMutation(LOGOUT);
   let history = useHistory();
   const client = useApolloClient();
-  console.log(client)
+  const theme = useTheme();
+  const matches = useMediaQuery(theme.breakpoints.down('sm'));
   let meData;
   const { data, error, loading } = useQuery(GET_ME);
   if (error) console.log(error);
@@ -115,26 +141,23 @@ export default function Header() {
   }
 
   const renderUser = (
-    <div className="accountIcons">
+    <Grid container spacing={1} xs={4} sm={4} md={3} justify='center' alignItems='center' className={classes.mediumButton}>
+    <Grid item container direction='row' justify='center' alignItems='center' className={classes.mediumButton} xs={12} md={6}>
+     {redirect!==null && <Redirect to={redirect} />}
       {me && <NotificationsPopover meId={me.id} />}
 
       <IconButton
         aria-label="account of current user"
-        component={RouterLink}
         onClick={() => {
-         const link = document.createElement('a');
-         link.style.display= 'hidden';
-         link.href = me?`/profile/${me.id}`:'/';
-         let divs = document.getElementsByTagName('div');
-         divs[0].appendChild(link);
-         link.click();
+         setRedirect(`${me ? "/profile/" + me.id : "/"}`)
          
         }}
-        to={`${me ? "/profile/" + me.id : "/"}`}
         color="inherit"
       >
         <AccountCircle />
       </IconButton>
+      </Grid>
+      <Grid item>
       <Button
         variant="outlined"
         size="small"
@@ -142,43 +165,54 @@ export default function Header() {
         onClick={async () => {
           await logout(LOGOUT);
           setTimeout(async () => {
-            await client.clearStore();
-            weirdRouter('/');
+            await client.resetStore();
+            setRedirect('/');
           }, 400);
         }}
       >
         Log Out
       </Button>
-    </div>
+      </Grid>
+    </Grid>
   );
 
   const renderGuest = (
-    <div className={classes.accountIcons}>
+    <Grid container spacing={1} xs={2} sm={2} justify='flex-end'>
+      <Grid item >
       <Button
         component={RouterLink}
         to={"/login"}
         variant="outlined"
         size="small"
         color="inherit"
+        className={classes.barButtons}
       >
-        Log In
+        <Typography className={classes.buttonText} variant='subtitle2' align='center'>
+          Log In
+        </Typography>
       </Button>
-
+      </Grid>
+       <Grid item>
       <Button
         component={RouterLink}
         to={"/register"}
         variant="outlined"
         size="small"
         color="inherit"
+        className={classes.barButtons}
       >
-        Sign Up
+       <Typography className={classes.buttonText} variant='subtitle2' align='center'>
+          Sign Up
+        </Typography>
       </Button>
-    </div>
+    </Grid>
+    </Grid>
   );
 
   return (
     <div className={classes.grow}>
       <AppBar position="static">
+      {!matches&&
         <Toolbar className={classes.toolbar}>
           <Typography
             component={RouterLink}
@@ -208,7 +242,41 @@ export default function Header() {
           </div>
           <div className={classes.grow} />
           {me ? renderUser : renderGuest}
-        </Toolbar>
+        </Toolbar>}
+        {matches && <Toolbar className={classes.mobileToolbar}>
+          <Grid container xs={9} justify='center' spacing={1}>
+          <Typography
+            gutterBottom
+            component={RouterLink}
+            to={"/"}
+            variant="h4"
+            color="inherit"
+            align="justify"
+            className={classes.mobileTitle}
+            noWrap
+          >
+            Teachers App
+          </Typography>
+          <div className={classes.search}>
+            <div className={classes.searchIcon}>
+              <SearchIcon />
+            </div>
+            <InputBase
+              placeholder="Search…"
+              classes={{
+                root: classes.inputRoot,
+                input: classes.inputInput,
+              }}
+              inputProps={{ "aria-label": "search" }}
+              onKeyUp={(event) => {
+                if (event.key == "Enter") search(event.target.value);
+              }}
+            />
+          </div>
+          </Grid>
+          <div className={classes.grow} />
+          {me ? renderUser : renderGuest}
+        </Toolbar>}
       </AppBar>
     </div>
   );

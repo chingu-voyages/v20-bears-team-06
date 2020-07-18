@@ -5,8 +5,6 @@ import EditForm from '../components/EditForm';
 import { useParams } from 'react-router-dom';
 import { useQuery } from '@apollo/react-hooks';
 import { GET_ME, GET_PROFILE} from '../graphql/Queries';
-import './profilepage.scss';
-import './editpage.scss';
 
 export const useCachedMe = () => {
   const { data } = useQuery(GET_ME);

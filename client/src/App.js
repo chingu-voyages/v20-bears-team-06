@@ -5,6 +5,7 @@ import {
   ThemeProvider,
   responsiveFontSizes,
 } from "@material-ui/core/styles";
+import { CssBaseline } from '@material-ui/core';
 import { GET_ME } from "./graphql/Queries";
 import Header from "./components/Header";
 import { ProfilePage } from "./pages/ProfilePage";
@@ -16,7 +17,6 @@ import { FOLLOWER_SUB } from "./graphql/Subscriptions";
 import { UploadExample } from "./components/UploadExample";
 import SearchResultsPage from "./pages/SearchResultsPage";
 import HomePage from "./pages/HomePage";
-import "./App.scss";
 import { FollowersPage } from "./pages/FollowersPage";
 
 const useMeId = () => {
@@ -52,6 +52,8 @@ export default function App({ client }) {
   theme = responsiveFontSizes(theme, 9);
   return (
     <Router>
+      <React.Fragment>
+      <CssBaseline />
       <div id="App">
         <Header
           setLoggedIn={setLoggedIn}
@@ -110,6 +112,7 @@ export default function App({ client }) {
           {/* </ThemeProvider> */}
         </Switch>
       </div>
+      </React.Fragment>
     </Router>
   );
 }

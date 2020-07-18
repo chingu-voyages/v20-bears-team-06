@@ -156,6 +156,7 @@ export const ContentBoard = ({profile, meId }) => {
   const [toDisplay, setToDisplay ] = useState('user');
   let { url } = useRouteMatch();
   url+='/followers';
+  let aboutMeText = null;
   let isOwnProfile, isLoggedIn, isFollowing, refetchQuery;
   if (meId){
     isLoggedIn = true;
@@ -216,6 +217,17 @@ export const ContentBoard = ({profile, meId }) => {
     contentSlug= 'Favorite';
   }
 
+  if (profile&&profile.about_me){
+    let len = profile.about_me.length;
+    if (len>140){
+      aboutMeText = profile.about_me.slice(0,137)+"...";
+    }else if(len===0){
+      aboutMeText= ''
+    }else{
+      aboutMeText = profile.about_me
+    }
+  }
+
   return (
     <>
     
@@ -228,7 +240,7 @@ export const ContentBoard = ({profile, meId }) => {
                 About Me
               </Typography>
               <Typography variant='body2' align='justify'>
-                {profile&&profile.about_me&&profile.about_me!==''&&profile.about_me.length>140?profile.about_me.slice(0,140):''}
+                {aboutMeText||''}
               </Typography>
               </CardContent>
             </Card>

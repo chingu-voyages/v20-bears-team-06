@@ -4,7 +4,7 @@ module.exports =
         name: "default",
         type: "postgres",
         url: process.env.DATABASE_URL,
-        logging: true,
+        logging: false,
         synchronize: true,
         entities: ["src/entity/*.*"],
         subscribers:["src/subscribers/*.*"],
