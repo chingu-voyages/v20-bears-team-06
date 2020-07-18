@@ -1,25 +1,22 @@
-import React, { useContext, useState } from "react";
-import { Redirect } from "react-router-dom";
+import React, { useState } from "react";
 import { Formik, Form, Field } from "formik";
 import { useMutation } from "@apollo/react-hooks";
-import { ADD_USER_SPEC, EDIT_PROFILE_MUTATION } from "../graphql/Mutations";
-import { formatFileName, uploadToS3 } from "../components/UploadExample";
+import { EDIT_PROFILE_MUTATION } from "../graphql/Mutations";
+import { GET_PROFILE } from "../graphql/Queries";
+import { uploadToS3 } from "../utils/uploadToS3";
+import { formatFileName } from "../utils/formatFileName";
+import { Redirect } from 'react-router-dom';
 import {
-  Avatar,
   Button,
   Container,
   CssBaseline,
-  Grid,
-  Link,
   makeStyles,
   useTheme,
-  Paper,
   Typography,
   TextField,
 } from "@material-ui/core";
 import { TextInputField } from "./fields/TextInputField";
 import { TextAreaField } from "./fields/TextAreaField";
-import { ProfileContext } from "../pages/ProfilePage";
 import * as Yup from "yup";
 import { DropZoneField } from "./mui_components/DropzoneArea";
 import { weirdRouter } from '../utils/weirdRouter';
@@ -49,7 +46,7 @@ const useStyles = makeStyles((theme) => ({
 
 const EditForm = ({ meId, profile }) => {
   const [edit] = useMutation(EDIT_PROFILE_MUTATION);
-  
+  const [redirect, setRedirect ] = useState(null);
   let isOwnProfile;
 
   if (profile&&meId){
@@ -63,6 +60,7 @@ const EditForm = ({ meId, profile }) => {
   if (profile){
     return (
       <Container component="main" maxWidth="xs">
+        {redirect!==null&&<Redirect to={redirect} />}
         <CssBaseline />
         <div className={classes.paper}>
           <Typography variant="h4" component="h1" color="primary" gutterBottom>
@@ -132,7 +130,8 @@ const EditForm = ({ meId, profile }) => {
                       firstName: values.firstName?
                       values.firstName: profile.lastName,
                       lastName: values.lastName? values.lastName: profile.lastName,
-                    },
+                    },refetchQueries: [{query: GET_PROFILE, variables:{userId: meId}}],
+                      awaitRefetchQueries: true
                   });
                   
                   if (response && response.data && !response.data.editUser) {
@@ -145,15 +144,18 @@ const EditForm = ({ meId, profile }) => {
                       values.file[0].file,
                       s3.signedRequest
                     );
+
+                    console.log(s3response)
                     
                     
                   }
                 } catch (e) {
                   
                 }
-
-                setSubmitting(false);
-                weirdRouter(`/profile/${meId}`);
+                setRedirect(`/profile/${profile.id}`);
+               
+                
+                
               }, 400);
             }}
           >
