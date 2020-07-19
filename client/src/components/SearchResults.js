@@ -117,7 +117,7 @@ return results.map((value) =>
           primary={value.filename}
           secondary={
             value.name_pretty && value.description
-              ? `${value.name_pretty}
+              ? `${value.name_pretty} \n
               ${value.description}`
               : ""
           }

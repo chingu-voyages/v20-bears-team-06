@@ -1,0 +1,24 @@
+$cool-grey: #8895b3ff;
+$blue: #8e94f2ff;
+$blue-purple: #9fa0ffff;
+$blue-purple-2: #bbadffff;
+$mauve: #dab6fcff;
+
+@mixin breakpoint($point) {
+    @if $point == desktop {
+      @media (min-width: 70em) { @content ; }
+   }
+    @else if $point == laptop {
+      @media (min-width: 64em) { @content ; }
+   }
+     @else if $point == tablet {
+      @media (min-width: 50em) { @content ; }
+   }
+    @else if $point == phablet {
+      @media (min-width: 37.5em)  { @content ; }
+   }
+   @else if $point == mobileonly {
+      @media (max-width: 37.5em)  { @content ; }
+ 
+   }
+ }

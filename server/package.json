@@ -4,32 +4,42 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "ts-node-dev --respawn src/index.ts",
+    "production": "ts-node src/index.ts",
+    "start": "node -r ts-node/register --inspect --optimize_for_size --max_old_space_size=460 src/index.ts",
+    "dev": "ts-node-dev --respawn src/index.ts",
     "db:setup": "ts-node ./src/test-utils/setup.ts",
     "test": "npm run db:setup && jest"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@types/shortid": "^0.0.29",
     "apollo-server-express": "^2.14.3",
-    "axios": "^0.19.2",
+    "aws-sdk": "^2.707.0",
     "bcryptjs": "^2.4.3",
     "class-validator": "^0.12.2",
+    "colors": "^1.4.0",
     "connect-redis": "^4.0.4",
     "cors": "^2.8.5",
+    "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "express-session": "^1.17.1",
     "graphql": "^15.1.0",
+    "graphql-redis-subscriptions": "^2.2.1",
     "graphql-upload": "^11.0.0",
     "ioredis": "^4.17.3",
+    "moment": "^2.27.0",
     "nodemailer": "^6.4.8",
     "nodemon": "^2.0.4",
     "pg": "^8.2.1",
     "reflect-metadata": "^0.1.13",
+    "shortid": "^2.2.15",
     "ts-node": "^8.10.2",
     "ts-node-dev": "^1.0.0-pre.44",
     "type-graphql": "^1.0.0-rc.2",
+    "typedi": "^0.8.0",
     "typeorm": "^0.2.25",
+    "typeorm-typedi-extensions": "^0.2.3",
     "uuid": "^8.1.0"
   },
   "devDependencies": {
@@ -48,5 +58,8 @@
     "jest": "^26.0.1",
     "ts-jest": "^26.1.0",
     "typescript": "^3.9.5"
+  },
+  "engines": {
+    "node": "12.x"
   }
 }
