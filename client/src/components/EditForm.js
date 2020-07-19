@@ -1,27 +1,25 @@
-import React, { useContext, useState } from "react";
-import { Redirect } from "react-router-dom";
+import React, { useState } from "react";
 import { Formik, Form, Field } from "formik";
 import { useMutation } from "@apollo/react-hooks";
-import { ADD_USER_SPEC, EDIT_PROFILE_MUTATION } from "../graphql/Mutations";
-import { formatFileName, uploadToS3 } from "../components/UploadExample";
+import { EDIT_PROFILE_MUTATION } from "../graphql/Mutations";
+import { GET_PROFILE } from "../graphql/Queries";
+import { uploadToS3 } from "../utils/uploadToS3";
+import { formatFileName } from "../utils/formatFileName";
+import { Redirect } from 'react-router-dom';
 import {
-  Avatar,
   Button,
   Container,
   CssBaseline,
-  Grid,
-  Link,
   makeStyles,
   useTheme,
-  Paper,
   Typography,
   TextField,
 } from "@material-ui/core";
 import { TextInputField } from "./fields/TextInputField";
 import { TextAreaField } from "./fields/TextAreaField";
-import { ProfileContext } from "../pages/ProfilePage";
 import * as Yup from "yup";
 import { DropZoneField } from "./mui_components/DropzoneArea";
+import { weirdRouter } from '../utils/weirdRouter';
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -36,29 +34,33 @@ const useStyles = makeStyles((theme) => ({
   },
   form: {
     width: "100%", // Fix IE 11 issue.
-    marginTop: theme.spacing(1),
+    marginTop: theme.spacing(3),
+    '& input' : {
+      fontSize: theme.typography.subtitle2
+    }
   },
   submit: {
     margin: theme.spacing(3, 0, 2),
   },
 }));
 
-const EditForm = (props) => {
+const EditForm = ({ meId, profile }) => {
   const [edit] = useMutation(EDIT_PROFILE_MUTATION);
-  let isOwnProfile = props.isOwnProfile || null;
-  const profile = props.profile || null;
+  const [redirect, setRedirect ] = useState(null);
+  let isOwnProfile;
 
-  const { id } = profile;
-
-  console.log(profile);
+  if (profile&&meId){
+    isOwnProfile = profile.id===meId;
+  }
 
   const theme = useTheme();
 
   const classes = useStyles(theme);
 
-  if (isOwnProfile) {
+  if (profile){
     return (
       <Container component="main" maxWidth="xs">
+        {redirect!==null&&<Redirect to={redirect} />}
         <CssBaseline />
         <div className={classes.paper}>
           <Typography variant="h4" component="h1" color="primary" gutterBottom>
@@ -66,16 +68,20 @@ const EditForm = (props) => {
           </Typography>
           <Formik
             initialValues={{
+              firstName: profile.firstName,
+              lastName: profile.lastName,
               school: profile.school,
               department: profile.department,
               position: profile.position,
               aboutMe: profile.about_me,
               location: profile.location,
-              file: [],
+              file:[],
             }}
             validateOnBlur={false}
             validateOnChange={false}
             validationSchema={Yup.object({
+              firstName: Yup.string().min(3).max(40).nullable(),
+              lastName: Yup.string().min(3).max(40).nullable(),
               school: Yup.string()
                 .min(3)
                 .max(60, "School name must be between 3-60 characters")
@@ -91,7 +97,7 @@ const EditForm = (props) => {
               aboutMe: Yup.string()
                 .nullable()
                 .min(1)
-                .max(5000, "School name must be between 1-5000 characters"),
+                .max(140, "About me must be between 1-140 characters"),
               file: Yup.array().nullable(),
             })}
             onSubmit={(values, { setSubmitting, setFieldError }) => {
@@ -105,7 +111,7 @@ const EditForm = (props) => {
                 try {
                   const response = await edit({
                     variables: {
-                      userId: profile.id,
+                      userId: meId,
                       school: values.school ? values.school : profile.school,
                       department: values.department
                         ? values.department
@@ -121,9 +127,13 @@ const EditForm = (props) => {
                         : profile.location,
                       filetype: type ? type : null,
                       filename: name ? formatFileName(name) : null,
-                    },
+                      firstName: values.firstName?
+                      values.firstName: profile.lastName,
+                      lastName: values.lastName? values.lastName: profile.lastName,
+                    },refetchQueries: [{query: GET_PROFILE, variables:{userId: meId}}],
+                      awaitRefetchQueries: true
                   });
-                  console.log(response);
+                  
                   if (response && response.data && !response.data.editUser) {
                     setFieldError("invalid field data");
                     return;
@@ -134,19 +144,49 @@ const EditForm = (props) => {
                       values.file[0].file,
                       s3.signedRequest
                     );
-                    console.log(s3response);
+
+                    console.log(s3response)
+                    
+                    
                   }
                 } catch (e) {
-                  console.log("error with edit", e);
+                  
                 }
-
-                setSubmitting(false);
+                setRedirect(`/profile/${profile.id}`);
+               
+                
+                
               }, 400);
             }}
           >
             <Form className={classes.form} noValidate>
+            <Field
+                label="Update First Name"
+                name="firstName"
+                type="text"
+                margin="normal"
+                placeholder={profile.firstName || "enter school name"}
+                variant="outlined"
+                autoFocus
+                fullWidth
+                id="firstName"
+                as={TextInputField}
+              ></Field>
+              <Field
+                label="Update Last Name"
+                name="lastName"
+                type="text"
+                placeholder={profile.lastName || "enter school name"}
+                variant="outlined"
+                autoFocus
+                margin="normal"
+                fullWidth
+                id="lastName"
+                as={TextInputField}
+              ></Field>
               <Field
                 label="Update School"
+                margin="normal"
                 name="school"
                 type="text"
                 placeholder={profile.school || "enter school name"}
@@ -222,16 +262,8 @@ const EditForm = (props) => {
           </Formik>
         </div>
       </Container>
-    );
-  } else {
-    return (
-      <Grid container xs={12} justify="center" alignItems="center">
-        <Grid item xs={6}>
-          <Button>go back</Button>
-        </Grid>
-      </Grid>
-    );
-  }
-};
+    );}else{
+      return null;
+    }};
 
 export default EditForm;

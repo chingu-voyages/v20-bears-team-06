@@ -1,9 +1,9 @@
 import React from 'react';
-import { useMutation, useQuery } from '@apollo/react-hooks';
+import { useMutation, useQuery, useApolloClient } from '@apollo/react-hooks';
 import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
 import { Link as RouterLink, Redirect, useHistory } from 'react-router-dom';
-import { GET_ME } from '../graphql/Queries';
+import { GET_ME} from '../graphql/Queries';
 import { LOGIN_MUTATION } from '../graphql/Mutations';
 import {
   Avatar,
@@ -16,7 +16,6 @@ import {
   Typography,
 } from '@material-ui/core';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
-
 import { TextInputField } from './fields/TextInputField';
 
 const useStyles = makeStyles((theme) => ({
@@ -46,14 +45,18 @@ const useStyles = makeStyles((theme) => ({
 
 export const LoginForm = ({ isLoggedIn, setLoggedIn }) => {
   const [login] = useMutation(LOGIN_MUTATION);
+  const client = useApolloClient();
 
   const classes = useStyles();
   let history = useHistory();
-  const { data } = useQuery(GET_ME);
-
+  console.log(history);
 
   function returnHome() {
-    history.push('/');
+    const link = <Link to={'/'} />;
+    link.style.display = 'hidden';
+    link.click();
+
+    //history.push("/");
   }
   if (isLoggedIn) {
     console.log('redirecting');
@@ -88,8 +91,12 @@ export const LoginForm = ({ isLoggedIn, setLoggedIn }) => {
                       email: values.email,
                       password: values.password,
                     },
+                    refetchQueries: [
+                      {
+                        query: GET_ME
+                      }
+                    ],
                   });
-                  console.log(response);
                   if (response && response.data && !response.data.login) {
                     setFieldError(
                       'password',
@@ -97,8 +104,10 @@ export const LoginForm = ({ isLoggedIn, setLoggedIn }) => {
                     );
                     return;
                   }
-                  setLoggedIn(true);
-                  returnHome();
+                  if (response && response.data && response.data.login) {
+                    setLoggedIn(true);
+                    returnHome();
+                  }
                 } catch (e) {
                   console.log('error with login', e);
                 }
@@ -119,7 +128,7 @@ export const LoginForm = ({ isLoggedIn, setLoggedIn }) => {
               />
               <Field
                 className={classes.input}
-                size='small'
+                size="small"
                 variant="outlined"
                 margin="normal"
                 required

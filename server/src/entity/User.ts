@@ -3,7 +3,6 @@ import { ToFollowerNotification } from "./ToFollowerNotification";
 import { Notification } from "./Notification";
 import { ContentFile } from "./ContentFile";
 import { awsImageEndpoint } from "../modules/constants/awsImageEndpoint";
-import { FollowerData } from "../modules/followerdata/FollowerDataTypes";
 
 import {
   Entity,
@@ -185,6 +184,26 @@ export class User extends BaseEntity {
   @RelationId((user: User) => user.notifications_fromFollowers)
   notification_fromFollowersIds: number[];
 
+  @ManyToMany(() => ContentFile, (contentFile) => contentFile.savedBy, {
+    lazy: true,
+  })
+  @Field(() => [ContentFile])
+  savedContent: Lazy<ContentFile[]>;
+
+  @RelationId((user: User) => user.savedContent)
+  @Field(() => [ID])
+  savedContentIds: number[];
+
+  @ManyToMany(() => ContentFile, (contentFile) => contentFile.favoritedBy, {
+    lazy: true,
+  })
+  @Field(() => [ContentFile])
+  favoriteContent: Lazy<ContentFile[]>;
+
+  @RelationId((user: User) => user.favoriteContent)
+  @Field(() => [ID])
+  favoriteContentIds: number[];
+
   @ManyToMany(() => Specialty, (specialty) => specialty.users, {
     lazy: true,
   })
@@ -236,12 +255,14 @@ export class User extends BaseEntity {
     if (toFollowers === true) {
       let user = await this.findOne(userId, { relations: ["followers"] });
       if (!user) return;
+      let avatarUrl = user.profilePic_url;
       let followers = await user.followers;
       let notification = ToFollowerNotification.create({
         message,
         type,
         fromUserId,
         url,
+        avatarUrl,
         fromUserName,
         owners: followers,
       }).save();
@@ -251,12 +272,16 @@ export class User extends BaseEntity {
       }
     } else if (toFollowers === false) {
       let user = await this.findOne(userId);
+      let fromUser = await User.findOne(fromUserId);
       if (!user) return;
+     
+      let avatarUrl =fromUser?.profilePic_url;
       let notification = await Notification.create({
         message,
         type,
         fromUserId,
         url,
+        avatarUrl,
         fromUserName,
         owner: user,
       }).save();
@@ -269,7 +294,7 @@ export class User extends BaseEntity {
   }
 
   static async addNewFile(
-    @Args() { userId, key, signedRequest, filetype, filename }: AddNewFileArgs
+    @Args() { userId, key, signedRequest, filetype, filename }: AddNewFileArgs,
   ): Promise<ContentFile | undefined> {
     let user = await this.findOne(userId);
     if (!user) return;
@@ -302,6 +327,17 @@ export class User extends BaseEntity {
       if (notifications) return notifications;
     }
     return [];
+  }
+
+  static async getNewNotifications(@Arg("userId") userId: number) {
+    let user = await this.findOne(userId);
+    if (user) {
+      let notifications = (await user.notifications).filter(
+        (el) => el.seen === false
+      );
+      if (notifications) return notifications;
+      else return [];
+    } else return [];
   }
 
   static async updateProfilePic(
@@ -358,35 +394,5 @@ export class User extends BaseEntity {
     let updatedUser = await this.findOne(userId);
 
     return updatedUser;
-  }
-
-  static async getFollowerData(@Arg("userId") userId: number) {
-    let followers = await this.createQueryBuilder("user")
-      .relation("followers")
-      .of(userId)
-      .loadMany();
-
-    const result = followers.map((el) => {
-      let followerData: FollowerData = {
-        ...el,
-      };
-
-      return followerData;
-    });
-
-    console.log(result);
-
-    return result;
-  }
-
-  static async getNewNotifications(@Arg("userId") userId: number) {
-    let user = await this.findOne(userId);
-    if (user) {
-      let notifications = (await user.notifications).filter(
-        (el) => el.seen === false
-      );
-      if (notifications) return notifications;
-    }
-    return [];
   }
 }

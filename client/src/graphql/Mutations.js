@@ -4,6 +4,8 @@ export const LOGIN_MUTATION = gql`
   mutation LoginMutation($email: String!, $password: String!) {
     login(email: $email, password: $password) {
       name
+      id
+      firstName
     }
   }
 `;
@@ -46,18 +48,24 @@ export const EDIT_PROFILE_MUTATION = gql`
     $location: String
     $filename: String
     $filetype: String
-  ){
-    editUser(edit:{
-      userId: $userId
-      school: $school
-      department: $department
-      position: $position
-      about_me: $about_me
-      location: $location
-      filename: $filename
-      filetype: $filetype
-    }){
-      user{
+    $firstName: String
+    $lastName: String
+  ) {
+    editUser(
+      edit: {
+        userId: $userId
+        school: $school
+        department: $department
+        position: $position
+        about_me: $about_me
+        location: $location
+        filename: $filename
+        filetype: $filetype
+        firstName: $firstName
+        lastName: $lastName
+      }
+    ) {
+      user {
         id
         school
         department
@@ -65,15 +73,17 @@ export const EDIT_PROFILE_MUTATION = gql`
         about_me
         location
         profilePic_url
+        firstName
+        lastName
+        name
       }
-      s3{
+      s3 {
         signedRequest
         key
       }
       success
     }
   }
-  
 `;
 
 export const ADD_USER_SPEC = gql`
@@ -107,9 +117,28 @@ export const FOLLOW_USER_MUTATION = gql`
     followUser(users: { userId: $userId, toFollow: $toFollow }) {
       id
       name
+      school
+      department
+      position
+      employment
+      follower_count
+      profilePic_url
+      about_me
       followers {
         id
-        name
+      }
+      location
+      getSpecialties {
+        title
+        subtitle
+      }
+      followers {
+        id
+        profilePic_url
+        department
+        firstName
+        lastName
+        school
       }
     }
   }
@@ -117,12 +146,38 @@ export const FOLLOW_USER_MUTATION = gql`
 
 export const UNFOLLOW_USER_MUTATION = gql`
   mutation unfollowUser($userId: ID!, $toUnfollow: ID!) {
-    unfollowUser(users: { userId: $userId, toUnfollow: $toUnfollow })
+    unfollowUser(users: { userId: $userId, toUnfollow: $toUnfollow }) {
+      id
+      name
+      school
+      department
+      position
+      employment
+      follower_count
+      profilePic_url
+      about_me
+      followers {
+        id
+      }
+      location
+      getSpecialties {
+        title
+        subtitle
+      }
+      followers {
+        id
+        profilePic_url
+        department
+        firstName
+        lastName
+        school
+      }
+    }
   }
 `;
 
 export const S3_SIGN_MUTATION = gql`
-  mutation SignS3($filename: String!, $filetype: String!, $meId: number!) {
+  mutation SignS3($filename: String!, $filetype: String!, $meId: ID!) {
     signS3(filename: $filename, filetype: $filetype, meId: $meId) {
       key
       signedRequest
@@ -130,8 +185,177 @@ export const S3_SIGN_MUTATION = gql`
   }
 `;
 
-export const SET_SEEN_MUTATION = gql `
-  mutation setSeen($notificationIds: [ID!]!){
+export const SET_SEEN_MUTATION = gql`
+  mutation setSeen($notificationIds: [ID!]!) {
     setSeen(notificationIds: $notificationIds)
+  }
+`;
+
+export const NEW_UPLOAD_MUTATION = gql`
+  mutation newFileUpload($meId: ID!, $filetype: String!, $filename: String!) {
+    newFileUpload(meId: $meId, filetype: $filetype, filename: $filename) {
+      id
+      filetype
+      filename
+      date
+      ownerId
+      signedRequest
+      download_count
+      likes
+      key
+    }
+  }
+`;
+
+export const GET_SIGNED_DOWNLOAD = gql`
+  mutation s3download($fileId: ID!) {
+    s3download(fileId: $fileId) {
+      signedRequest
+      key
+    }
+  }
+`;
+
+export const INCREMENT_DOWNLOAD_MUTATION = gql`
+  mutation incrementDownloadCount($fileId: ID!) {
+    incrementDownloadCount(fileId: $fileId) {
+      id
+      download_count
+      filetype
+      filename
+      id
+      filetype
+      filename
+      date
+      ownerId
+      signedRequest
+      download_count
+      likes
+      key
+    }
+  }
+`;
+
+export const FILE_ACTION_MUTATION = gql`
+  mutation fileAction($fileId: ID!, $userId: ID!, $actionType: String!) {
+    fileAction(userId: $userId, fileId: $fileId, actionType: $actionType) {
+      id
+      filetype
+      filename
+      date
+      ownerId
+      signedRequest
+      download_count
+      likes
+      key
+      gradeLevel
+      favorite_count
+      save_count
+    }
+  }
+`;
+
+export const REMOVE_FOLLOWER_MUTATION = gql`
+  mutation removeFollower($meId: ID!, $userId: ID!) {
+    removeFollower(meId: $meId, userId: $userId) {
+      id
+      followers {
+        id
+        profilePic_url
+        department
+        firstName
+        lastName
+        school
+        employment
+        location
+        name
+      }
+    }
+  }
+`;
+
+export const DELETE_FILE = gql`
+  mutation deleteFile($fileId: ID!) {
+    deleteFile(fileId: $fileId) {
+      uploads {
+        id
+        filetype
+        filename
+        date
+        ownerId
+        signedRequest
+        download_count
+        likes
+        key
+      }
+    }
+  }
+`;
+
+export const REMOVE_SAVED_FILE = gql`
+  mutation removeSaved($meId: ID!, $fileId: ID!) {
+    removeSaved(meId: $meId, fileId: $fileId) {
+      uploads {
+        id
+        filetype
+        filename
+        date
+        ownerId
+        signedRequest
+        download_count
+        likes
+        key
+      }
+    }
+  }
+`;
+
+export const REMOVE_FAV_FILE = gql`
+  mutation removeFavorite($meId: ID!, $fileId: ID!) {
+    removeFavorite(meId: $meId, fileId: $fileId) {
+      uploads {
+        id
+        filetype
+        filename
+        date
+        ownerId
+        signedRequest
+        download_count
+        likes
+        key
+      }
+    }
+  }
+`;
+
+export const EDIT_FILE_DETAILS = gql`
+  mutation editFileDetails(
+    $fileId: ID!
+    $filename: String = null
+    $description: String = ""
+    $gradeLevel: String = ""
+    $category: String = ""
+  ) {
+    editFileDetails(
+      fileId: $fileId,
+      filename: $filename,
+      description: $description,
+      gradeLevel: $gradeLevel,
+      category: $category
+    ){
+      id
+      filetype
+      filename
+      date
+      ownerId
+      signedRequest
+      download_count
+      likes
+      key
+      gradeLevel
+      favorite_count
+      save_count
+
+    }
   }
 `;

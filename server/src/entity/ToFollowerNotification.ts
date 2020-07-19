@@ -41,6 +41,10 @@ export class ToFollowerNotification extends BaseEntity{
     @Column({nullable:true})
     url: string;
 
+    @Field({nullable:true})
+    @Column({nullable:true})
+    avatarUrl: string;
+
     
     @Field({nullable:true})
     @Column({nullable:true})

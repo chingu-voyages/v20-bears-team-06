@@ -1,7 +1,6 @@
 import React from "react";
 
 import { RegistrationForm } from "../components/RegistrationForm";
-import "./registerpage.scss";
 
 const RegisterPage = ({ setLoggedIn, isLoggedIn }) => {
   return (

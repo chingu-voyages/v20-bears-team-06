@@ -10,7 +10,7 @@ export abstract class EditUserPayload {
   @Field(() => Boolean, { nullable: true })
   success: boolean;
 
-  @Field(() => SignedS3Payload, { nullable: true })
+  @Field(() => SignedS3Payload, { nullable: true, defaultValue:null })
   s3: SignedS3Payload;
 }
 

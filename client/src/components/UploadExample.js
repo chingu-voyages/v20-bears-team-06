@@ -9,6 +9,7 @@ import { UploadComponent } from './fields/UploadField';
 
 const useMe = () => {
   let { loading, error, data } = useQuery(GET_ME);
+  if (error) console.log(error);
   if (!loading && data && data.me && data.me.id) {
     return data.me.id;
   }
@@ -30,9 +31,16 @@ export const uploadToS3 = async (file, signedRequest) => {
     headers: {
       'Content-Type': file.type,
       'x-amz-acl': 'public-read',
+      
     },
+    observe: 'events',
+    responseType: 'json',
   };
-  await axios.put(signedRequest, file, options);
+  axios.put(signedRequest, file, options)
+  .then(response=>{
+    console.log(response);
+  })
+  
 };
 
 export const UploadExample = () => {
@@ -60,7 +68,7 @@ export const UploadExample = () => {
             meId
           },
         });
-        const { signedRequest, url } = response.data.signS3;
+        const { signedRequest} = response.data.signS3;
 
         const s3Response = await uploadToS3(fileToUpload, signedRequest);
         console.log(s3Response);
