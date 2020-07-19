@@ -46,13 +46,11 @@ export const FollowersListItem = ({follower, meId}) => {
       const response = await remove({
         variables:{meId,userId: follower.id}
       });
-      console.log(response);
   }
   let match = useRouteMatch();
   let path = match.path.replace(':userId/followers',follower.id);
   let isOwnProfile = match.params.userId === meId;
   const classes = useStyles();
-  console.log(follower)
   if (follower){   
   return (
     <ListItem divider id={follower.id} className={classes.listItem} key={follower.id} alignItems="flex-start">

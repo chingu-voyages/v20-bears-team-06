@@ -11,7 +11,6 @@ const SearchResultsPage = (props) => {
   ) {
     searchTerm = props.location.state.searchTerm;
   }
-  console.log("search results page", JSON.stringify(searchTerm));
 
   return (
     <div className="search-results-page">

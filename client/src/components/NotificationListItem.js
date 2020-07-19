@@ -10,7 +10,6 @@ import { Link } from 'react-router-dom';
   
 
 export function NotificationListItem({notification, history}){
-    console.log(notification)
     return(
         <>
         

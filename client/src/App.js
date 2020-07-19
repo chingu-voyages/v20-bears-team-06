@@ -25,7 +25,6 @@ const useMeId = () => {
     console.log(error);
   }
   if (!loading && data && data.me && data.me.id) {
-    console.log(data.me.id);
     return data.me.id;
   }
 };

@@ -169,7 +169,6 @@ export const ContentBoard = ({profile, meId }) => {
 
 
   const handleContentSwitch = (event) => {
-    console.log(event.currentTarget.value)
     setToDisplay(event.currentTarget.value);
   }
   

@@ -22,9 +22,7 @@ export const DropZoneField = ({ label, type, name, ...props }) => {
 
     }
   }
-  console.log(matches);
   const [field, meta, helpers] = useField('file');
-  console.log(field,meta);
   const {setValue} = helpers;
 
   

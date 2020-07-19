@@ -86,7 +86,6 @@ export const FileDetailsDialog = ({file, handleDownloadClick, toDisplay }) => {
             }],
         });
 
-        console.log(response);
         
     }
 
@@ -111,7 +110,6 @@ export const FileDetailsDialog = ({file, handleDownloadClick, toDisplay }) => {
                 variables: {userId}
             }],
         });
-        console.log(response);
     }
 
     const handleUnfavClick = async (meId, fileId) =>{
@@ -122,7 +120,6 @@ export const FileDetailsDialog = ({file, handleDownloadClick, toDisplay }) => {
                 variables: {userId}
             }],
         });
-        console.log(response);
     }
 
 

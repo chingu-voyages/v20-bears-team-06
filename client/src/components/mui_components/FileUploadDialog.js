@@ -57,7 +57,6 @@ export const FileUploadDialog = ({ setUpdate, meId, iconColor, ...props }) => {
       }
 
       if (filename&&filetype){
-        console.log(filename, filetype, meId);
         const response = await newUpload({
           variables:{
             filename,
@@ -79,7 +78,6 @@ export const FileUploadDialog = ({ setUpdate, meId, iconColor, ...props }) => {
             if (s3response && s3response.status){
               let { status } = s3response;
               if (status===200){
-                console.log(event)
               }
             }
           }
@@ -120,16 +118,13 @@ export const FileUploadDialog = ({ setUpdate, meId, iconColor, ...props }) => {
           maxFileSize={5000000}
           open={open}
           onAdd={newFileObjs => {
-            console.log('onAdd', newFileObjs);
             setFileObjects([].concat(fileObjects, newFileObjs));
           }}
           onDelete={deleteFileObj => {
-            console.log('onDelete', deleteFileObj);
             let objs = fileObjects.filter(el=>el.data!==deleteFileObj.data);
             setFileObjects(objs);
           }}
           onSave={(event) => {
-            console.log('onSave', fileObjects);
             handleFileSubmit(meId,event);
             setOpen(false);
            

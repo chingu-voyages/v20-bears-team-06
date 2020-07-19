@@ -71,7 +71,6 @@ export const RegistrationForm = ({ isLoggedIn, setLoggedIn }) => {
     weirdRouter("/")
   }
   if (isLoggedIn) {
-    console.log("redirecting");
     return <Redirect to={{ pathname: "/" }} />;
   } else {
     return (
@@ -104,14 +103,12 @@ export const RegistrationForm = ({ isLoggedIn, setLoggedIn }) => {
                       password: values.password,
                     },
                   });
-                  console.log(response);
                   const responseLogin = await login({
                     variables: {
                       email: values.email,
                       password: values.password,
                     },
                   });
-                  console.log(responseLogin);
                   setLoggedIn(true);
                   returnHome();
                 } catch (e) {

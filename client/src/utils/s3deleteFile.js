@@ -16,6 +16,5 @@ export const s3deleteFile = (key) =>{
         {Bucket:process.env.REACT_APP_Bucket,
         Key: key},(err,data)=>{
             if (err) console.log(err);
-            console.log(data);
         });
 }

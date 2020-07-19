@@ -131,13 +131,13 @@ if (profile&&profile!=='loading'&&meId){
     specialties = specialties.map((el) => {
       return (
         <li
-          key={`${profile.id}${el.title}${el.subtitle || Math.random() * 3000}`}
+          key={el.id}
         >
           <Chip
             variant="outlined"
             color="primary"
             size="small"
-            label={el.title[0].toUpperCase() + el.title.slice(1).toLowerCase()}
+            label={el.title?el.title[0].toUpperCase() + el.title.slice(1).toLowerCase():''}
           />
         </li>
       );

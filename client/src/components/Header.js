@@ -121,22 +121,8 @@ export default function Header() {
   if (!loading&&data&&data.me){
     meData = data;
   }
-  // const { data: testMe } = client.readQuery({
-  //   query: gql`
-  //     {
-  //       me {
-  //         id
-  //         name
-  //         firstName
-  //       }
-  //     }
-  //   `,
-  // });
-  // console.log("test me data", testMe);
   const me = meData ? meData.me : null;
-  console.log("header data me", meData);
   function search(searchTerm) {
-    console.log("search values is", searchTerm);
     history.push("/search", { searchTerm });
   }
 

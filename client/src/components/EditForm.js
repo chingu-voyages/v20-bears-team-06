@@ -145,7 +145,6 @@ const EditForm = ({ meId, profile }) => {
                       s3.signedRequest
                     );
 
-                    console.log(s3response)
                     
                     
                   }

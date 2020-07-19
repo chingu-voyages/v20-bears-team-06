@@ -106,7 +106,6 @@ function generatePostResults(results, element) {
 };
 
 function generateFileResults(results, handleDownloadClick, me){
-  console.log("these are file results", results);
 return results.map((value) =>
     React.cloneElement(
       <ListItem>
@@ -147,49 +146,6 @@ return results.map((value) =>
 }
 
 
-/*function generateFileResults(results, element) {
-  console.log("these are file results", results);
-
-  if (results&&results.searchFiles) {
-    return results.map((value) => {
-      React.cloneElement(
-        <ListItem>
-          <ListItemAvatar>
-            <Avatar>
-              <FolderIcon />
-            </Avatar>
-          </ListItemAvatar>
-          <ListItemAvatar>
-            <IconButton
-              edge="end"
-              aria-label="arrowforward"
-              component={RouterLink}
-              to={`${"/profile/" + value.ownerId}`}
-            >
-              <AccountCircle />
-            </IconButton>
-          </ListItemAvatar>
-          <ListItemText
-            primary={value.name_pretty}
-            secondary={value.description}
-          />
-          <ListItemSecondaryAction>
-            <IconButton
-              onClick={() =>
-                filetypeDownloadHandler(value.key, value.filetype, value.id)
-              }
-            >
-              <GetAppIcon />
-            </IconButton>
-          </ListItemSecondaryAction>
-        </ListItem>,
-        {
-          key: value.id,
-        }
-      );
-    });
-  }
-}*/
 
 
 export default function SearchResults({ searchTerm }) {
@@ -265,7 +221,6 @@ export default function SearchResults({ searchTerm }) {
   ) : (
     <Typography variant="h6">No post results found</Typography>
   );
-  console.log("what is filedata? ", JSON.stringify(fileData));
 
   const { searchFiles } = fileData ? fileData : { searchFiles: null };
 

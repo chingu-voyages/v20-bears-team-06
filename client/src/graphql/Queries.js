@@ -116,6 +116,7 @@ export const GET_PROFILE = gql`
       }
       location
       getSpecialties {
+        id
         title
         subtitle
       }
@@ -192,6 +193,7 @@ export const GET_SPECIALTIES = gql`
   query getSpecialties($userId: ID!) {
     user(userId: $userId) {
       getSpecialties {
+        id
         title
         subtitle
       }

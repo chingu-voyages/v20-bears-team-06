@@ -11,7 +11,6 @@ export const useMeId = () =>{
     }
 
     if (!loading&&data){
-        console.log(data);
         if (data.me){
             return data.me.id;
         }

@@ -23,7 +23,6 @@ export const filetypeDownloadHandler = (key, filetype, fileId) => {
     },
     (err, data) => {
       if (err) console.log(err);
-      console.log(data);
       jsDownload(data.Body, `${key.split("/")[1]}`, filetype);
       success = true;
     }

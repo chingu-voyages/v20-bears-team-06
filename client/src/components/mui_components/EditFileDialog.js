@@ -61,12 +61,10 @@ export const EditFileDialog = ({fileId}) => {
 
   const handleChange = (event) => {
     setValues(Object.assign({},values,{[event.target.id]:event.target.value}));
-    console.log(values);
   };
 
   const handleSelectChange = (event) => {
       setValues(Object.assign({},values,{[event.target.name]:event.target.value}));
-      console.log(values);
   }
 
   const handleClose = () => {

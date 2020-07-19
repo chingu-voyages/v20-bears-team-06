@@ -34,7 +34,6 @@ const useStyles = makeStyles((theme) => ({
 
 export const AddSpecialtyForm = (props) => {
   let { userId } = useParams();
-  console.log(userId);
 
   const [spec] = useMutation(ADD_USER_SPEC);
 
@@ -81,7 +80,6 @@ export const AddSpecialtyForm = (props) => {
                   },
                 });
 
-                console.log(response);
               } catch (e) {
                 console.log('error with submit', e);
               }
