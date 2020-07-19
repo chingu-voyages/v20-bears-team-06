@@ -137,7 +137,7 @@ if (profile&&profile!=='loading'&&meId){
             variant="outlined"
             color="primary"
             size="small"
-            label={el.title?el.title[0].toUpperCase() + el.title.slice(1).toLowerCase():''}
+            label={el.title?el.title:null}
           />
         </li>
       );
