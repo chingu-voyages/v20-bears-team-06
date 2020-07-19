@@ -49,7 +49,6 @@ export function NotificationsPopover({ meId }) {
   if (error) console.log(error);
   if (!loading&&data){
     notificationIds = data.newNotifications.map(el=>el.id);
-    console.log(notificationIds);
   }
   
 

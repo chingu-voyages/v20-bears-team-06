@@ -142,13 +142,11 @@ export default function HomePage() {
     ? "Search..."
     : "Search for teachers and documents here...";
   function search(terms) {
-    console.log("search values is", terms);
     history.push("/search", { searchTerm: terms });
   }
   let history = useHistory();
   const { data: meData } = useQuery(GET_ME);
   const me = meData ? meData.me : null;
-  console.log(`homepage login ? ${me}`);
   const { loading: userLoading, error: userError, data: userData } = useQuery(
     GET_SAMPLE_USERS
   );

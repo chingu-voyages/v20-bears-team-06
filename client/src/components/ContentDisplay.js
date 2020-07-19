@@ -122,7 +122,6 @@ export const ContentDisplay = ({ userId, update, meId, toDisplay }) => {
             );
           }
           if (error) {
-            console.log(error);
             return null;
           }
         }}

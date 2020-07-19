@@ -49,7 +49,6 @@ export const LoginForm = ({ isLoggedIn, setLoggedIn }) => {
 
   const classes = useStyles();
   let history = useHistory();
-  console.log(history);
 
   function returnHome() {
     const link = <Link to={'/'} />;
@@ -59,7 +58,6 @@ export const LoginForm = ({ isLoggedIn, setLoggedIn }) => {
     //history.push("/");
   }
   if (isLoggedIn) {
-    console.log('redirecting');
     return <Redirect to={{ pathname: '/' }} />;
   } else {
     return (

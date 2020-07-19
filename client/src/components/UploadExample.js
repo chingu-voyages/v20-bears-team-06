@@ -38,7 +38,6 @@ export const uploadToS3 = async (file, signedRequest) => {
   };
   axios.put(signedRequest, file, options)
   .then(response=>{
-    console.log(response);
   })
   
 };
@@ -47,7 +46,6 @@ export const UploadExample = () => {
   const [signS3] = useMutation(S3_SIGN_MUTATION);
 
   const meId = useMe();
-  console.log(meId);
 
   
 
@@ -71,7 +69,6 @@ export const UploadExample = () => {
         const { signedRequest} = response.data.signS3;
 
         const s3Response = await uploadToS3(fileToUpload, signedRequest);
-        console.log(s3Response);
         //do the rest of mutations for post, profile, etc. using the url variable above
       }}
     >

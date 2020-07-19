@@ -102,7 +102,6 @@ const useStyles = makeStyles((theme) => ({
                           lastName: values.lastName? values.lastName: profile.lastName,
                         },
                       });
-                      console.log(response);
                       if (response && response.data && !response.data.editUser) {
                         setFieldError("invalid field data");
                         return;
@@ -113,7 +112,6 @@ const useStyles = makeStyles((theme) => ({
                           values.file[0].file,
                           s3.signedRequest
                         );
-                        console.log(s3response);
                       }
                     } catch (e) {
                       console.log("error with edit", e);

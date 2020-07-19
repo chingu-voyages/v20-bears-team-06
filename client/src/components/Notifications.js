@@ -13,7 +13,6 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export const Notifications = ({subscribeToNew, data, loading, error, trigger, ...props}) => {
-  console.log(props)
   const classes = useStyles();
   useEffect(() => {
     subscribeToNew();
