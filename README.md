@@ -52,5 +52,5 @@ Frontend - Deployed to Netlify
 
 # Authors
 
-- [Schuyler Sossa](https://github.com/ssousa33)
+- [Schuyler Sousa](https://github.com/ssousa33)
 - [Justin Lundy](https://github.com/julundy)
