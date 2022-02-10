@@ -30,7 +30,7 @@
     "material-ui-dropzone": "^3.3.0",
     "material-ui-popup-state": "^1.5.4",
     "moment": "^2.27.0",
-    "node-sass": "^4.14.1",
+    "node-sass": "^7.0.0",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-dropzone": "^11.0.1",
